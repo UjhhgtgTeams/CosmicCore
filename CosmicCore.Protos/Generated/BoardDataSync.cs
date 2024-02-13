@@ -4,6 +4,8 @@
 //   Input: BoardDataSync.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -14,7 +16,7 @@ public partial class BoardDataSync : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(5, Name = @"unlocked_head_icon_list")]
-    public global::System.Collections.Generic.List<HeadIcon> UnlockedHeadIconLists { get; } = new global::System.Collections.Generic.List<HeadIcon>();
+    public global::System.Collections.Generic.List<HeadIcon> UnlockedHeadIconList { get; } = new global::System.Collections.Generic.List<HeadIcon>();
 
     [global::ProtoBuf.ProtoMember(10, Name = @"signature")]
     [global::System.ComponentModel.DefaultValue("")]

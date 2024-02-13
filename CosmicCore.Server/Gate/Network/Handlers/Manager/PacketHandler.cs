@@ -1,7 +1,4 @@
-﻿using CosmicCore.Server.Gate.Manager;
-using CosmicCore.Protos;
-
-namespace CosmicCore.Server.Gate.Network.Handlers.Manager;
+﻿namespace CosmicCore.Server.Gate.Network.Handlers.Manager;
 
 using DotNetty.Transport.Channels;
 using Server.Gate.Manager;
@@ -10,12 +7,12 @@ using Protos;
 using Serilog;
 using ProtoBuf;
 
-internal class PacketHandler(NetSession session) : ChannelHandlerAdapter
+public class PacketHandler(NetSession session) : ChannelHandlerAdapter
 {
     public override void ChannelRead(IChannelHandlerContext context, object message)
     {
         var packet = message as NetPacket;
-        if (packet.Data == null)
+        if (packet.Data is null)
         {
             if (!SendDummyResponse(packet.CmdId))
                 Log.Debug("Received packet with undefined cmdid {0}", packet.CmdId);

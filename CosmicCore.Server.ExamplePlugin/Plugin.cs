@@ -4,7 +4,7 @@ using Serilog;
 
 namespace CosmicCore.Server.ExamplePlugin;
 
-internal class Plugin : IPlugin
+public class Plugin : IPlugin
 {
     public override string Name => "ExamplePlugin";
     public override string Description => "An example plugin.";

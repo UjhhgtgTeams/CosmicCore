@@ -1,14 +1,19 @@
-﻿namespace CosmicCore.Server.Utilities.Resource.Resources;
+﻿using Newtonsoft.Json;
+
+namespace CosmicCore.Server.Utilities.Resource.Resources;
 
 [Resource(FileNames = ["MazePlane.json"])]
 public class MazePlaneExcel : IResource
 {
-    public override int Id => PlaneID;
-    public int PlaneID;
-    public int WorldID;
-    public int StartFloorID;
-    public long PlaneName;
-    public PlaneType PlaneType;
+    public override int Id => PlaneId;
+    [JsonProperty("PlaneID")]
+    public int PlaneId { get; set; }
+    [JsonProperty("WorldID")]
+    public int WorldId { get; set; }
+    [JsonProperty("StartFloorID")]
+    public int StartFloorId { get; set; }
+    public HashedName PlaneName { get; set; }
+    public PlaneType PlaneType { get; set; }
 
     public override void OnLoad()
     {

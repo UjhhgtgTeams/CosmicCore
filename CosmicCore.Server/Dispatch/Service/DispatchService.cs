@@ -1,17 +1,14 @@
 ﻿using System.Net;
 using System.Security.Authentication;
-using System.Security.Cryptography.X509Certificates;
-using Ceen;
 using Ceen.Httpd;
 using Ceen.Httpd.Logging;
 using CosmicCore.Server.Dispatch.Handlers;
-using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Config;
 using ServerConfig = Ceen.Httpd.ServerConfig;
 
 namespace CosmicCore.Server.Dispatch.Service;
 
-internal static class DispatchService
+public class DispatchService
 {
     public static void Start(DispatchServerConfig config)
     {

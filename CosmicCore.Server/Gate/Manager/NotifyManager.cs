@@ -8,20 +8,20 @@ using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager;
 
-internal static class NotifyManager
+public class NotifyManager
 {
-    private static List<Type> _handlerTypes = new();
-    private static ImmutableDictionary<int, (HandlerAttribute, HandlerAttribute.HandlerDelegate)> _notifyReqGroup;
+    private static readonly List<Type> HandlerTypes = [];
+    private static ImmutableDictionary<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)> _notifyReqGroup;
 
     public static void Initialize()
     {
-        var handlers = ImmutableDictionary.CreateBuilder<int, (HandlerAttribute, HandlerAttribute.HandlerDelegate)>();
+        var handlers = ImmutableDictionary.CreateBuilder<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)>();
 
-        foreach (var type in _handlerTypes)
+        foreach (var type in HandlerTypes)
         foreach (var method in type.GetMethods())
         {
-            var attribute = method.GetCustomAttribute<HandlerAttribute>();
-            if (attribute == null)
+            var attribute = method.GetCustomAttribute<PacketHandlerAttribute>();
+            if (attribute is null)
                 continue;
 
             var parameterInfo = method.GetParameters();
@@ -36,7 +36,7 @@ internal static class NotifyManager
                 Expression.Convert(dataParameter, parameterInfo[2].ParameterType));
 
             var lambda =
-                Expression.Lambda<HandlerAttribute.HandlerDelegate>(call, sessionParameter, cmdIdParameter,
+                Expression.Lambda<PacketHandlerAttribute.HandlerDelegate>(call, sessionParameter, cmdIdParameter,
                     dataParameter);
 
             if (!handlers.TryGetKey(attribute.CmdId, out _))
@@ -56,6 +56,6 @@ internal static class NotifyManager
 
     public static void AddReqGroupHandler(Type type)
     {
-        _handlerTypes.Add(type);
+        HandlerTypes.Add(type);
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace CosmicCore.Server.Dispatch.Service.Manager;
+﻿using CosmicCore.Protos;
 
-internal static class RegionManager
+namespace CosmicCore.Server.Dispatch.Service.Manager;
+
+public static class RegionManager
 {
     private static Utilities.Config.RegionConfig _config;
 

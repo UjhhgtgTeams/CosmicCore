@@ -4,6 +4,8 @@
 //   Input: SyncLineupNotify.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -14,7 +16,7 @@ public partial class SyncLineupNotify : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(11, Name = @"reason_list", IsPacked = true)]
-    public global::System.Collections.Generic.List<SyncReason> ReasonLists { get; } = new global::System.Collections.Generic.List<SyncReason>();
+    public global::System.Collections.Generic.List<SyncReason> ReasonList { get; } = new global::System.Collections.Generic.List<SyncReason>();
 
     [global::ProtoBuf.ProtoMember(1, Name = @"lineup")]
     public LineupInfo Lineup { get; set; }

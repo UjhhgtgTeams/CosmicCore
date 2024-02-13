@@ -1,17 +1,14 @@
 ﻿using CosmicCore.Server.Utilities;
 using CosmicCore.Protos;
-using CosmicCore.Server.Dispatch.Utils;
+using CosmicCore.Server.Gate.Manager.Handlers.Core;
+using CosmicCore.Server.Gate.Network;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-using Core;
-using Network;
-using Protos;
-using System;
 
-internal static class PlayerReqGroup
+public class PlayerReqGroup
 {
-    [Handler(CmdId.CmdPlayerHeartBeatCsReq)]
+    [PacketHandler(CmdId.CmdPlayerHeartBeatCsReq)]
     public static void OnPlayerHeartBeatCsReq(NetSession session, int cmdId, object data)
     {
         var heartbeatReq = data as PlayerHeartbeatCsReq;
@@ -24,85 +21,98 @@ internal static class PlayerReqGroup
         });
     }
 
-    [Handler(CmdId.CmdGetHeroBasicTypeInfoCsReq)]
+    [PacketHandler(CmdId.CmdGetHeroBasicTypeInfoCsReq)]
     public static void OnGetHeroBasicTypeInfoCsReq(NetSession session, int cmdId, object _)
     {
-        session.Send(CmdId.CmdGetHeroBasicTypeInfoScRsp, new GetHeroBasicTypeInfoScRsp
+        if (session.State == NetSessionState.Active)
         {
-            Retcode = (uint)Retcode.Success,
-            Gender = Gender.GenderMan,
-            BasicTypeInfoList =
+            session.Send(CmdId.CmdGetHeroBasicTypeInfoScRsp, new GetHeroBasicTypeInfoScRsp
             {
-                new HeroBasicTypeInfo
+                Retcode = (uint)Retcode.Success,
+                Gender = (Gender)session.Owner.Gender,
+                BasicTypeInfoList =
                 {
-                    BasicType = HeroBasicType.BoyWarrior,
-                    Rank = 1
-                }
-            },
-            CurBasicType = HeroBasicType.BoyWarrior
-        });
+                    new HeroBasicTypeInfo
+                    {
+                        BasicType = HeroBasicType.BoyWarrior, // FIXME: hardcode
+                        Rank = 1
+                    }
+                },
+                CurBasicType = HeroBasicType.BoyWarrior
+            });
+        }
     }
 
-    [Handler(CmdId.CmdGetBasicInfoCsReq)]
+    [PacketHandler(CmdId.CmdGetBasicInfoCsReq)]
     public static void OnGetBasicInfoCsReq(NetSession session, int cmdId, object _)
     {
-        session.Send(CmdId.CmdGetBasicInfoScRsp, new GetBasicInfoScRsp
+        if (session.State == NetSessionState.Active)
         {
-            CurDay = 1,
-            ExchangeTimes = 0,
-            Retcode = 0,
-            NextRecoverTime = 2281337,
-            WeekCocoonFinishedCount = 0
-        });
+            session.Send(CmdId.CmdGetBasicInfoScRsp, new GetBasicInfoScRsp
+            {
+                CurDay = 1, // FIXME: hardcode
+                ExchangeTimes = 0,
+                Retcode = (uint)Retcode.Success,
+                NextRecoverTime = 2281337,
+                WeekCocoonFinishedCount = 0
+            });
+        }
     }
 
-    [Handler(CmdId.CmdPlayerLoginCsReq)]
+    [PacketHandler(CmdId.CmdPlayerLoginCsReq)]
     public static void OnPlayerLoginCsReq(NetSession session, int cmdId, object data)
     {
-        // var request = data as PlayerLoginCsReq;
-        dynamic request = data; // FIXME (no proto)
-
-        session.Send(CmdId.CmdPlayerLoginScRsp, new PlayerLoginScRsp
+        if (session.State == NetSessionState.WaitingForLogin)
         {
-            Retcode = (uint)Retcode.Success,
-            LoginRandom = request.LoginRandom,
-            Stamina = 100,
-            ServerTimestampMs = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds() * 1000,
-            BasicInfo = new PlayerBasicInfo // FIXME: hardcode
+            var account = session.Owner;
+            session.State = NetSessionState.Active;
+            session.Send(CmdId.CmdPlayerLoginScRsp, new PlayerLoginScRsp
             {
-                Nickname = "xeondev",
-                Level = 70,
-                Exp = 0,
-                Stamina = 100,
-                Mcoin = 0,
-                Hcoin = 0,
-                Scoin = 0,
-                WorldLevel = 6
-            }
-        });
+                Retcode = (uint)Retcode.Success,
+                Stamina = (uint)account.Stamina,
+                ServerTimestampMs = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds() * 1000,
+                BasicInfo = new PlayerBasicInfo
+                {
+                    Nickname = account.NickName,
+                    Level = (uint)account.Level,
+                    Exp = (uint)account.Experience,
+                    Stamina = (uint)account.Stamina,
+                    Mcoin = (uint)account.Currency.MCoin,
+                    Hcoin = (uint)account.Currency.HCoin,
+                    Scoin = (uint)account.Currency.SCoin,
+                    WorldLevel = (uint)account.WorldLevel
+                },
+                CurTimezone = Const.CurrentZoneOffset
+            });
+        }
     }
 
-    [Handler(CmdId.CmdPlayerGetTokenCsReq)]
+    [PacketHandler(CmdId.CmdPlayerGetTokenCsReq)]
     public static void OnPlayerGetTokenCsReq(NetSession session, int cmdId, object data)
     {
+        var request = data as PlayerGetTokenCsReq;
+
+        // basic verification
+        if (request is null)
+        {
+            return;
+        }
+
+        var account = Program.AccountDatabase[Convert.ToInt64(request.AccountUid)];
+
+        // verify successful login
+        if (request.Token != account.ComboToken)
+        {
+            return;
+        }
+
+        session.Owner = account;
+        session.State = NetSessionState.WaitingForLogin;
         session.Send(CmdId.CmdPlayerGetTokenScRsp, new PlayerGetTokenScRsp
         {
             Retcode = (uint)Retcode.Success,
-            Uid = 1337, // FIXME: hardcode
-            Msg = "OK",
-            SecretKeySeed = 0
+            Uid = (uint)account.Id,
+            BlackInfo = new BlackInfo()
         });
-
-        // var annData = new
-        // {
-        //     BeginTime = 0,
-        //     EndTime = DateTimeOffset.Now.ToUnixTimeSeconds() + 10, // FIXME: hardcode
-        //     Jhjbgmmpccj = Encoding.UTF8.GetString(Convert.FromBase64String("RnJlZVNSIGlzIGEgZnJlZSBhbmQgb3Blbi1zb3VyY2Ugc29mdHdhcmUsIGlmIHlvdSBwYWlkIGZvciB0aGlzLCB5b3UgaGF2ZSBiZWVuIHNjYW1tZWQhIEZyZWVTUuaYr+S4gOS4quWFjei0ueS4lOW8gOa6kOeahOi9r+S7tu+8jOWmguaenOS9oOaYr+iKsemSseS5sOadpeeahO+8jOivtOaYjuS9oOiiq+mql+S6hu+8gXJlcG9zaXRvcnkgbGluayDku5PlupPlnLDlnYA6aHR0cHM6Ly9naXQueGVvbmRldi5jb20vTW91eDIzMzMzL0ZyZWVTUg=="))
-        // };
-        //
-        // session.Send(CmdType.CmdServerAnnounceNotify, new AnnounceNotify
-        // {
-        //      = {annData},
-        // });
     }
 }

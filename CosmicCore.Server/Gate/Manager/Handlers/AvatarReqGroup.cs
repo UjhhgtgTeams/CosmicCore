@@ -6,9 +6,9 @@ using CosmicCore.Server.Utilities.Resource;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class AvatarReqGroup
+public class AvatarReqGroup
 {
-    [Handler(CmdId.CmdGetAvatarDataCsReq)]
+    [PacketHandler(CmdId.CmdGetAvatarDataCsReq)]
     public static void OnGetAvatarDataCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as GetAvatarDataCsReq;

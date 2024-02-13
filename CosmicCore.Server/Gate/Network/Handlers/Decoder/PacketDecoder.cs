@@ -6,7 +6,7 @@ using Serilog;
 
 namespace CosmicCore.Server.Gate.Network.Handlers.Decoder;
 
-internal class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
+public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
 {
     protected override void Decode(IChannelHandlerContext context, IByteBuffer message, List<object> output)
     {

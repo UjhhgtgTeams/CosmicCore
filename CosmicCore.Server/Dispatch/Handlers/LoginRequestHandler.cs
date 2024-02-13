@@ -1,5 +1,4 @@
 ﻿using Ceen;
-using CosmicCore.Server.Dispatch.Utils;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Account;
 using CosmicCore.Server.Utilities.Config;
@@ -8,7 +7,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class LoginRequestHandler : IHttpModule
+public class LoginRequestHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

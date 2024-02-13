@@ -1,6 +1,6 @@
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class TutorialReqGroup
+public class TutorialReqGroup
 {
     // [Handler(CmdType.CmdGetTutorialGuideCsReq)]
     // public static void OnGetTutorialGuideCsReq(NetSession session, int cmdId, object _)

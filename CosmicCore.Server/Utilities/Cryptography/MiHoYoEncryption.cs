@@ -1,9 +1,8 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
 
 namespace CosmicCore.Server.Utilities.Cryptography;
 
-internal static class MiHoYoEncryption
+public static class MiHoYoEncryption
 {
     public static void Xor(byte[] packet, byte[] key)
     {
@@ -17,7 +16,7 @@ internal static class MiHoYoEncryption
     public static string GetSessionKey(long id)
     {
         var random = new byte[64];
-        var randomGen = new Random();
+        var randomGen = new System.Random();
         randomGen.NextBytes(random);
 
         var data = id.ToString() + DateTimeOffset.Now.ToUnixTimeMilliseconds() + randomGen;

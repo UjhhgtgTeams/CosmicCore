@@ -4,6 +4,8 @@
 //   Input: PlayerSyncScNotify.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -14,10 +16,10 @@ public partial class PlayerSyncScNotify : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(15, Name = @"material_list")]
-    public global::System.Collections.Generic.List<Material> MaterialLists { get; } = new global::System.Collections.Generic.List<Material>();
+    public global::System.Collections.Generic.List<Material> MaterialList { get; } = new global::System.Collections.Generic.List<Material>();
 
     [global::ProtoBuf.ProtoMember(6, Name = @"equipment_list")]
-    public global::System.Collections.Generic.List<Equipment> EquipmentLists { get; } = new global::System.Collections.Generic.List<Equipment>();
+    public global::System.Collections.Generic.List<Equipment> EquipmentList { get; } = new global::System.Collections.Generic.List<Equipment>();
 
     [global::ProtoBuf.ProtoMember(1627, Name = @"board_data_sync")]
     public BoardDataSync BoardDataSync { get; set; }
@@ -29,17 +31,16 @@ public partial class PlayerSyncScNotify : global::ProtoBuf.IExtensible
     public PlayerBasicInfo BasicInfo { get; set; }
 
     [global::ProtoBuf.ProtoMember(1, Name = @"relic_list")]
-    public global::System.Collections.Generic.List<Relic> RelicLists { get; } = new global::System.Collections.Generic.List<Relic>();
+    public global::System.Collections.Generic.List<Relic> RelicList { get; } = new global::System.Collections.Generic.List<Relic>();
 
     [global::ProtoBuf.ProtoMember(11, Name = @"basic_type_info_list")]
-    public global::System.Collections.Generic.List<HeroBasicTypeInfo> BasicTypeInfoLists { get; } = new global::System.Collections.Generic.List<HeroBasicTypeInfo>();
+    public global::System.Collections.Generic.List<HeroBasicTypeInfo> BasicTypeInfoList { get; } = new global::System.Collections.Generic.List<HeroBasicTypeInfo>();
 
-    [global::ProtoBuf.ProtoMember(8, Name = @"del_relic_list", IsPacked = true)]
-    public uint[] DelRelicLists { get; set; }
+    [global::ProtoBuf.ProtoMember(8, Name = @"del_relic_list", IsPacked = true)] // FIXME: manual edit
+    public global::System.Collections.Generic.List<uint> DelRelicList { get; set; } = new global::System.Collections.Generic.List<uint>();
 
     [global::ProtoBuf.ProtoMember(13, Name = @"del_equipment_list", IsPacked = true)]
-    public uint[] DelEquipmentLists { get; set; }
-
+    public global::System.Collections.Generic.List<uint> DelEquipmentList { get; set; } = new global::System.Collections.Generic.List<uint>();
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

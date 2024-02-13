@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
-using CosmicCore.Server.Utilities.Command;
 using Serilog;
 
 namespace CosmicCore.Server.Utilities.Plugin;
 
-internal static partial class PluginManager
+public static partial class PluginManager
 {
     public static Dictionary<string, IPlugin> Plugins { get; } = []; // plugin name, plugin
     public static bool PluginsLoaded { get; private set; } = false;
@@ -47,7 +46,7 @@ internal static partial class PluginManager
                     var plugin = (IPlugin)Activator.CreateInstance(type);
 
                     // validation
-                    if (plugin == null || !IsPluginNameValid(plugin.Name)) continue; // null
+                    if (plugin is null || !IsPluginNameValid(plugin.Name)) continue; // null
                     if (IPlugin.ApiVersion > ApiVersion) // api
                         Log.Warning("API of plugin {0} is newer than server version, plugin may not work correctly!",
                             plugin.Name);

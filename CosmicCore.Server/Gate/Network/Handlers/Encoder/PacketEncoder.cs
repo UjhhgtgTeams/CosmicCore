@@ -6,7 +6,7 @@ using DotNetty.Transport.Channels;
 using Packet;
 using Serilog;
 
-internal class PacketEncoder : MessageToByteEncoder<NetPacket>
+public class PacketEncoder : MessageToByteEncoder<NetPacket>
 {
     protected override void Encode(IChannelHandlerContext context, NetPacket message, IByteBuffer output)
     {

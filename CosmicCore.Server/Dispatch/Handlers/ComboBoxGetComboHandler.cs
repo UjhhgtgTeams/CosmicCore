@@ -2,7 +2,7 @@
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class ComboBoxGetComboHandler : IHttpModule
+public class ComboBoxGetComboHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

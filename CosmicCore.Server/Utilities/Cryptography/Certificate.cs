@@ -45,7 +45,7 @@ public static class Certificate
         var certGen = new X509V3CertificateGenerator();
 
         var certName = new X509Name("CN=" + Const.Name);
-        var serialNum = BigInteger.ProbablePrime(120, new Random());
+        var serialNum = BigInteger.ProbablePrime(120, new System.Random());
 
         certGen.SetSerialNumber(serialNum);
         certGen.SetSubjectDN(certName);

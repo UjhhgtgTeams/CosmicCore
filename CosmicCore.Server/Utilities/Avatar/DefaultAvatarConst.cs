@@ -1,6 +1,6 @@
 ﻿namespace CosmicCore.Server.Utilities.Avatar;
 
-internal static class DefaultAvatarConst
+public class DefaultAvatarConst
 {
     public static uint Avatar1 = 8001;
     public static uint Avatar2 = 1307;

@@ -6,7 +6,7 @@ using Log = Serilog.Log;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class SdkDataUploadHandler : IHttpModule
+public class SdkDataUploadHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

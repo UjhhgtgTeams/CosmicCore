@@ -1,12 +1,11 @@
 ﻿using Ceen;
-using CosmicCore.Server.Dispatch.Utils;
 using CosmicCore.Server.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class ComboTokenRequestHandler : IHttpModule
+public class ComboTokenRequestHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

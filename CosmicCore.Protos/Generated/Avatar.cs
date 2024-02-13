@@ -4,6 +4,8 @@
 //   Input: Avatar.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -32,7 +34,7 @@ public partial class Avatar : global::ProtoBuf.IExtensible
     public uint EquipmentUniqueId { get; set; }
 
     [global::ProtoBuf.ProtoMember(9, Name = @"equip_relic_list")]
-    public global::System.Collections.Generic.List<EquipRelic> EquipRelicLists { get; } = new global::System.Collections.Generic.List<EquipRelic>();
+    public global::System.Collections.Generic.List<EquipRelic> EquipRelicList { get; } = new global::System.Collections.Generic.List<EquipRelic>();
 
     [global::ProtoBuf.ProtoMember(10, Name = @"taken_rewards", IsPacked = true)]
     public uint[] TakenRewards { get; set; }

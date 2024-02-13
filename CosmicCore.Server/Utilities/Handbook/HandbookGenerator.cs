@@ -1,5 +1,7 @@
 ﻿using CosmicCore.Server.Utilities.Command;
+using CosmicCore.Server.Utilities.Locale;
 using CosmicCore.Server.Utilities.Resource;
+using CosmicCore.Server.Utilities.Resource.Resources;
 using Serilog;
 
 namespace CosmicCore.Server.Utilities.Handbook;
@@ -12,35 +14,37 @@ public static class HandbookGenerator
 
         using var writer = new StreamWriter(path);
 
-        writer.WriteLine($"# {Const.Name} Handbook for game version {Const.GameVersion}");
-        writer.WriteLine($"# Generated on {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}");
+        writer.WriteLine($"# {Const.Name} Handbook");
+        writer.WriteLine($"# Generate Time: {DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss}");
+        writer.WriteLine($"# Game version: {Const.GameVersion}");
+        writer.WriteLine($"# Text map locale: {LocaleManager.CurrentLocale}");
         writer.WriteLine();
 
         writer.WriteLine("# Commands");
-        foreach (var command in CommandManager.Commands)
+        foreach (var attr in CommandManager.Commands.Select(CommandManager.GetCommandAttributeOf))
         {
-            writer.WriteLine($"{command.Usage} - {command.Description}");
+            writer.WriteLine($"/{string.Join('|', attr.Names)} {attr.Usage} - {attr.Description}");
         }
         writer.WriteLine();
 
         writer.WriteLine("# Avatars");
         foreach (var avatar in ResourceManager.AvatarExcels)
         {
-            writer.WriteLine($"{avatar.Id} : {ResourceManager.TextMap.GetValueOrDefault(avatar.Id, "null")}");
+            writer.WriteLine($"{avatar.Id} : [Element {ResourceManager.GetTextMapEntry(avatar.DamageType.TextMapHash())} | Path {ResourceManager.GetTextMapEntry(avatar.AvatarBaseType.TextMapHash())}] {ResourceManager.GetTextMapEntry(avatar.AvatarName)}");
         }
         writer.WriteLine();
 
         writer.WriteLine("# Items");
         foreach (var item in ResourceManager.ItemExcels)
         {
-            writer.WriteLine($"{item.Id} : {ResourceManager.TextMap.GetValueOrDefault(item.Id, "null")}");
+            writer.WriteLine($"{item.Id} : [Rarity {item.Rarity.ToString()}] {ResourceManager.GetTextMapEntry(item.ItemName)}");
         }
         writer.WriteLine();
 
         writer.WriteLine("# Props (Spawnable)");
         foreach (var prop in ResourceManager.PropExcels)
         {
-            writer.WriteLine($"{prop.Id} : {ResourceManager.TextMap.GetValueOrDefault(prop.PropName, "null")}");
+            writer.WriteLine($"{prop.Id} : [{prop.PropType.ToString()}] {ResourceManager.GetTextMapEntry(prop.PropName)}");
         }
         writer.WriteLine();
 
@@ -48,7 +52,7 @@ public static class HandbookGenerator
         foreach (var npcMonster in ResourceManager.NpcMonsterExcels)
         {
             writer.WriteLine(
-                $"{npcMonster.Id} : {ResourceManager.TextMap.GetValueOrDefault(npcMonster.NPCName, "null")}");
+                $"{npcMonster.Id} : {ResourceManager.GetTextMapEntry(npcMonster.NpcName)}");
         }
         writer.WriteLine();
 
@@ -56,7 +60,7 @@ public static class HandbookGenerator
         foreach (var stage in ResourceManager.StageExcels)
         {
             writer.WriteLine(
-                $"{stage.Id} : [Level {stage.Level}] {ResourceManager.TextMap.GetValueOrDefault(stage.StageName, "null")}");
+                $"{stage.Id} : [{stage.StageType.ToString()} | Level {stage.Level}] {ResourceManager.GetTextMapEntry(stage.StageName)}");
         }
         writer.WriteLine();
 
@@ -64,7 +68,7 @@ public static class HandbookGenerator
         foreach (var mazePlane in ResourceManager.MazePlaneExcels)
         {
             writer.WriteLine(
-                $"{mazePlane.Id} : [{mazePlane.PlaneType}] {ResourceManager.TextMap.GetValueOrDefault(mazePlane.PlaneName, "null")}");
+                $"{mazePlane.Id} : [{mazePlane.PlaneType.ToString()}] {ResourceManager.GetTextMapEntry(mazePlane.PlaneName)}");
         }
         writer.WriteLine();
 

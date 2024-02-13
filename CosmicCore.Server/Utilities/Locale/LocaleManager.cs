@@ -19,5 +19,5 @@ public static class LocaleManager
 
     public static CultureInfo CurrentCulture => CultureInfo.CurrentUICulture;
 
-    private static List<string> SupportedLocales = ["CHS", "CHT", "DE", "EN", "ES", "FR", "ID", "JP", "KR", "PT", "RU", "TH", "VI"];
+    private static readonly List<string> SupportedLocales = ["CHS", "CHT", "DE", "EN", "ES", "FR", "ID", "JP", "KR", "PT", "RU", "TH", "VI"];
 }

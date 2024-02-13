@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class GetTsHandler : IHttpModule
+public class GetTsHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

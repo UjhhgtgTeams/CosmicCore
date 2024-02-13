@@ -1,9 +1,8 @@
-﻿using System.Text;
-using Serilog;
+﻿using Serilog;
 
 namespace CosmicCore.Server.Utilities.Command;
 
-public static class CommandUtils
+public static class CommandUtilities
 {
     public static List<string> SplitArgs(string args)
     {
@@ -50,17 +49,48 @@ public static class CommandUtils
         return arguments;
     }
 
-    public static void LogReturnCode(ICommand? command, int returnCode)
+    public static void LogReturnCode(ICommand? command, int returnCode, Account.Account executor)
     {
-        Dictionary<int, string?> returnCodeMap;
-        returnCodeMap = command != null ? CommandManager.ReturnCodeMap.ConcatenateRange(command.ReturnCodeMap) : CommandManager.ReturnCodeMap;
+        var returnCodeMap = command is not null ? CommandManager.ReturnCodeMap.ConcatenateRange(command.ReturnCodeMap) : CommandManager.ReturnCodeMap;
 
-        if (returnCodeMap.TryGetValue(returnCode, out var message) && message != null)
+        if (returnCodeMap.TryGetValue(returnCode, out var message) && message is not null)
         {
             if (!message.EndsWith('!'))
-                Log.Information(message);
+            {
+                if (executor != Account.Account.Console)
+                {
+                    executor.PrivateChat.SendChat(Account.Account.Console.Id, executor.Id, message);
+                }
+                else
+                {
+                    Log.Information(message);
+                }
+            }
             else
-                Log.Error(message);
+            {
+                if (executor != Account.Account.Console)
+                {
+                    executor.PrivateChat.SendChat(Account.Account.Console.Id, executor.Id, message);
+                }
+                else
+                {
+                    Log.Error(message);
+                }
+            }
         }
+    }
+
+    public static Account.Account? ParseAccountSelector(string selector)
+    {
+        // TODO: more advanced parser & selector
+        if (selector[0] == '@')
+        {
+            if (long.TryParse(selector.AsSpan(1), out var result))
+            {
+                return Program.AccountDatabase[result];
+            }
+        }
+
+        return null;
     }
 }

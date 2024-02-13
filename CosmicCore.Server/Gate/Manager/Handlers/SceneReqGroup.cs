@@ -1,6 +1,4 @@
 ﻿using CosmicCore.Server.Utilities;
-using CosmicCore.Protos;
-using CosmicCore.Server.Dispatch.Utils;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -8,9 +6,9 @@ using Core;
 using Network;
 using Protos;
 
-internal static class SceneReqGroup
+public class SceneReqGroup
 {
-    [Handler(CmdId.CmdGetCurSceneInfoCsReq)]
+    [PacketHandler(CmdId.CmdGetCurSceneInfoCsReq)]
     public static void OnGetCurSceneInfoCsReq(NetSession session, int cmdId, object data)
     {
         var scene = new SceneInfo

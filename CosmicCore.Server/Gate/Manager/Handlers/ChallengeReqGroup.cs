@@ -1,6 +1,6 @@
 ﻿namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class ChallengeReqGroup
+public class ChallengeReqGroup
 {
     // ChallengeReqGroup TODO
 }

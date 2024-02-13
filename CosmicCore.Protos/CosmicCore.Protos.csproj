@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
-        <RootNamespace>CosmicCore.Proto</RootNamespace>
+        <RootNamespace>CosmicCore.Protos</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

@@ -4,11 +4,11 @@
 public class PropExcel : IResource
 {
     public override int Id => ID;
-    public int ID;
-    public long PropName;
-    public string JsonPath;
-    public PropType PropType;
-    public HashSet<PropState> PropStateList;
+    public int ID { get; set; }
+    public HashedName PropName { get; set; }
+    public string JsonPath { get; set; }
+    public PropType PropType { get; set; }
+    public HashSet<PropState> PropStateList { get; set; }
     public override void OnLoad() { }
 }
 

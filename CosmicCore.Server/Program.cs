@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using CosmicCore.Server.Dispatch;
 using CosmicCore.Server.Gate;
+using CosmicCore.Server.Gate.Services.Gacha;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Account;
 using CosmicCore.Server.Utilities.Command;
@@ -14,9 +15,9 @@ using Serilog;
 
 namespace CosmicCore.Server;
 
-internal static class Program
+public static class Program
 {
-    public static AccountDatabase AccountDatabase = new();
+    public static readonly AccountDatabase AccountDatabase = new();
 
     public static void Main(string[] arguments)
     {
@@ -29,10 +30,11 @@ internal static class Program
         ConfigManager.LoadConfig("./config.json");
         AccountDatabase.InitializeDatabase("./accounts.db");
         PluginManager.LoadPlugins();
-        if (ResourceManager.LoadResources(ConfigManager.Config.ResourceDirPath))
-            HandbookGenerator.Generate("./" + Const.Name + " Handbook.txt");
-        PluginManager.EnablePlugins();
+        var generateHandbook = ResourceManager.LoadResources(ConfigManager.Config.ResourceDirPath);
         CommandManager.LoadCommands();
+        if (generateHandbook) HandbookGenerator.Generate("./" + Const.Name + " Handbook.txt");
+        PluginManager.EnablePlugins();
+        GachaService.Initialize("./resources/banners.json");
 
         // servers
         DispatchServer.Start();

@@ -4,6 +4,8 @@
 //   Input: GachaInfo.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -28,10 +30,10 @@ public partial class GachaInfo : global::ProtoBuf.IExtensible
     public GachaCeiling GachaCeiling { get; set; }
 
     [global::ProtoBuf.ProtoMember(1, Name = @"featured", IsPacked = true)]
-    public uint[] Featureds { get; set; }
+    public uint[] Featured { get; set; }
 
     [global::ProtoBuf.ProtoMember(5, Name = @"up_info", IsPacked = true)]
-    public uint[] UpInfoes { get; set; }
+    public uint[] UpInfo { get; set; }
 
     [global::ProtoBuf.ProtoMember(13, Name = @"gacha_id")]
     public uint GachaId { get; set; }

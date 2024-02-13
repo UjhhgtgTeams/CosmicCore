@@ -1,21 +1,22 @@
-﻿using System.Security;
+﻿using System.Collections.Immutable;
+using System.Security;
 using Newtonsoft.Json;
 using Serilog;
 
 namespace CosmicCore.Server.Utilities.Account;
 
-internal class AccountDatabase
+public class AccountDatabase
 {
-    private List<Account> _accounts;
+    public List<Account> Accounts { get; set; } = [];
 
     public int NextId
     {
         get
         {
-            if (_accounts.Count == 0)
+            if (Accounts.Count == 0)
                 return 10000;
             else
-                return (int)(_accounts.Last().Id + 1);
+                return (int)(Accounts.Last().Id + 1);
         }
     }
 
@@ -24,12 +25,12 @@ internal class AccountDatabase
         Log.Information("Loading accounts...");
         if (File.Exists(path))
         {
-            _accounts = JsonConvert.DeserializeObject<List<Account>>(File.ReadAllText(path)) ?? [];
-            Log.Information("{0} accounts loaded from file {1}", _accounts.Count, path);
+            Accounts = JsonConvert.DeserializeObject<List<Account>>(File.ReadAllText(path)) ?? [];
+            Log.Information("{0} accounts loaded from file {1}", Accounts.Count, path);
         }
         else
         {
-            _accounts = [];
+            Accounts = [];
             Log.Warning("Account database not found; new database created");
         }
     }
@@ -39,7 +40,7 @@ internal class AccountDatabase
         Log.Information("Saving account database");
         try
         {
-            File.WriteAllText(path, JsonConvert.SerializeObject(_accounts, Formatting.Indented));
+            File.WriteAllText(path, JsonConvert.SerializeObject(Accounts, Formatting.Indented));
             Log.Information("Account database saved");
             return true;
         }
@@ -52,11 +53,11 @@ internal class AccountDatabase
 
     public bool AddAccount(Account account)
     {
-        var hasRepeatedIdOrUserName = _accounts.Any(acc => acc.Id == account.Id || acc.UserName == account.UserName);
+        var hasRepeatedIdOrUserName = Accounts.Any(acc => acc.Id == account.Id || acc.UserName == account.UserName);
 
         if (!hasRepeatedIdOrUserName)
         {
-            _accounts.Add(account);
+            Accounts.Add(account);
             EnsureSorted();
         }
 
@@ -65,41 +66,41 @@ internal class AccountDatabase
 
     public int DeleteAccount(long id)
     {
-        return _accounts.RemoveAll(acc => acc.Id == id);
+        return Accounts.RemoveAll(acc => acc.Id == id);
     }
 
     public bool ContainsAccount(long id)
     {
-        return _accounts.Any(acc => acc.Id == id);
+        return Accounts.Any(acc => acc.Id == id);
     }
 
     public bool ContainsAccount(string username)
     {
-        return _accounts.Any(acc => acc.UserName == username);
+        return Accounts.Any(acc => acc.UserName == username);
     }
 
     public IEnumerable<T> Cast<T>()
     {
-        return _accounts.Cast<T>();
+        return Accounts.Cast<T>();
     }
 
     private void EnsureSorted()
     {
-        _accounts = _accounts.OrderBy(acc => acc.Id).ToList();
+        Accounts = Accounts.OrderBy(acc => acc.Id).ToList();
     }
 
     #region Get/Set Methods
 
     public Account this[long id]
     {
-        get { return _accounts.First(acc => acc.Id == id); }
-        set { _accounts[_accounts.IndexOf(_accounts.First(acc => acc.Id == id))] /* uhh */ = value; }
+        get { return Accounts.First(acc => acc.Id == id); }
+        set { Accounts[Accounts.IndexOf(Accounts.First(acc => acc.Id == id))] /* uhh */ = value; }
     }
 
     public Account this[string username]
     {
-        get { return _accounts.First(acc => acc.UserName == username); }
-        set { _accounts[_accounts.IndexOf(_accounts.First(acc => acc.UserName == username))] /* uhh */ = value; }
+        get { return Accounts.First(acc => acc.UserName == username); }
+        set { Accounts[Accounts.IndexOf(Accounts.First(acc => acc.UserName == username))] /* uhh */ = value; }
     }
 
     #endregion

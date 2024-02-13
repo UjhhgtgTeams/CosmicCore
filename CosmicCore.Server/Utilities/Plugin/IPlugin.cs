@@ -15,16 +15,16 @@ public abstract class IPlugin
 
     public abstract string Name { get; }
     public abstract string Description { get; }
-    public static int ApiVersion => 1;
     public abstract string[] Dependencies { get; }
     public abstract ICommand[] Commands { get; }
+    public static int ApiVersion => 1;
 
     #region Plugin events called by server
 
     public abstract void OnLoad();
     public abstract void OnEnable();
     public abstract void OnDisable();
-    //public abstract void OnTick();
+    // public abstract void OnTick();
 
     #endregion
 }

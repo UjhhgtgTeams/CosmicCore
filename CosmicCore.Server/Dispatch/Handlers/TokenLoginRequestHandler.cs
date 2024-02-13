@@ -1,12 +1,11 @@
 ﻿using Ceen;
-using CosmicCore.Server.Dispatch.Utils;
 using CosmicCore.Server.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class TokenLoginRequestHandler : IHttpModule
+public class TokenLoginRequestHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {
@@ -56,7 +55,7 @@ internal class TokenLoginRequestHandler : IHttpModule
 
         var request = JsonConvert.DeserializeObject<JObject?>(context.Request.Body.ReadAllAsString());
 
-        if (request == null)
+        if (request is null)
         {
             response["retcode"] = (int)Retcode.LoginError;
             response["message"] = "Error logging in";

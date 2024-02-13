@@ -4,6 +4,8 @@
 //   Input: Relic.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -20,7 +22,7 @@ public partial class Relic : global::ProtoBuf.IExtensible
     public bool IsDiscarded { get; set; }
 
     [global::ProtoBuf.ProtoMember(8, Name = @"sub_affix_list")]
-    public global::System.Collections.Generic.List<RelicAffix> SubAffixLists { get; } = new global::System.Collections.Generic.List<RelicAffix>();
+    public global::System.Collections.Generic.List<RelicAffix> SubAffixList { get; } = new global::System.Collections.Generic.List<RelicAffix>();
 
     [global::ProtoBuf.ProtoMember(7, Name = @"base_avatar_id")]
     public uint BaseAvatarId { get; set; }

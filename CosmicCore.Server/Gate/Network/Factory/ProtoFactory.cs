@@ -5,7 +5,7 @@ using ProtoBuf;
 namespace CosmicCore.Server.Gate.Network.Factory;
 
 
-internal static class ProtoFactory
+public class ProtoFactory
 {
     private static readonly ImmutableDictionary<CmdId, Type> STypes;
 

@@ -4,7 +4,7 @@ using Serilog;
 
 namespace CosmicCore.Server.Utilities.Command;
 
-internal static class CommandManager
+public static class CommandManager
 {
     public static readonly Dictionary<int, string?> ReturnCodeMap = new()
     {
@@ -13,11 +13,11 @@ internal static class CommandManager
         { 1, "Argument invalid!" }, // argument invalid
         { 2, "Permission not enough!" }, // no permission
         { 3, "Command unusable" }, // unusable
-        { 999, "Unhandled exception!" } // exception
+        { 999, "Unhandled exception occured while executing command!" } // exception
     };
 
     public static List<ICommand> Commands { get; } = [];
-    public static bool CommandsLoaded;
+    public static bool CommandsLoaded { get; private set; }
 
     public static void LoadCommands()
     {
@@ -27,14 +27,15 @@ internal static class CommandManager
             return;
         }
 
+        Log.Information("Loading commands...");
         CommandsLoaded = true;
 
-        Commands.AddRange(
-            from type in Assembly.GetExecutingAssembly().GetTypes()
-            where typeof(ICommand).IsAssignableFrom(type) && !type.IsAbstract // ignore 'ICommand' itself
-            select Activator.CreateInstance(type)
-            as ICommand);
-        Log.Information("Loaded {0} builtin commands", Commands.Count);
+        Commands.AddRange(Assembly.GetExecutingAssembly()
+            .GetTypes()
+            .Where(type => typeof(ICommand).IsAssignableFrom(type) && !type.IsAbstract)
+            .Select(Activator.CreateInstance)
+            .Cast<ICommand>());
+        Log.Information("{0} builtin commands loaded", Commands.Count);
 
         var commandCnt = 0;
         foreach (var commands in PluginManager.Plugins.Values.Select(plugin => plugin.Commands))
@@ -42,29 +43,59 @@ internal static class CommandManager
             Commands.AddRange(commands);
             commandCnt += commands.Length;
         }
-        Log.Information("Loaded {0} plugin commands", commandCnt);
+        Log.Information("{0} plugin commands loaded", commandCnt);
     }
 
     public static void ExecuteCommand(string command, Account.Account? executor = null)
     {
-        executor ??= Account.Account.ConsoleAccount;
+        executor ??= Account.Account.Console;
+        if (string.IsNullOrWhiteSpace(command)) return;
 
-        var args = CommandUtils.SplitArgs(command).ToList();
+        var args = CommandUtilities.SplitArgs(command).ToList();
         args.RemoveAt(0);
-        var exeFlag = false;
+
         foreach (var cmd in Commands)
         {
-            if (cmd.Names.Contains(command))
+            var attr = GetCommandAttributeOf(cmd);
+            if (attr.Names.Contains(command))
             {
-                var result = cmd.OnExecute(string.Join(' ', args), executor);
-                CommandUtils.LogReturnCode(cmd, result);
+                if (executor.HasPermissions(attr.RequiredPermissions))
+                {
+                    try
+                    {
+                        var result = cmd.OnExecute(string.Join(' ', args), executor);
+                        CommandUtilities.LogReturnCode(cmd, result, executor);
+                    }
+                    catch (Exception)
+                    {
+                        CommandUtilities.LogReturnCode(null, 999, executor);
+                    }
 
-                exeFlag = true;
-                return;
+                    return;
+                }
+                else
+                {
+                    CommandUtilities.LogReturnCode(null, 2, executor);
+                    return;
+                }
             }
         }
 
-        if (!exeFlag)
-            CommandUtils.LogReturnCode(null, -1);
+        CommandUtilities.LogReturnCode(null, -1, executor);
+    }
+
+    public static CommandAttribute GetCommandAttributeOf<T>() where T : ICommand
+    {
+        return GetCommandAttributeOf(typeof(T));
+    }
+
+    public static CommandAttribute GetCommandAttributeOf(Type type)
+    {
+        return type.GetCustomAttribute(typeof(CommandAttribute), true) as CommandAttribute ?? new CommandAttribute();
+    }
+
+    public static CommandAttribute GetCommandAttributeOf(ICommand command)
+    {
+        return GetCommandAttributeOf(command.GetType());
     }
 }

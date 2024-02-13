@@ -1,4 +1,7 @@
-﻿namespace CosmicCore.Server.Utilities.Resource.Resources;
+﻿using CosmicCore.Server.Gate.Services.Inventory;
+using Newtonsoft.Json;
+
+namespace CosmicCore.Server.Utilities.Resource.Resources;
 
 [Resource(FileNames =
 [
@@ -7,27 +10,54 @@
 ])]
 public class ItemExcel : IResource
 {
-    public int ID { get; }
-    public long ItemName { get; }
-    public ItemMainType ItemMainType { get; } = ItemMainType.Unknown;
-    public ItemSubType ItemSubType { get; } = ItemSubType.Unknown;
-    public ItemRarity Rarity { get; }
-    public int PileLimit { get; }
-    public int PurposeType { get; }
-    public int UseDataID { get; }
-    public int AvatarExp { get; }
-    public int RelicExp { get; }
-    public int EquipmentExp { get; }
-    public int ExpCost { get; }
-
     public override int Id => ID;
+    public int ID { get; set; }
+    public HashedName ItemName { get; set; }
+    public ItemMainType ItemMainType { get; set; } = ItemMainType.Unknown;
+    public ItemSubType ItemSubType { get; set; } = ItemSubType.Unknown;
+    public ItemRarity Rarity { get; set; }
+    public int PileLimit { get; set; }
+    public int PurposeType { get; set; }
 
-    public override void OnLoad()
+    [JsonProperty("UseDataID")]
+    public int UseDataId { get; set; }
+    public ItemUseMethod UseMethod { get; set; }
+
+    [JsonProperty("ReturnItemIDList")]
+    public List<ItemParam> ReturnItemIdList { get; set; }
+
+    [JsonIgnore] public EquipmentExcel? EquipmentExcel { get; set; }
+    [JsonIgnore] public RelicExcel? RelicExcel { get; set; }
+
+    public int AvatarExp { get; set; }
+    public int RelicExp { get; set; }
+    public int EquipmentExp { get; set; }
+    public int ExpCost { get; set; }
+
+    public bool IsEquipment => ItemMainType == ItemMainType.Equipment && EquipmentExcel is not null;
+    public bool IsRelic => ItemMainType == ItemMainType.Relic && RelicExcel is not null;
+    public bool IsEquipable => ItemMainType == ItemMainType.Equipment || ItemMainType == ItemMainType.Relic;
+
+    public int EquipSlot
     {
-        // Implement if necessary
+        get
+        {
+            if (RelicExcel is not null)
+            {
+                return (int)RelicExcel.Type;
+            }
+            if (EquipmentExcel is not null)
+            {
+                return 100;
+            }
+            return 0;
+        }
     }
+
+    public override void OnLoad() { }
 }
 
+// ReSharper disable InconsistentNaming
 public enum ItemMainType
 {
     Unknown = 0,
@@ -59,12 +89,10 @@ public static class ItemMainTypeExtensionMethods
 
 public enum InventoryTabType
 {
-    // ReSharper disable InconsistentNaming
     NONE,
     MATERIAL,
     EQUIPMENT,
     RELIC
-    // ReSharper restore InconsistentNaming
 }
 
 public enum ItemSubType
@@ -77,9 +105,7 @@ public enum ItemSubType
     Relic = 401,
     Gift = 501,
     Food = 502,
-    // ReSharper disable IdentifierTypo
     ForceOpitonalGift = 503, // darn mihoyo
-    // ReSharper restore IdentifierTypo
     Book = 504,
     HeadIcon = 505,
     MusicAlbum = 506,
@@ -92,7 +118,11 @@ public enum ItemSubType
     MuseumStuff = 604,
     Mission = 701,
     RelicSetShowOnly = 801,
-    RelicRarityShowOnly = 802
+    RelicRarityShowOnly = 802,
+    TravelBrochurePaster = 990, // FIXME: what's the id?
+    AetherSkill = 991,
+    AetherSpirit = 992,
+    ChessRogueDiceSurface = 993
 }
 
 public enum ItemRarity
@@ -103,4 +133,26 @@ public enum ItemRarity
     Rare,
     VeryRare,
     SuperRare
+}
+
+public enum ItemUseMethod
+{
+    Unknown = 0,
+    FixedRewardGift = 101,
+    RandomRewardGift = 102,
+    PlayerSelectedReward = 103,
+    TeamFoodBenefit = 201,
+    TeamSpecificFoodBenefit = 202,
+    ExternalSystemFoodBenefit = 203,
+    PlayerSelectedDropGift = 301,
+    TreasureMap = 401,
+    Recipe = 501,
+    PerformanceProp = 601,
+    MonthlyCard = 701,
+    BPUnlock68 = 702,
+    BPUnlock128 = 703,
+    BPUpgradeFrom68To128 = 704,
+    AutoConversionItem = 801,
+    TravelBrochureUse = 998, // FIXME: what's the id?
+    TravelBrochurePasterUse = 999
 }

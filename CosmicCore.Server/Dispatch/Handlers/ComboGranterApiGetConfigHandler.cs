@@ -5,7 +5,7 @@ namespace CosmicCore.Server.Dispatch.Handlers;
 using Ceen;
 using Newtonsoft.Json;
 
-internal class ComboGranterApiGetConfigHandler : IHttpModule
+public class ComboGranterApiGetConfigHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

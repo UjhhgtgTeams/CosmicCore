@@ -1,4 +1,5 @@
-﻿using Serilog;
+﻿using System.Diagnostics;
+using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
@@ -15,5 +16,14 @@ public static class LoggerManager
                 rollingInterval: RollingInterval.Day, outputTemplate: outputTemplate)
             .WriteTo.Debug(restrictedToMinimumLevel: LogEventLevel.Debug, outputTemplate: outputTemplate)
             .CreateLogger();
+    }
+
+    public static void AssertNotNull(object? @object)
+    {
+        if (@object is null)
+        {
+            var stackFrame = new StackFrame(1).GetMethod();
+            Log.Warning("An object in method {0}.{1} is null when it should not be null", stackFrame.Module.Name, stackFrame.Name);
+        }
     }
 }

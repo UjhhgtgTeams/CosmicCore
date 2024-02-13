@@ -2,13 +2,12 @@
 using CosmicCore.Server.Gate.Network;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Protos;
-using CosmicCore.Server.Dispatch.Utils;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class MissionReqGroup
+public class MissionReqGroup
 {
-    [Handler(CmdId.CmdGetMissionStatusCsReq)]
+    [PacketHandler(CmdId.CmdGetMissionStatusCsReq)]
     public static void OnGetMissionStatusCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as GetMissionStatusCsReq;
@@ -203,7 +202,7 @@ internal static class MissionReqGroup
         };
 
 
-        if (request.SubMissionIdLists != null)
+        if (request.SubMissionIdLists is not null)
             foreach (var id in request.SubMissionIdLists)
                 response.MissionEventStatusLists.Add(new Mission()
                 {
@@ -212,7 +211,7 @@ internal static class MissionReqGroup
                     Status = MissionStatus.MissionFinish
                 });
 
-        if (request.MainMissionIdLists != null)
+        if (request.MainMissionIdLists is not null)
             foreach (var id in request.MainMissionIdLists)
                 response.SubMissionStatusLists.Add(new Mission()
                 {

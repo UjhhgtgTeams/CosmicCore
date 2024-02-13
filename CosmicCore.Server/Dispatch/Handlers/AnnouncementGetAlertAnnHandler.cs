@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class AnnouncementGetAlertAnnHandler : IHttpModule
+public class AnnouncementGetAlertAnnHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

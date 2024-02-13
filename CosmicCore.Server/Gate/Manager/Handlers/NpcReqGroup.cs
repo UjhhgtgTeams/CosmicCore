@@ -2,14 +2,13 @@
 using CosmicCore.Server.Gate.Network;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Protos;
-using CosmicCore.Server.Dispatch.Utils;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class NpcReqGroup
+public class NpcReqGroup
 {
     //maybe useless
-    [Handler(CmdId.CmdGetNpcTakenRewardCsReq)]
+    [PacketHandler(CmdId.CmdGetNpcTakenRewardCsReq)]
     public static void OnGetNpcTakenRewardCsReq(NetSession session, int cmdId, object data)
     {
         var npcRewardReq = data as GetNpcTakenRewardCsReq;
@@ -21,7 +20,7 @@ internal static class NpcReqGroup
         });
     }
 
-    [Handler(CmdId.CmdGetFirstTalkByPerformanceNpcCsReq)]
+    [PacketHandler(CmdId.CmdGetFirstTalkByPerformanceNpcCsReq)]
     public static void OnGetFirstTalkByPerformanceNpcCsReq(NetSession session, int cmdId, object data)
     {
         var npcPerformanceReq = data as GetFirstTalkByPerformanceNpcCsReq;

@@ -4,6 +4,8 @@
 //   Input: ItemList.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -14,8 +16,7 @@ public partial class ItemList : global::ProtoBuf.IExtensible
         => global::ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
 
     [global::ProtoBuf.ProtoMember(14, Name = @"item_list")]
-    public global::System.Collections.Generic.List<Item> ItemLists { get; } = new global::System.Collections.Generic.List<Item>();
-
+    public global::System.Collections.Generic.List<Item> ItemsList { get; } = new global::System.Collections.Generic.List<Item>();
 }
 
 #pragma warning restore CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192

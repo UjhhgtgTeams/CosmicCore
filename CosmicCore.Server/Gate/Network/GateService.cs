@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Net.Sockets;
 using CosmicCore.Server.Gate.Manager;
 using CosmicCore.Server.Gate.Manager.Handlers;
 using CosmicCore.Server.Gate.Network.Handlers.Decoder;
@@ -9,10 +10,11 @@ using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
 using CosmicCore.Server.Utilities;
+using Serilog;
 
 namespace CosmicCore.Server.Gate.Network;
 
-internal static class GateService
+public class GateService
 {
     private static ServerBootstrap _bootstrap;
     private static IChannel _serverChannel;
@@ -24,6 +26,7 @@ internal static class GateService
         NotifyManager.AddReqGroupHandler(typeof(TutorialReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(ItemReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(AvatarReqGroup));
+        NotifyManager.AddReqGroupHandler(typeof(FriendReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(LineupReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(MissionReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(QuestReqGroup));
@@ -56,7 +59,15 @@ internal static class GateService
                 })
             );
 
-        _serverChannel = _bootstrap.BindAsync(IPAddress.Parse(config.Address), config.Port).RunSync();
+        try
+        {
+            _serverChannel = _bootstrap.BindAsync(IPAddress.Parse(config.Address), config.Port).RunSync();
+        }
+        catch (SocketException)
+        {
+            Log.Error("Failed to start gate server: address/port already in use");
+            Environment.Exit(1);
+        }
     }
 
     public static void Stop()

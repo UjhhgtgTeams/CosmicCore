@@ -4,6 +4,8 @@
 //   Input: GetFriendListInfoScRsp.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -17,7 +19,7 @@ public partial class GetFriendListInfoScRsp : global::ProtoBuf.IExtensible
     public uint Retcode { get; set; }
 
     [global::ProtoBuf.ProtoMember(2, Name = @"friend_list")]
-    public global::System.Collections.Generic.List<FriendListInfo> FriendLists { get; } = new global::System.Collections.Generic.List<FriendListInfo>();
+    public global::System.Collections.Generic.List<FriendListInfo> FriendList { get; } = new global::System.Collections.Generic.List<FriendListInfo>();
 
 }
 

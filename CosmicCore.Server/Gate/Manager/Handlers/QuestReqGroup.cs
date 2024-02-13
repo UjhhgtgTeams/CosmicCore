@@ -1,6 +1,6 @@
 ﻿namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class QuestReqGroup
+public class QuestReqGroup
 {
     // QuestReqGroup TODO
 }

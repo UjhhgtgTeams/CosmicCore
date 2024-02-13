@@ -1,15 +1,17 @@
-﻿namespace CosmicCore.Server.Utilities.Resource.Resources;
+﻿using Newtonsoft.Json;
+
+namespace CosmicCore.Server.Utilities.Resource.Resources;
 
 [Resource(FileNames = ["StageConfig.json"])]
 public class StageExcel : IResource
 {
-    public override int Id => StageID;
-    public int StageID { get; private set; }
-    public long StageName { get; private set; }
-    public StageType StageType { get; private set; }
-    public int Level { get; private set; }
-
-    public IEnumerable<StageMonsterWave> MonsterList { get; }
+    public override int Id => StageId;
+    [JsonProperty("StageID")]
+    public int StageId { get; set; }
+    public HashedName StageName { get; set; }
+    public StageType StageType { get; set; }
+    public int Level { get; set; }
+    public IEnumerable<StageMonsterWave> MonsterList { get; set; }
 
     private List<List<int>> monsterWaves;
 
@@ -96,5 +98,6 @@ public enum StageType
     Heliobus = 20,
     RogueEndlessActivity = 21,
     StrongChallengeActivity = 22,
-    Challenge = 23
+    Challenge = 23,
+    TelevisionActivity = 24
 }

@@ -4,6 +4,8 @@
 //   Input: LineupInfo.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -20,7 +22,7 @@ public partial class LineupInfo : global::ProtoBuf.IExtensible
     public uint LeaderSlot { get; set; }
 
     [global::ProtoBuf.ProtoMember(15, Name = @"avatar_list")]
-    public global::System.Collections.Generic.List<LineupAvatar> AvatarLists { get; } = new global::System.Collections.Generic.List<LineupAvatar>();
+    public global::System.Collections.Generic.List<LineupAvatar> AvatarList { get; } = new global::System.Collections.Generic.List<LineupAvatar>();
 
     [global::ProtoBuf.ProtoMember(12, Name = @"index")]
     public uint Index { get; set; }

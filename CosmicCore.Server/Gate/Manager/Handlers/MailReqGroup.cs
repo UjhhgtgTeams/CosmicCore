@@ -1,6 +1,6 @@
 ﻿namespace CosmicCore.Server.Gate.Manager.Handlers;
 
-internal static class MailReqGroup
+public class MailReqGroup
 {
-    // MailReqGroup
+    // TODO: MailReqGroup
 }

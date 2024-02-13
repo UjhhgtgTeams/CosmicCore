@@ -1,10 +1,11 @@
 ﻿using Ceen;
+using CosmicCore.Protos;
 using CosmicCore.Server.Dispatch.Utils;
 using CosmicCore.Server.Utilities.Config;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class QueryGatewayHandler : IHttpModule
+public class QueryGatewayHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {
@@ -26,14 +27,14 @@ internal class QueryGatewayHandler : IHttpModule
             Unk6 = true
         };
 
-        if (data.AssetBundleUrl != null) gateserver.AssetBundleUrl = data.AssetBundleUrl;
-        if (data.ExResourceUrl != null) gateserver.ExResourceUrl = data.ExResourceUrl;
-        if (data.LuaUrl != null)
+        if (data.AssetBundleUrl is not null) gateserver.AssetBundleUrl = data.AssetBundleUrl;
+        if (data.ExResourceUrl is not null) gateserver.ExResourceUrl = data.ExResourceUrl;
+        if (data.LuaUrl is not null)
         {
             gateserver.LuaUrl = data.LuaUrl;
             gateserver.MdkResVersion = data.LuaUrl.Split('/')[^1].Split("_")[1];
         }
-        if (data.IFixUrl != null)
+        if (data.IFixUrl is not null)
         {
             gateserver.IfixUrl = data.IFixUrl;
             gateserver.IfixVersion = data.IFixUrl.Split('/')[^1].Split("_")[1];

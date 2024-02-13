@@ -4,7 +4,7 @@ using DotNetty.Transport.Channels;
 
 namespace CosmicCore.Server.Gate.Network.Handlers.Decoder;
 
-internal class HeaderDecoder : ByteToMessageDecoder
+public class HeaderDecoder : ByteToMessageDecoder
 {
     private IByteBuffer _current = Unpooled.Buffer();
 
@@ -20,7 +20,7 @@ internal class HeaderDecoder : ByteToMessageDecoder
         _current.ResetReaderIndex();
 
         IByteBuffer? packet;
-        while ((packet = Process()) != null)
+        while ((packet = Process()) is not null)
             output.Add(packet);
     }
 

@@ -1,6 +1,7 @@
 namespace CosmicCore.Protos;
 
 // ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
 public enum CmdId
 {
     None = 0,

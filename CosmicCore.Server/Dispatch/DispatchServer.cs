@@ -5,14 +5,14 @@ using Serilog;
 
 namespace CosmicCore.Server.Dispatch;
 
-internal static class DispatchServer
+public static class DispatchServer
 {
     public static void Start()
     {
         Log.Warning("Starting dispatch server...");
         RegionManager.Initialize(ConfigManager.Config.DispatchServer.Region);
         DispatchService.Start(ConfigManager.Config.DispatchServer);
-        Log.Information("Dispatch server started");
+        Log.Information("Dispatch server started and listening on {0}", ConfigManager.Config.DispatchServer.DisplayAddress);
     }
 
     public static void Stop()

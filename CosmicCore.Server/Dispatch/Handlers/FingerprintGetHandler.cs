@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class FingerprintGetHandler : IHttpModule
+public class FingerprintGetHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

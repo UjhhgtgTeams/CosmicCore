@@ -1,4 +1,5 @@
 ﻿using Ceen;
+using CosmicCore.Protos;
 using CosmicCore.Server.Dispatch.Service.Manager;
 using CosmicCore.Server.Dispatch.Utils;
 using CosmicCore.Server.Utilities;
@@ -6,7 +7,7 @@ using Log = Serilog.Log;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 
-internal class QueryDispatchHandler : IHttpModule
+public class QueryDispatchHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {

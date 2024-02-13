@@ -1,6 +1,8 @@
-﻿namespace CosmicCore.Server;
+﻿using CosmicCore.Protos;
 
-internal static class Const
+namespace CosmicCore.Server;
+
+public class Const
 {
     #region Server
 
@@ -14,7 +16,6 @@ internal static class Const
     public static string GameVersion = "2.0.0";
 
     public static int CurrentZoneOffset = DateTimeOffset.Now.Offset.Hours;
-    public static DateTimeOffset CurrentTimezone = DateTimeOffset.Now;
 
     // Game
     public static string DefaultName = "Trailblazer";
@@ -23,7 +24,7 @@ internal static class Const
     public static int MaxTrailblazerLevel = 70;
     public static int[] WorldLevelUpgrades = [0, 20, 30, 40, 50, 60, 65];
     public static int MaxStamina = 240;
-    public static int MaxStaminaReserve = 2400;
+    public static int MaxReservedStamina = 2400;
     public static int MaxAvatarsInTeam = 4;
     public static int DefaultTeams = 9;
     public static int MaxMp = 5;
@@ -54,7 +55,7 @@ internal static class Const
     public static int BattleAmbushBuffId = 1000102;
 
     // Gacha
-    public static int GachaCeilingMax = 300;
+    public static int MaxGachaCeiling = 300;
 
     // Challenge
     public static int ChallengeEntrance = 100000103;
@@ -66,7 +67,7 @@ internal static class Const
     public static int RogueTalentPointItemId = 32;
 
     // Custom
-    public static int ServerConsoleUId = 99;
+    public static int ServerConsoleId = 99;
     public static int EquipmentSlotId = 100;
 
     #endregion

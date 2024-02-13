@@ -4,7 +4,7 @@ using DotNetty.Buffers;
 using Factory;
 using ProtoBuf;
 
-internal class NetPacket
+public class NetPacket
 {
     private const uint HeadMagicConst = 0x9d74c714;
     private const uint TailMagicConst = 0xd7a152c8;
@@ -63,7 +63,7 @@ internal class NetPacket
     }
 }
 
-internal enum DeserializationResult
+public enum DeserializationResult
 {
     Success = 1,
     FailedInvalidLength = 2,

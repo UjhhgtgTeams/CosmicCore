@@ -4,6 +4,8 @@
 //   Input: DoGachaScRsp.proto
 // </auto-generated>
 
+namespace CosmicCore.Protos;
+
 #region Designer generated code
 #pragma warning disable CS0612, CS0618, CS1591, CS3021, IDE0079, IDE1006, RCS1036, RCS1057, RCS1085, RCS1192
 [global::ProtoBuf.ProtoContract()]
@@ -23,7 +25,7 @@ public partial class DoGachaScRsp : global::ProtoBuf.IExtensible
     public uint CeilingNum { get; set; }
 
     [global::ProtoBuf.ProtoMember(3, Name = @"gacha_item_list")]
-    public global::System.Collections.Generic.List<GachaItem> GachaItemLists { get; } = new global::System.Collections.Generic.List<GachaItem>();
+    public global::System.Collections.Generic.List<GachaItem> GachaItemList { get; } = new global::System.Collections.Generic.List<GachaItem>();
 
     [global::ProtoBuf.ProtoMember(2, Name = @"gacha_num")]
     public uint GachaNum { get; set; }
