@@ -13,10 +13,10 @@ public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
         var netPacket = new NetPacket();
 
         DeserializationResult result;
-        if ((result = netPacket.Deserialize(message)) != DeserializationResult.Success)
+        if ((result = netPacket.Deserialize(message)) != DeserializationResult.SUCC)
         {
             context.CloseAsync();
-            Log.Information("Closing connection, reason: " + result);
+            Log.Information("Closing connection due to {0}", result);
 
             return;
         }

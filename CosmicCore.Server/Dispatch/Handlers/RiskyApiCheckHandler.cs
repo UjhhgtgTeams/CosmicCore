@@ -12,14 +12,16 @@ public class RiskyApiCheckHandler : IHttpModule
         context.Response.ContentType = "application/json";
         await context.Response.WriteAllJsonAsync(JsonConvert.SerializeObject(new JObject
         {
-            {"retcode", 0},
-            {"message", "OK"},
-            {"data", new JObject
+            { "retcode", 0 },
+            { "message", "OK" },
             {
-                {"id", ""},
-                {"action", "ACTION_NONE"},
-                {"geetest", null}
-            }}
+                "data", new JObject
+                {
+                    { "id", "" },
+                    { "action", "ACTION_NONE" },
+                    { "geetest", null }
+                }
+            }
         }));
 
         return true;

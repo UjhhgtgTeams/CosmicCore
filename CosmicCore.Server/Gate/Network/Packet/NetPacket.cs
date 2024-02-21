@@ -22,14 +22,14 @@ public class NetPacket
     {
         HeadMagic = buf.ReadUnsignedInt();
         if (HeadMagic != HeadMagicConst)
-            return DeserializationResult.FailedMagicMismatch;
+            return DeserializationResult.MAGIC_MISMATCH;
 
         CmdId = buf.ReadShort();
         HeadLen = buf.ReadShort();
         PacketLen = buf.ReadInt();
 
         if (buf.ReadableBytes < HeadLen + PacketLen + 4)
-            return DeserializationResult.FailedInvalidLength;
+            return DeserializationResult.INVALID_LENGTH;
 
         RawData = new byte[PacketLen];
 
@@ -38,11 +38,11 @@ public class NetPacket
 
         TailMagic = buf.ReadUnsignedInt();
         if (TailMagic != TailMagicConst)
-            return DeserializationResult.FailedMagicMismatch;
+            return DeserializationResult.MAGIC_MISMATCH;
 
         Data = ProtoFactory.Deserialize(CmdId, RawData);
 
-        return DeserializationResult.Success;
+        return DeserializationResult.SUCC;
     }
 
     public void Serialize<T>(IByteBuffer buf) where T : class
@@ -63,9 +63,11 @@ public class NetPacket
     }
 }
 
+// ReSharper disable IdentifierTypo
+// ReSharper disable InconsistentNaming
 public enum DeserializationResult
 {
-    Success = 1,
-    FailedInvalidLength = 2,
-    FailedMagicMismatch = 3
+    SUCC = 1,
+    INVALID_LENGTH = 2,
+    MAGIC_MISMATCH = 3
 }
