@@ -21,11 +21,11 @@ public class QueryDispatchHandler : IHttpModule
 
         context.Response.StatusCode = HttpStatusCode.OK;
         context.Response.ContentType = "text/plain";
-        await context.Response.WriteAllAsync(Convert.ToBase64String(ProtobufUtil.Serialize(new DispatchRegionData
+        await context.Response.WriteAllAsync(Convert.ToBase64String(ProtobufUtilities.Serialize(new RegionList
         {
             Retcode = (uint)Retcode.Success,
-            TopSeverRegionName = RegionManager.TopServerRegionName,
-            RegionList = { RegionManager.RegionEntry }
+            TopServerRegionName = RegionManager.TopServerRegionName,
+            RegionInfoList = { RegionManager.RegionEntry }
         })));
 
         return true;

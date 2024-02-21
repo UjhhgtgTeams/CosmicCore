@@ -14,7 +14,7 @@ using Serilog;
 
 namespace CosmicCore.Server.Gate.Network;
 
-public class GateService
+public static class GateService
 {
     private static ServerBootstrap _bootstrap;
     private static IChannel _serverChannel;
@@ -26,7 +26,6 @@ public class GateService
         NotifyManager.AddReqGroupHandler(typeof(TutorialReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(ItemReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(AvatarReqGroup));
-        NotifyManager.AddReqGroupHandler(typeof(FriendReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(LineupReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(MissionReqGroup));
         NotifyManager.AddReqGroupHandler(typeof(QuestReqGroup));

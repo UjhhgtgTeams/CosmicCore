@@ -1,11 +1,11 @@
-﻿namespace CosmicCore.Server.Gate.Network.Handlers.Manager;
-
+﻿using CosmicCore.Protos;
+using CosmicCore.Server.Gate.Manager;
+using CosmicCore.Server.Gate.Network.Packet;
 using DotNetty.Transport.Channels;
-using Server.Gate.Manager;
-using Packet;
-using Protos;
-using Serilog;
 using ProtoBuf;
+using Serilog;
+
+namespace CosmicCore.Server.Gate.Network.Handlers.Manager;
 
 public class PacketHandler(NetSession session) : ChannelHandlerAdapter
 {
@@ -15,7 +15,7 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
         if (packet.Data is null)
         {
             if (!SendDummyResponse(packet.CmdId))
-                Log.Debug("Received packet with undefined cmdid {0}", packet.CmdId);
+                Log.Debug("Received packet with undefined cmd id {0}", packet.CmdId);
 
             return;
         }

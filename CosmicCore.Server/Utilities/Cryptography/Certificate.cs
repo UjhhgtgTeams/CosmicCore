@@ -16,7 +16,7 @@ namespace CosmicCore.Server.Utilities.Cryptography;
 
 public static class Certificate
 {
-    public static X509Certificate GetOrGenX509Cert(StringPath path, string password)
+    public static X509Certificate GetOrGenX509Cert(string path, string password)
     {
         if (!Path.Exists(path))
         {
@@ -36,7 +36,7 @@ public static class Certificate
         }
     }
 
-    private static X509Certificate GenX509Cert(StringPath path, string password)
+    private static X509Certificate GenX509Cert(string path, string password)
     {
         var keyPairGen = new RsaKeyPairGenerator();
         keyPairGen.Init(new KeyGenerationParameters(new SecureRandom(new CryptoApiRandomGenerator()), 1024));
@@ -589,7 +589,7 @@ public static class Certificate
         return new X509Certificate2(rawCert);
     }
 
-    private static X509Certificate GetX509CertWithPrivKey(StringPath path, string password)
+    private static X509Certificate GetX509CertWithPrivKey(string path, string password)
     {
         var pubCert = new X509Certificate2(path);
         var privCert = new X509Certificate2(path, password, X509KeyStorageFlags.Exportable);

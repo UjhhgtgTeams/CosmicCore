@@ -1,13 +1,11 @@
-﻿using CosmicCore.Server.Gate.Manager.Handlers.Core;
+﻿using CosmicCore.Protos;
+using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using CosmicCore.Server.Utilities;
-using CosmicCore.Protos;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
 public class NpcReqGroup
 {
-    //maybe useless
     [PacketHandler(CmdId.CmdGetNpcTakenRewardCsReq)]
     public static void OnGetNpcTakenRewardCsReq(NetSession session, int cmdId, object data)
     {
@@ -16,7 +14,7 @@ public class NpcReqGroup
         session.Send(CmdId.CmdGetNpcTakenRewardScRsp, new GetNpcTakenRewardScRsp
         {
             NpcId = npcRewardReq.NpcId,
-            Retcode = (uint)Retcode.Success
+            Retcode = 0
         });
     }
 
@@ -27,14 +25,18 @@ public class NpcReqGroup
 
         var response = new GetFirstTalkByPerformanceNpcScRsp
         {
-            Retcode = (uint)Retcode.Success
+            Retcode = 0
         };
 
-        foreach (var id in npcPerformanceReq.NpcTalkList)
-            response.NpcTalkInfoList.Add(new NpcTalkInfo
+        foreach (var id in npcPerformanceReq.FirstTalkIdLists)
+        {
+            response.NpcMeetStatusList.Add(new NpcMeetStatusInfo
             {
-                NpcTalkId = id
+                IsMeet = true,
+                MeetId = id
             });
+
+        }
 
         session.Send(CmdId.CmdGetFirstTalkByPerformanceNpcScRsp, response);
     }

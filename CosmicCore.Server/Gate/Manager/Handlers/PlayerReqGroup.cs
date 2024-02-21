@@ -1,21 +1,27 @@
-﻿using CosmicCore.Server.Utilities;
-using CosmicCore.Protos;
+﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
-
 
 public class PlayerReqGroup
 {
     [PacketHandler(CmdId.CmdPlayerHeartBeatCsReq)]
     public static void OnPlayerHeartBeatCsReq(NetSession session, int cmdId, object data)
     {
-        var heartbeatReq = data as PlayerHeartbeatCsReq;
+        var heartbeatReq = data as PlayerHeartBeatCsReq;
 
-        session.Send(CmdId.CmdPlayerHeartBeatScRsp, new PlayerHeartbeatScRsp
+        session.Send(CmdId.CmdPlayerHeartBeatScRsp, new PlayerHeartBeatScRsp
         {
-            Retcode = (uint)Retcode.Success,
+            Retcode = 0,
+            DownloadData = new ClientDownloadData
+            {
+                Version = 51,
+                Time = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
+                Data = Convert.FromBase64String( // FIXME: rce warning!
+                    "G0x1YVMBGZMNChoKBAQICHhWAAAAAAAAAAAAAAAod0ABD0BGcmVlU1JMdWEudHh0AAAAAAAAAAAAAQccAAAAJABAAClAQAApgEAAKcBAAFYAAQAsgAABXUBBAOSAQQAkAUAAKcFBAikBQgIpQUIC7AAAAWyAAACWgAIA6cDCAMEAwwEWAQMAqoABgKlBgQCpQUMDqYFDAxLAQwMRQACAqUGBAJ9BRIiewP1/GQCAABIAAAAEA0NTBAxVbml0eUVuZ2luZQQLR2FtZU9iamVjdAQFRmluZAQpVUlSb290L0Fib3ZlRGlhbG9nL0JldGFIaW50RGlhbG9nKENsb25lKQQYR2V0Q29tcG9uZW50c0luQ2hpbGRyZW4EB3R5cGVvZgQEUlBHBAdDbGllbnQEDkxvY2FsaXplZFRleHQTAAAAAAAAAAAEB0xlbmd0aBMBAAAAAAAAAAQLZ2FtZU9iamVjdAQFbmFtZQQJSGludFRleHQEBXRleHQUYTxiPkZyZWVTUiBpcyBhIGZyZWUgc29mdHdhcmUuRnJlZVNS5piv5LiA5Liq5YWN6LS56L2v5Lu244CCIGh0dHBzOi8vZGlzY29yZC5nZy9yZXZlcnNlZHJvb21zPC9iPgEAAAABAAAAAAAcAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAAEAAAABAAAAAQAAAAEAAAABAAAAAUAAAAFAAAABQAAAAUAAAAFAAAABgAAAAYAAAAEAAAACQAAAAYAAAAEb2JqBgAAABwAAAAHY29tcHRzDgAAABwAAAAMKGZvciBpbmRleCkSAAAAGwAAAAwoZm9yIGxpbWl0KRIAAAAbAAAACyhmb3Igc3RlcCkSAAAAGwAAAAJpEwAAABoAAAABAAAABV9FTlY=")
+            },
+
             ClientTimeMs = heartbeatReq.ClientTimeMs,
             ServerTimeMs = (ulong)DateTimeOffset.Now.ToUnixTimeMilliseconds()
         });
@@ -24,95 +30,71 @@ public class PlayerReqGroup
     [PacketHandler(CmdId.CmdGetHeroBasicTypeInfoCsReq)]
     public static void OnGetHeroBasicTypeInfoCsReq(NetSession session, int cmdId, object _)
     {
-        if (session.State == NetSessionState.Active)
+        session.Send(CmdId.CmdGetHeroBasicTypeInfoScRsp, new GetHeroBasicTypeInfoScRsp
         {
-            session.Send(CmdId.CmdGetHeroBasicTypeInfoScRsp, new GetHeroBasicTypeInfoScRsp
+            Retcode = 0,
+            Gender = Gender.GenderMan,
+            BasicTypeInfoLists =
             {
-                Retcode = (uint)Retcode.Success,
-                Gender = (Gender)session.Owner.Gender,
-                BasicTypeInfoList =
+                new PlayerHeroBasicTypeInfo
                 {
-                    new HeroBasicTypeInfo
-                    {
-                        BasicType = HeroBasicType.BoyWarrior, // FIXME: hardcode
-                        Rank = 1
-                    }
-                },
-                CurBasicType = HeroBasicType.BoyWarrior
-            });
-        }
+                    BasicType = HeroBasicType.BoyWarrior,
+                    Rank = 1
+                }
+            },
+            CurBasicType = HeroBasicType.BoyWarrior
+        });
     }
 
     [PacketHandler(CmdId.CmdGetBasicInfoCsReq)]
     public static void OnGetBasicInfoCsReq(NetSession session, int cmdId, object _)
     {
-        if (session.State == NetSessionState.Active)
+        session.Send(CmdId.CmdGetBasicInfoScRsp, new GetBasicInfoScRsp
         {
-            session.Send(CmdId.CmdGetBasicInfoScRsp, new GetBasicInfoScRsp
-            {
-                CurDay = 1, // FIXME: hardcode
-                ExchangeTimes = 0,
-                Retcode = (uint)Retcode.Success,
-                NextRecoverTime = 2281337,
-                WeekCocoonFinishedCount = 0
-            });
-        }
+            CurDay = 1,
+            ExchangeTimes = 0,
+            Retcode = 0,
+            NextRecoverTime = 2281337,
+            WeekCocoonFinishedCount = 0
+        });
     }
 
     [PacketHandler(CmdId.CmdPlayerLoginCsReq)]
     public static void OnPlayerLoginCsReq(NetSession session, int cmdId, object data)
     {
-        if (session.State == NetSessionState.WaitingForLogin)
+        var request = data as PlayerLoginCsReq;
+
+        session.Send(CmdId.CmdPlayerLoginScRsp, new PlayerLoginScRsp
         {
-            var account = session.Owner;
-            session.State = NetSessionState.Active;
-            session.Send(CmdId.CmdPlayerLoginScRsp, new PlayerLoginScRsp
+            Retcode = 0,
+            // IsNewPlayer = false,
+            LoginRandom = request.LoginRandom,
+            Stamina = 240,
+            ServerTimestampMs = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds() * 1000,
+            BasicInfo = new PlayerBasicInfo
             {
-                Retcode = (uint)Retcode.Success,
-                Stamina = (uint)account.Stamina,
-                ServerTimestampMs = (ulong)DateTimeOffset.Now.ToUnixTimeSeconds() * 1000,
-                BasicInfo = new PlayerBasicInfo
-                {
-                    Nickname = account.NickName,
-                    Level = (uint)account.Level,
-                    Exp = (uint)account.Experience,
-                    Stamina = (uint)account.Stamina,
-                    Mcoin = (uint)account.Currency.MCoin,
-                    Hcoin = (uint)account.Currency.HCoin,
-                    Scoin = (uint)account.Currency.SCoin,
-                    WorldLevel = (uint)account.WorldLevel
-                },
-                CurTimezone = Const.CurrentZoneOffset
-            });
-        }
+                Nickname = "ujhhgtg",
+                Level = 70,
+                Exp = 0,
+                Stamina = 100,
+                Mcoin = 0,
+                Hcoin = 0,
+                Scoin = 0,
+                WorldLevel = 6
+            }
+        });
     }
 
     [PacketHandler(CmdId.CmdPlayerGetTokenCsReq)]
     public static void OnPlayerGetTokenCsReq(NetSession session, int cmdId, object data)
     {
-        var request = data as PlayerGetTokenCsReq;
-
-        // basic verification
-        if (request is null)
-        {
-            return;
-        }
-
-        var account = Program.AccountDatabase[Convert.ToInt64(request.AccountUid)];
-
-        // verify successful login
-        if (request.Token != account.ComboToken)
-        {
-            return;
-        }
-
-        session.Owner = account;
-        session.State = NetSessionState.WaitingForLogin;
         session.Send(CmdId.CmdPlayerGetTokenScRsp, new PlayerGetTokenScRsp
         {
-            Retcode = (uint)Retcode.Success,
-            Uid = (uint)account.Id,
-            BlackInfo = new BlackInfo()
+            Retcode = 0,
+            Uid = 1337,
+            // BlackInfo = new BlackInfo(),
+            Msg = "OK",
+            SecretKeySeed = 0
         });
     }
 }

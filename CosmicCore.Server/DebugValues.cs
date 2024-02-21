@@ -1,6 +1,6 @@
 ﻿namespace CosmicCore.Server;
 
-public class DebugValues
+public static class DebugValues
 {
     public const bool AllowMultipleMainCharacters = false;
 }

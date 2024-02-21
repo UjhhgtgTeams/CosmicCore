@@ -11,7 +11,7 @@ public static class RegionManager
         _config = config;
     }
 
-    public static RegionEntry RegionEntry => _config.ToProto();
+    public static RegionInfo RegionEntry => _config.ToProto();
 
     public static string TopServerRegionName => _config.Name;
 }

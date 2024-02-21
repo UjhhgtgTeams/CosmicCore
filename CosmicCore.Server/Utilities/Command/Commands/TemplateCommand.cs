@@ -11,9 +11,8 @@
 //         { 100, "Did not do anything" }
 //     };
 //
-//     public override int OnExecute(string args, Account.Account executor)
+//     public override int OnExecute(string args)
 //     {
-//         var arguments = CommandUtilities.SplitArgs(args).ToArray();
 //         return 100;
 //     }
 // }

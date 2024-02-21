@@ -70,7 +70,7 @@ public static class ExtensionMethods
         return dict;
     }
 
-    public static StringPath ToFullPath(this string other)
+    public static string ToFullPath(this string other)
     {
         return other;
     }

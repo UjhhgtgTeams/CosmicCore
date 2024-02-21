@@ -2,7 +2,6 @@
 using CosmicCore.Server.Gate.Network;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Protos;
-using CosmicCore.Server.Utilities.Resource;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -16,10 +15,17 @@ public class AvatarReqGroup
         var response = new GetAvatarDataScRsp
         {
             Retcode = (uint)Retcode.Success,
-            IsGetAll = request.IsGetAll
+            IsAll = request.IsGetAll
         };
 
-        var characters = ResourceManager.AvatarExcels.Select(avatar => (uint)avatar.Id);
+        var characters = new List<uint>
+        {
+            8001, 8002, 8003, 8004,
+            1001, 1002, 1003, 1004, 1005, 1006, 1008, 1009, 1013,
+            1101, 1102, 1103, 1104, 1105, 1106, 1107, 1108, 1109, 1110, 1111, 1112,
+            1201, 1202, 1203, 1204, 1205, 1206, 1207, 1208, 1209, 1210, 1211, 1212, 1213, 1214, 1215, 1217,
+            1301, 1302, 1303, 1304, 1305, 1306, 1307, 1308, 1312
+        };
 
         foreach (var id in characters)
         {
@@ -29,7 +35,7 @@ public class AvatarReqGroup
                 Exp = 0,
                 Level = 80,
                 Promotion = 6,
-                Rank = 6,
+                Rank = BattleReqGroup.AvatarRank,
                 EquipmentUniqueId = 0
             };
 
@@ -41,11 +47,11 @@ public class AvatarReqGroup
                 avatarData.SkilltreeList.Add(new AvatarSkillTree
                 {
                     PointId = id * 1000 + end,
-                    Level = 1
+                    Level = 10 // TODO: check
                 });
             }
 
-            response.AvatarLists.Add(avatarData);
+            response.AvatarList.Add(avatarData);
         }
 
         session.Send(CmdId.CmdGetAvatarDataScRsp, response);

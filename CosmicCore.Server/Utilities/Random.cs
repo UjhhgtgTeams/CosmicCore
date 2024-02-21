@@ -1,8 +1,8 @@
 ﻿namespace CosmicCore.Server.Utilities;
 
-public class Random
+public static class Random
 {
-    private static System.Random _random = new();
+    private static readonly System.Random _random = new();
 
     public static int FromIntRange(int end)
     {

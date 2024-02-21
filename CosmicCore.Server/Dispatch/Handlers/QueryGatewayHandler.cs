@@ -1,6 +1,7 @@
 ﻿using Ceen;
 using CosmicCore.Protos;
 using CosmicCore.Server.Dispatch.Utils;
+using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Config;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
@@ -11,36 +12,28 @@ public class QueryGatewayHandler : IHttpModule
     {
         context.Response.StatusCode = HttpStatusCode.OK;
         context.Response.ContentType = "text/plain";
-        var data = ConfigManager.Config.DownloadData;
 
         var gateserver = new Gateserver
         {
-            Msg = "OK",
+            Retcode = (int)Retcode.Success,
+            Msg0 = "OK",
             Ip = ConfigManager.Config.GateServer.Address,
             RegionName = Const.Name,
             Port = (uint)ConfigManager.Config.GateServer.Port,
-            Unk1 = true,
-            Unk2 = true,
-            Unk3 = true,
-            Unk4 = true,
-            Unk5 = true,
-            Unk6 = true
+            B1 = true,
+            B2 = true,
+            B3 = true,
+            B4 = true,
+            B5 = true,
+            B6 = true,
+            useTcp = true,
+            AssetBundleUrl = "https://autopatchos.starrails.com/asb/BetaLive/output_6510636_cb4da670a18a",
+            ExResourceUrl = "https://autopatchos.starrails.com/design_data/BetaLive/output_6519585_2be8ac313835",
+            IfixVersion = "https://autopatchos.starrails.com/ifix/BetaLive/output_6523427_28cc5c21c689",
+            LuaUrl = "https://autopatchos.starrails.com/lua/BetaLive/output_6516960_dede96733b5b"
         };
 
-        if (data.AssetBundleUrl is not null) gateserver.AssetBundleUrl = data.AssetBundleUrl;
-        if (data.ExResourceUrl is not null) gateserver.ExResourceUrl = data.ExResourceUrl;
-        if (data.LuaUrl is not null)
-        {
-            gateserver.LuaUrl = data.LuaUrl;
-            gateserver.MdkResVersion = data.LuaUrl.Split('/')[^1].Split("_")[1];
-        }
-        if (data.IFixUrl is not null)
-        {
-            gateserver.IfixUrl = data.IFixUrl;
-            gateserver.IfixVersion = data.IFixUrl.Split('/')[^1].Split("_")[1];
-        }
-
-        await context.Response.WriteAllAsync(Convert.ToBase64String(ProtobufUtil.Serialize(gateserver)));
+        await context.Response.WriteAllAsync(Convert.ToBase64String(ProtobufUtilities.Serialize(gateserver)));
         return true;
     }
 }

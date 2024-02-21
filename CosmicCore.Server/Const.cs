@@ -2,7 +2,7 @@
 
 namespace CosmicCore.Server;
 
-public class Const
+public static class Const
 {
     #region Server
 
@@ -13,7 +13,7 @@ public class Const
 
     #region Game
 
-    public static string GameVersion = "2.0.0";
+    public const string GameVersion = "beta/2.1.0";
 
     public static int CurrentZoneOffset = DateTimeOffset.Now.Offset.Hours;
 

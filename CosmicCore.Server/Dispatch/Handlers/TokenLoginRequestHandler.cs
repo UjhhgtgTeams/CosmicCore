@@ -9,6 +9,9 @@ public class TokenLoginRequestHandler : IHttpModule
 {
     public async Task<bool> HandleAsync(IHttpContext context)
     {
+        context.Response.StatusCode = HttpStatusCode.OK;
+        context.Response.ContentType = "application/json";
+
         var response = new JObject
         {
             { "retcode", (int)Retcode.Success },
@@ -19,9 +22,9 @@ public class TokenLoginRequestHandler : IHttpModule
                     {
                         "account", new JObject
                         {
-                            { "uid", "" },
-                            { "name", "" },
-                            { "email", "" },
+                            { "uid", 1337 },
+                            { "name", "ujhhgtg" },
+                            { "email", "ujhhgtg@cosmiccore.com" },
                             { "mobile", "" },
                             { "is_email_verify", "0" },
                             { "realname", "" },
@@ -41,7 +44,7 @@ public class TokenLoginRequestHandler : IHttpModule
                             { "steam_name", "" },
                             { "unmasked_email", "" },
                             { "unmasked_email_type", 0 },
-                            { "token", "" }
+                            { "token", "verysecuretoken" }
                         }
                     },
                     { "device_grant_required", false },
@@ -53,32 +56,6 @@ public class TokenLoginRequestHandler : IHttpModule
             }
         };
 
-        var request = JsonConvert.DeserializeObject<JObject?>(context.Request.Body.ReadAllAsString());
-
-        if (request is null)
-        {
-            response["retcode"] = (int)Retcode.LoginError;
-            response["message"] = "Error logging in";
-            await context.Response.WriteAllJsonAsync(JsonConvert.SerializeObject(response));
-            return true;
-        }
-
-        var requestId = Convert.ToInt64((string)request["uid"]);
-
-        if (!Program.AccountDatabase.ContainsAccount(requestId) ||
-            Program.AccountDatabase[requestId].DispatchToken != (string)request["token"])
-        {
-            response["retcode"] = (int)Retcode.LoginUserNotFound;
-            response["message"] = "Game account cache information error";
-            await context.Response.WriteAllJsonAsync(JsonConvert.SerializeObject(response));
-            return true;
-        }
-
-        var account = Program.AccountDatabase[requestId];
-        response["data"]["account"]["uid"] = account.Id.ToString();
-        response["data"]["account"]["name"] = account.UserName;
-        response["data"]["account"]["email"] = account.EmailAddress;
-        response["data"]["account"]["token"] = account.DispatchToken;
         await context.Response.WriteAllJsonAsync(JsonConvert.SerializeObject(response));
         return true;
     }

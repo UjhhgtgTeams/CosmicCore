@@ -1,7 +1,8 @@
 ﻿namespace CosmicCore.Server.Utilities;
 
 // ReSharper disable IdentifierTypo
-public enum Retcode {
+public enum Retcode
+{
     Success = 0,
     Failed = 1,
     LoginUserNotFound = -201,

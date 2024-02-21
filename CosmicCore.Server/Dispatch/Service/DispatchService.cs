@@ -8,7 +8,7 @@ using ServerConfig = Ceen.Httpd.ServerConfig;
 
 namespace CosmicCore.Server.Dispatch.Service;
 
-public class DispatchService
+public static class DispatchService
 {
     public static void Start(DispatchServerConfig config)
     {
@@ -19,9 +19,8 @@ public class DispatchService
                     : null,
                 SSLEnabledProtocols = config.UseSsl ? SslProtocols.Tls12 | SslProtocols.Tls13 : SslProtocols.None
             }
-            .AddLogger(new CLFStdOut())
 
-            .AddRoute("_ts", new GetTsHandler())
+            // .AddLogger(new CLFStdOut())
 
             .AddRoute("/query_dispatch", new QueryDispatchHandler())
             .AddRoute("/query_gateway", new QueryGatewayHandler())
@@ -34,14 +33,9 @@ public class DispatchService
 
             .AddRoute("/data_abtest_api/config/experiment/list", new GetExperimentListHandler())
             .AddRoute("/hkrpg_global/combo/granter/api/getConfig", new ComboGranterApiGetConfigHandler())
-            .AddRoute("/common/hkrpg_cn/announcement/api/getAlertAnn", new AnnouncementGetAlertAnnHandler())
-
-            .AddRoute("/combo/box/api/config/sdk/combo", new ComboBoxGetComboHandler())
-            .AddRoute("/combo/box/api/config/sw/precache", new ComboBoxGetPrecacheHandler())
 
             .AddRoute("/sdk/dataUpload", new SdkDataUploadHandler())
-            .AddRoute("/hkrpg/dataUpload", new HkrpgDataUploadHandler())
-            .AddRoute("/crashdump/dataUpload", new CrashDumpDataUploadHandler());
+            .AddRoute("/hkrpg/dataUpload", new HkrpgDataUploadHandler());
 
         HttpServer.ListenAsync(new IPEndPoint(
             IPAddress.Parse(config.Address),

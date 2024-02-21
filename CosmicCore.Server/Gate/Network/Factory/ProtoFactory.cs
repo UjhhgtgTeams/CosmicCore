@@ -4,8 +4,7 @@ using ProtoBuf;
 
 namespace CosmicCore.Server.Gate.Network.Factory;
 
-
-public class ProtoFactory
+public static class ProtoFactory
 {
     private static readonly ImmutableDictionary<CmdId, Type> STypes;
 
@@ -15,27 +14,28 @@ public class ProtoFactory
         builder.AddRange(new Dictionary<CmdId, Type>
         {
             { CmdId.CmdPlayerGetTokenCsReq, typeof(PlayerGetTokenCsReq) },
-            { CmdId.CmdPlayerLoginCsReq, typeof(PlayerLoginScRsp)}, // FIXME
+            { CmdId.CmdPlayerLoginCsReq, typeof(PlayerLoginCsReq) },
             { CmdId.CmdGetAvatarDataCsReq, typeof(GetAvatarDataCsReq) },
 
-            { CmdId.CmdGetAllLineupDataCsReq, typeof(GetAllLineupDataScRsp) }, // FIXME
-            { CmdId.CmdGetCurLineupDataCsReq, typeof(GetCurLineupDataScRsp) }, // FIXME
+            { CmdId.CmdGetAllLineupDataCsReq, typeof(GetAllLineupDataCsReq) },
+            { CmdId.CmdGetCurLineupDataCsReq, typeof(GetCurLineupDataCsReq) },
             { CmdId.CmdChangeLineupLeaderCsReq, typeof(ChangeLineupLeaderCsReq) },
 
             { CmdId.CmdGetMissionStatusCsReq, typeof(GetMissionStatusCsReq) },
-            { CmdId.CmdGetQuestDataCsReq, typeof(GetQuestDataCsReq) },
-            { CmdId.CmdGetChallengeCsReq, typeof(GetChallengeScRsp) }, // FIXME
-            { CmdId.CmdGetCurSceneInfoCsReq, typeof(GetCurSceneInfoScRsp) }, // FIXME
+            // {CmdId.CmdGetQuestDataCsReq, typeof(GetQuestDataCsReq)},
+            // {CmdId.CmdGetChallengeCsReq, typeof(GetChallengeCsReq)},
+            { CmdId.CmdGetCurSceneInfoCsReq, typeof(GetCurSceneInfoCsReq) },
+            { CmdId.CmdGetSceneMapInfoCsReq, typeof(GetSceneMapInfoCsReq) },
 
-            { CmdId.CmdGetBasicInfoCsReq, typeof(GetBasicInfoScRsp) }, // FIXME
-            { CmdId.CmdGetHeroBasicTypeInfoCsReq, typeof(GetHeroBasicTypeInfoScRsp) },
-            { CmdId.CmdPlayerHeartBeatCsReq, typeof(PlayerHeartbeatCsReq) },
+            { CmdId.CmdGetBasicInfoCsReq, typeof(GetBasicInfoCsReq) },
+            { CmdId.CmdGetHeroBasicTypeInfoCsReq, typeof(GetHeroBasicTypeInfoCsReq) },
+            { CmdId.CmdPlayerHeartBeatCsReq, typeof(PlayerHeartBeatCsReq) },
 
-            { CmdId.CmdGetGachaInfoCsReq, typeof(GetGachaInfoScRsp) }, // FIXME
-            { CmdId.CmdDoGachaCsReq, typeof(DoGachaCsReq) },
+            // {CmdId.CmdGetGachaInfoCsReq, typeof(GetGachaInfoCsReq)},
+            // {CmdId.CmdDoGachaCsReq, typeof(DoGachaCsReq)},
 
             { CmdId.CmdGetNpcTakenRewardCsReq, typeof(GetNpcTakenRewardCsReq) },
-            { CmdId.CmdGetFirstTalkByPerformanceNpcCsReq, typeof(GetFirstTalkNpcCsReq) },
+            { CmdId.CmdGetFirstTalkByPerformanceNpcCsReq, typeof(GetFirstTalkByPerformanceNpcCsReq) },
 
             { CmdId.CmdSceneEntityMoveCsReq, typeof(SceneEntityMoveCsReq) },
             { CmdId.CmdReplaceLineupCsReq, typeof(ReplaceLineupCsReq) },

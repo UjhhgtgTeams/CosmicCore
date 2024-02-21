@@ -46,42 +46,27 @@ public static class CommandManager
         Log.Information("{0} plugin commands loaded", commandCnt);
     }
 
-    public static void ExecuteCommand(string command, Account.Account? executor = null)
+    public static void ExecuteCommand(string command)
     {
-        executor ??= Account.Account.Console;
         if (string.IsNullOrWhiteSpace(command)) return;
-
-        var args = CommandUtilities.SplitArgs(command).ToList();
-        args.RemoveAt(0);
 
         foreach (var cmd in Commands)
         {
             var attr = GetCommandAttributeOf(cmd);
             if (attr.Names.Contains(command))
             {
-                if (executor.HasPermissions(attr.RequiredPermissions))
+                try
                 {
-                    try
-                    {
-                        var result = cmd.OnExecute(string.Join(' ', args), executor);
-                        CommandUtilities.LogReturnCode(cmd, result, executor);
-                    }
-                    catch (Exception)
-                    {
-                        CommandUtilities.LogReturnCode(null, 999, executor);
-                    }
+                    var result = cmd.OnExecute(command);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Unhandled exception occured while executing command!");
+                }
 
-                    return;
-                }
-                else
-                {
-                    CommandUtilities.LogReturnCode(null, 2, executor);
-                    return;
-                }
+                return;
             }
         }
-
-        CommandUtilities.LogReturnCode(null, -1, executor);
     }
 
     public static CommandAttribute GetCommandAttributeOf<T>() where T : ICommand
