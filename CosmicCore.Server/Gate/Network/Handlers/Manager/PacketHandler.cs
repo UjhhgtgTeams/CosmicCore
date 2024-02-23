@@ -9,32 +9,6 @@ namespace CosmicCore.Server.Gate.Network.Handlers.Manager;
 
 public class PacketHandler(NetSession session) : ChannelHandlerAdapter
 {
-    public override void ChannelRead(IChannelHandlerContext context, object message)
-    {
-        var packet = message as NetPacket;
-        if (packet.Data is null)
-        {
-            if (!SendDummyResponse(packet.CmdId))
-                Log.Debug("Received packet with undefined cmd id {0}", packet.CmdId);
-
-            return;
-        }
-
-        Log.Debug("Received packet {0}", packet.CmdId);
-        NotifyManager.Notify(session, packet.CmdId, packet.Data);
-    }
-
-    private bool SendDummyResponse(int id)
-    {
-        if (DummyTable.TryGetValue((CmdId)id, out var rspId))
-        {
-            session.Send(rspId, new DummyPacket());
-            return true;
-        }
-
-        return false;
-    }
-
     private static readonly Dictionary<CmdId, CmdId> DummyTable = new()
     {
         { CmdId.CmdGetLevelRewardTakenListCsReq, CmdId.CmdGetLevelRewardTakenListScRsp },
@@ -88,6 +62,35 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
         { CmdId.CmdGetPhoneDataCsReq, CmdId.CmdGetPhoneDataScRsp },
         { CmdId.CmdPlayerLoginFinishCsReq, CmdId.CmdPlayerLoginFinishScRsp }
     };
+
+    public override void ChannelRead(IChannelHandlerContext context, object message)
+    {
+        var packet = message as NetPacket;
+
+        if (packet.Data is null)
+        {
+            if (SendDummyResponse(packet.CmdId))
+                Log.Information("Received packet with cmd id {0}({1}); responded with dummy response");
+            else
+                Log.Warning("Received packet with unhandled cmd id {0}({1})!", (CmdId)packet.CmdId, packet.CmdId);
+        }
+        else
+        {
+            Log.Information("Received packet {0}({1})", (CmdId)packet.CmdId, packet.CmdId);
+            NotifyManager.Notify(session, packet.CmdId, packet.Data);
+        }
+    }
+
+    private bool SendDummyResponse(int id)
+    {
+        if (DummyTable.TryGetValue((CmdId)id, out var rspId))
+        {
+            session.Send(rspId, new DummyPacket());
+            return true;
+        }
+
+        return false;
+    }
 
     [ProtoContract]
     private class DummyPacket;

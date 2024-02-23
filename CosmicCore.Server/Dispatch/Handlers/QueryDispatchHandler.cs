@@ -17,7 +17,8 @@ public class QueryDispatchHandler : IHttpModule
         var languageType = query["language_type"];
         var platformType = query["platform_type"];
 
-        Log.Debug("Received dispatch query from version {0}, time {1}, language {2} and platform {3}", version, timestamp, languageType, platformType);
+        Log.Information("Received dispatch query from version {0}, time {1}, language {2} and platform {3}", version,
+            timestamp, languageType, platformType);
 
         context.Response.StatusCode = HttpStatusCode.OK;
         context.Response.ContentType = "text/plain";

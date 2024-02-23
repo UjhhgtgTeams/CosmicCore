@@ -5,11 +5,11 @@ using CosmicCore.Server.Gate.Manager.Handlers;
 using CosmicCore.Server.Gate.Network.Handlers.Decoder;
 using CosmicCore.Server.Gate.Network.Handlers.Encoder;
 using CosmicCore.Server.Gate.Network.Handlers.Manager;
+using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Config;
 using DotNetty.Transport.Bootstrapping;
 using DotNetty.Transport.Channels;
 using DotNetty.Transport.Channels.Sockets;
-using CosmicCore.Server.Utilities;
 using Serilog;
 
 namespace CosmicCore.Server.Gate.Network;
@@ -64,7 +64,7 @@ public static class GateService
         }
         catch (SocketException)
         {
-            Log.Error("Failed to start gate server: address/port already in use");
+            Log.Error("Failed to start gate server due to address/port already in use!");
             Environment.Exit(1);
         }
     }

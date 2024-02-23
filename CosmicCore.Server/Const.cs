@@ -8,6 +8,7 @@ public static class Const
 
     public const string Name = "CosmicCore";
     public const string Version = "0.0.1";
+    public const string GitBranch = "beta/2.1";
 
     #endregion
 

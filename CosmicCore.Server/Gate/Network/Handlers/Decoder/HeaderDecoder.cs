@@ -19,8 +19,7 @@ public class HeaderDecoder : ByteToMessageDecoder
         _current.ReadBytes(lands);
         _current.ResetReaderIndex();
 
-        IByteBuffer? packet;
-        while ((packet = Process()) is not null)
+        while (Process() is { } packet)
             output.Add(packet);
     }
 
@@ -29,8 +28,8 @@ public class HeaderDecoder : ByteToMessageDecoder
         if (_current.ReadableBytes < 12)
             return null;
 
-        _current.ReadInt(); // headMagic
-        _current.ReadShort(); // CmdID
+        _current.ReadInt(); // head magic
+        _current.ReadShort(); // cmd id
         int headerLength = _current.ReadShort();
         var payloadLength = _current.ReadInt();
 

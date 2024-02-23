@@ -1,8 +1,8 @@
-﻿namespace CosmicCore.Server.Gate.Network.Packet;
-
+﻿using CosmicCore.Server.Gate.Network.Factory;
 using DotNetty.Buffers;
-using Factory;
 using ProtoBuf;
+
+namespace CosmicCore.Server.Gate.Network.Packet;
 
 public class NetPacket
 {
@@ -22,27 +22,27 @@ public class NetPacket
     {
         HeadMagic = buf.ReadUnsignedInt();
         if (HeadMagic != HeadMagicConst)
-            return DeserializationResult.MAGIC_MISMATCH;
+            return DeserializationResult.FailedMagicMismatch;
 
         CmdId = buf.ReadShort();
         HeadLen = buf.ReadShort();
         PacketLen = buf.ReadInt();
 
         if (buf.ReadableBytes < HeadLen + PacketLen + 4)
-            return DeserializationResult.INVALID_LENGTH;
+            return DeserializationResult.FailedLengthInvalid;
 
         RawData = new byte[PacketLen];
 
-        _ = buf.ReadBytes(HeadLen);
+        buf.ReadBytes(HeadLen);
         buf.ReadBytes(RawData);
 
         TailMagic = buf.ReadUnsignedInt();
         if (TailMagic != TailMagicConst)
-            return DeserializationResult.MAGIC_MISMATCH;
+            return DeserializationResult.FailedMagicMismatch;
 
         Data = ProtoFactory.Deserialize(CmdId, RawData);
 
-        return DeserializationResult.SUCC;
+        return DeserializationResult.Success;
     }
 
     public void Serialize<T>(IByteBuffer buf) where T : class
@@ -63,11 +63,9 @@ public class NetPacket
     }
 }
 
-// ReSharper disable IdentifierTypo
-// ReSharper disable InconsistentNaming
 public enum DeserializationResult
 {
-    SUCC = 1,
-    INVALID_LENGTH = 2,
-    MAGIC_MISMATCH = 3
+    Success = 1,
+    FailedLengthInvalid = 2,
+    FailedMagicMismatch = 3
 }

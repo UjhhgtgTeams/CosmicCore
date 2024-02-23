@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using System.Linq.Expressions;
 using System.Reflection;
+using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
 using Nito.AsyncEx;
@@ -11,11 +12,14 @@ namespace CosmicCore.Server.Gate.Manager;
 public static class NotifyManager
 {
     private static readonly List<Type> HandlerTypes = [];
-    private static ImmutableDictionary<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)> _notifyReqGroup;
+
+    private static ImmutableDictionary<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)>
+        _notifyReqGroup;
 
     public static void Initialize()
     {
-        var handlers = ImmutableDictionary.CreateBuilder<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)>();
+        var handlers = ImmutableDictionary
+            .CreateBuilder<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)>();
 
         foreach (var type in HandlerTypes)
         foreach (var method in type.GetMethods())
@@ -53,8 +57,8 @@ public static class NotifyManager
     public static void Notify(NetSession session, int cmdId, object? data)
     {
         if (_notifyReqGroup.TryGetValue(cmdId, out var handler))
-            AsyncContext.Run(() => handler.Item2.Invoke(session, cmdId, data));
+            AsyncContext.Run(void () => handler.Item2.Invoke(session, cmdId, data));
         else
-            Log.Debug("Received packet with undefined handler {0}", cmdId);
+            Log.Warning("Received packet with unhandled cmd id {0}({1})!", (CmdId)cmdId, cmdId);
     }
 }
