@@ -24,7 +24,8 @@ public static class Program
         // preparation
         Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
         LoggerManager.InitLogger();
-        Log.Information("Starting {0} {1} for game version {2}...", Const.Name, Const.Version, Const.GameVersion);
+        Log.Information("Starting {0} {1} (branch {2}) for game version {3}...", Const.Name, Const.Version,
+            Const.GitBranch, Const.GameVersion);
 
         PerformanceWatcher.Start();
         ConfigManager.LoadConfig("./config.json");
