@@ -4,8 +4,8 @@ namespace CosmicCore.Server.Utilities.Config;
 
 public sealed class Config
 {
-    public DispatchServerConfig DispatchServer { get; set; }= new("0.0.0.0", 8888);
-    public GateServerConfig GateServer { get; set; } = new("127.0.0.1", 22301);
+    public DispatchServerConfig DispatchServer { get; set; } = new("0.0.0.0", 8888);
+    public GateServerConfig GateServer { get; set; } = new("0.0.0.0", 22301);
 
     public ServerOptions ServerOptions { get; set; } = new();
 }
@@ -22,14 +22,14 @@ public class DispatchServerConfig(string address, int port) : ServerConfig(addre
     public string SslCertPath { get; set; } = "./certificate.cer";
     public string SslCertPassword { get; set; } = "12345678";
     public RegionConfig Region { get; set; } = new();
-     public string DisplayAddress => (UseSsl ? "https" : "http") + "://" + Address + ':' + Port;
+    public string DisplayAddress => (UseSsl ? "https" : "http") + "://" + Address + ':' + Port;
 }
 
 public class RegionConfig
 {
     public string Name { get; set; } = Const.Name;
     public int EnvType { get; set; } = 2;
-    public string DispatchUrl { get; set; } = "https://dispatch.starrails.com/query_gateway";
+    public string DispatchUrl { get; set; } = "http://dispatch.starrails.com/query_gateway";
 
     public RegionInfo ToProto()
     {
@@ -49,7 +49,7 @@ public class GateServerConfig(string address, int port) : ServerConfig(address, 
     public string Id { get; set; } = Const.Name.ToLower() + "_dev";
     public string Name { get; set; } = Const.Name;
     public string Description { get; set; } = "A " + Const.Name + " server";
-     public string DisplayAddress => Address + ':' + Port;
+    public string DisplayAddress => Address + ':' + Port;
 }
 
 public class ServerProfile

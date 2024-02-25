@@ -1,7 +1,6 @@
-﻿using CosmicCore.Server.Gate.Manager.Handlers.Core;
+﻿using CosmicCore.Protos;
+using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using CosmicCore.Server.Utilities;
-using CosmicCore.Protos;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -14,7 +13,7 @@ public class AvatarReqGroup
 
         var response = new GetAvatarDataScRsp
         {
-            Retcode = (uint)Retcode.Success,
+            Retcode = 0,
             IsAll = request.IsGetAll
         };
 
@@ -29,29 +28,9 @@ public class AvatarReqGroup
 
         foreach (var id in characters)
         {
-            var avatarData = new Avatar
-            {
-                BaseAvatarId = id,
-                Exp = 0,
-                Level = 80,
-                Promotion = 6,
-                Rank = BattleReqGroup.AvatarRank,
-                EquipmentUniqueId = 0
-            };
-
-            var skillIdEnds = new List<uint> // FIXME: hardcode
-                { 1, 2, 3, 4, 7, 101, 102, 103, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210 };
-
-            foreach (var end in skillIdEnds)
-            {
-                avatarData.SkilltreeList.Add(new AvatarSkillTree
-                {
-                    PointId = id * 1000 + end,
-                    Level = 10 // TODO: check
-                });
-            }
-
-            response.AvatarList.Add(avatarData);
+            // TODO: needs hang-up verification; old: the commented part seemed to hang this packet up
+            response.AvatarList.Add(new AvatarUtil.Avatar(id, 6, null,
+                BattleReqGroup.Relics.GetValueOrDefault(id) ?? []));
         }
 
         session.Send(CmdId.CmdGetAvatarDataScRsp, response);

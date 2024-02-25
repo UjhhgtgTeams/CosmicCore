@@ -60,24 +60,50 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
         { CmdId.CmdGetCurBattleInfoCsReq, CmdId.CmdGetCurBattleInfoScRsp },
         { CmdId.CmdGetCurSceneInfoCsReq, CmdId.CmdGetCurSceneInfoScRsp },
         { CmdId.CmdGetPhoneDataCsReq, CmdId.CmdGetPhoneDataScRsp },
-        { CmdId.CmdPlayerLoginFinishCsReq, CmdId.CmdPlayerLoginFinishScRsp }
+        { CmdId.CmdPlayerLoginFinishCsReq, CmdId.CmdPlayerLoginFinishScRsp },
+
+        // TODO: the following needs verification
+        { CmdId.CmdGetAssistHistoryCsReq, CmdId.CmdGetAssistHistoryScRsp },
+        { CmdId.CmdGetCurAssistCsReq, CmdId.CmdGetCurAssistScRsp },
+        { CmdId.CmdGetAssistListCsReq, CmdId.CmdGetAssistListScRsp },
+        { CmdId.CmdGetFriendAssistListCsReq, CmdId.CmdGetFriendAssistListScRsp }
+        // { CmdId.CmdSetClientPausedCsReq, CmdId.CmdSetClientPausedScRsp }
     };
 
     public override void ChannelRead(IChannelHandlerContext context, object message)
     {
         var packet = message as NetPacket;
 
-        if (packet.Data is null)
+        // TODO: verify: changed handle priority to use registered handler first instead of dummy responses
+        // if (packet.Data == null)
+        // {
+        //     Log.Information("Received null packet with cmd id {0}({1})",
+        //         (CmdId)packet.CmdId, packet.CmdId);
+        //
+        //     if (SendDummyResponse(packet.CmdId))
+        //     {
+        //         Log.Information("Responded with dummy response");
+        //         return;
+        //     }
+        //     else
+        //         Log.Warning("Packet cmd id does not have dummy response! Trying registered handlers...");
+        // }
+        // NotifyManager.Notify(session, packet.CmdId, packet.Data);
+
+        var notifySucceeded = NotifyManager.Notify(session, packet.CmdId, packet.Data);
+        if (!notifySucceeded)
         {
-            if (SendDummyResponse(packet.CmdId))
-                Log.Information("Received packet with cmd id {0}({1}); responded with dummy response");
-            else
-                Log.Warning("Received packet with unhandled cmd id {0}({1})!", (CmdId)packet.CmdId, packet.CmdId);
-        }
-        else
-        {
-            Log.Information("Received packet {0}({1})", (CmdId)packet.CmdId, packet.CmdId);
-            NotifyManager.Notify(session, packet.CmdId, packet.Data);
+            var dummySucceeded = false;
+
+            if (packet.Data is null)
+                if (SendDummyResponse(packet.CmdId))
+                {
+                    Log.Information("{0}({1}): Responded with dummy response", (CmdId)packet.CmdId, packet.CmdId);
+                    dummySucceeded = true;
+                }
+
+            if (!dummySucceeded)
+                Log.Error("{0}({1}): Does not have any handler!", (CmdId)packet.CmdId, packet.CmdId);
         }
     }
 
@@ -93,5 +119,5 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
     }
 
     [ProtoContract]
-    private class DummyPacket;
+    public class DummyPacket;
 }

@@ -1,7 +1,7 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using static CosmicCore.Server.Gate.Manager.Handlers.BattleReqGroup;
+using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -23,18 +23,13 @@ public class LineupReqGroup
             }
         };
 
-        var characters = new[] { Avatar1, Avatar2, Avatar3, Avatar4 };
-        foreach (var id in characters)
+        var avatars = new[]
         {
-            response.Lineup.AvatarList.Add(new LineupAvatar
-            {
-                Id = id,
-                Hp = 10000,
-                Satiety = 100,
-                Sp = new AmountInfo { CurAmount = 10000, MaxAmount = 10000 },
-                AvatarType = AvatarType.AvatarFormalType,
-                Slot = (uint)response.Lineup.AvatarList.Count
-            });
+            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
+        };
+        foreach (var avatar in avatars)
+        {
+            response.Lineup.AvatarList.Add(avatar.ToLineupAvatar(response.Lineup.AvatarList.Count));
         }
 
         session.Send(CmdId.CmdGetCurLineupDataScRsp, response);
@@ -43,13 +38,14 @@ public class LineupReqGroup
     [PacketHandler(CmdId.CmdGetAllLineupDataCsReq)]
     public static void OnGetAllLineupDataCsReq(NetSession session, int cmdId, object data)
     {
+        Log.Debug("B-2");
         var response = new GetAllLineupDataScRsp
         {
             Retcode = 0,
-            CurIndex = 0,
+            CurIndex = 0
         };
 
-        response.LineupLists.Add(new LineupInfo
+        response.LineupList.Add(new LineupInfo
         {
             ExtraLineupType = ExtraLineupType.LineupNone,
             Name = "Squad 1",
@@ -58,20 +54,21 @@ public class LineupReqGroup
             LeaderSlot = 0
         });
 
-        var characters = new[] { Avatar1, Avatar2, Avatar3, Avatar4 };
-        foreach (var id in characters)
+        Log.Debug("B-1");
+
+        var avatars = new[]
         {
-            response.LineupLists[0].AvatarList.Add(new LineupAvatar
-            {
-                Id = id,
-                Hp = 10000,
-                Satiety = 100,
-                Sp = new AmountInfo { CurAmount = 10000, MaxAmount = 10000 },
-                AvatarType = AvatarType.AvatarFormalType,
-                Slot = (uint)response.LineupLists[0].AvatarList.Count
-            });
+            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
+        };
+        Log.Debug("B-0.5");
+        foreach (var avatar in avatars)
+        {
+            Log.Debug("B0");
+            response.LineupList[0].AvatarList.Add(avatar.ToLineupAvatar(response.LineupList[0].AvatarList.Count));
+            Log.Debug("B1");
         }
 
+        Log.Debug("B2");
         session.Send(CmdId.CmdGetAllLineupDataScRsp, response);
     }
 
@@ -81,8 +78,8 @@ public class LineupReqGroup
         var request = data as ChangeLineupLeaderCsReq;
         session.Send(CmdId.CmdChangeLineupLeaderScRsp, new ChangeLineupLeaderScRsp
         {
-            Slot = request.Slot,
-            Retcode = 0
+            Retcode = 0,
+            Slot = request.Slot
         });
     }
 
@@ -90,10 +87,10 @@ public class LineupReqGroup
     public static void OnJoinLineupCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as JoinLineupCsReq;
-        if (request.Slot == 0) Avatar1 = request.BaseAvatarId;
-        if (request.Slot == 1) Avatar2 = request.BaseAvatarId;
-        if (request.Slot == 2) Avatar3 = request.BaseAvatarId;
-        if (request.Slot == 3) Avatar4 = request.BaseAvatarId;
+        if (request.Slot == 0) BattleReqGroup.Avatar1.Id = request.BaseAvatarId;
+        if (request.Slot == 1) BattleReqGroup.Avatar2.Id = request.BaseAvatarId;
+        if (request.Slot == 2) BattleReqGroup.Avatar3.Id = request.BaseAvatarId;
+        if (request.Slot == 3) BattleReqGroup.Avatar4.Id = request.BaseAvatarId;
         RefreshLineup(session);
 
         session.Send(CmdId.CmdJoinLineupScRsp, new JoinLineupScRsp
@@ -106,16 +103,16 @@ public class LineupReqGroup
     public static void OnReplaceLineupCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as ReplaceLineupCsReq;
-        Avatar1 = 0;
-        Avatar2 = 0;
-        Avatar3 = 0;
-        Avatar4 = 0;
+        BattleReqGroup.Avatar1.Id = 0;
+        BattleReqGroup.Avatar2.Id = 0;
+        BattleReqGroup.Avatar3.Id = 0;
+        BattleReqGroup.Avatar4.Id = 0;
         foreach (var slotData in request.LineupSlotList)
         {
-            if (slotData.Slot == 0) Avatar1 = slotData.Id;
-            if (slotData.Slot == 1) Avatar2 = slotData.Id;
-            if (slotData.Slot == 2) Avatar3 = slotData.Id;
-            if (slotData.Slot == 3) Avatar4 = slotData.Id;
+            if (slotData.Slot == 0) BattleReqGroup.Avatar1.Id = slotData.Id;
+            if (slotData.Slot == 1) BattleReqGroup.Avatar2.Id = slotData.Id;
+            if (slotData.Slot == 2) BattleReqGroup.Avatar3.Id = slotData.Id;
+            if (slotData.Slot == 3) BattleReqGroup.Avatar4.Id = slotData.Id;
         }
 
         RefreshLineup(session);
@@ -129,10 +126,10 @@ public class LineupReqGroup
     public static void OnQuitLineupCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as QuitLineupCsReq;
-        if (request.BaseAvatarId == Avatar1) Avatar1 = 0;
-        if (request.BaseAvatarId == Avatar2) Avatar2 = 0;
-        if (request.BaseAvatarId == Avatar3) Avatar3 = 0;
-        if (request.BaseAvatarId == Avatar4) Avatar4 = 0;
+        if (request.BaseAvatarId == BattleReqGroup.Avatar1.Id) BattleReqGroup.Avatar1.Id = 0;
+        if (request.BaseAvatarId == BattleReqGroup.Avatar2.Id) BattleReqGroup.Avatar2.Id = 0;
+        if (request.BaseAvatarId == BattleReqGroup.Avatar3.Id) BattleReqGroup.Avatar3.Id = 0;
+        if (request.BaseAvatarId == BattleReqGroup.Avatar4.Id) BattleReqGroup.Avatar4.Id = 0;
 
         RefreshLineup(session);
         session.Send(CmdId.CmdQuitLineupScRsp, new QuitLineupScRsp
@@ -145,7 +142,10 @@ public class LineupReqGroup
 
     public static void RefreshLineup(NetSession session)
     {
-        var characters = new[] { Avatar1, Avatar2, Avatar3, Avatar4 };
+        var avatars = new[]
+        {
+            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
+        };
         var response = new SyncLineupNotify
         {
             Lineup = new LineupInfo
@@ -157,18 +157,10 @@ public class LineupReqGroup
                 LeaderSlot = 0
             }
         };
-        foreach (uint id in characters)
+
+        foreach (var avatar in avatars.Where(id => id.Id != 0))
         {
-            if (id == 0) continue;
-            response.Lineup.AvatarList.Add(new LineupAvatar
-            {
-                Id = id,
-                Hp = 10000,
-                Satiety = 100,
-                Sp = new AmountInfo { CurAmount = 10000, MaxAmount = 10000 },
-                AvatarType = AvatarType.AvatarFormalType,
-                Slot = (uint)response.Lineup.AvatarList.Count
-            });
+            response.Lineup.AvatarList.Add(avatar.ToLineupAvatar(response.Lineup.AvatarList.Count));
         }
 
         session.Send(CmdId.CmdSyncLineupNotify, response);

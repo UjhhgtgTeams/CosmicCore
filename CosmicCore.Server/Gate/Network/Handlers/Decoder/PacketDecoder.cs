@@ -1,4 +1,5 @@
-﻿using CosmicCore.Server.Gate.Network.Packet;
+﻿using CosmicCore.Protos;
+using CosmicCore.Server.Gate.Network.Packet;
 using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
@@ -10,24 +11,29 @@ public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
 {
     protected override void Decode(IChannelHandlerContext context, IByteBuffer message, List<object> output)
     {
-        var netPacket = new NetPacket();
+        var packet = new NetPacket();
 
         DeserializationResult result;
-        if ((result = netPacket.Deserialize(message)) != DeserializationResult.Success)
+        if ((result = packet.Deserialize(message)) != DeserializationResult.Success)
         {
             context.CloseAsync();
 
-            var errMessage = result switch
+            var errorMsg = result switch
             {
                 DeserializationResult.FailedLengthInvalid => "length invalid",
                 DeserializationResult.FailedMagicMismatch => "magic mismatch",
-                _ => throw new ArgumentOutOfRangeException(nameof(result), "this exception will never be thrown")
+                _ => throw new ArgumentOutOfRangeException(nameof(message), "this exception will never be thrown")
             };
-            Log.Warning("Closing a connection due to packet {0}!", errMessage);
-
-            return;
+            Log.Warning("Closing a connection due to packet deserialization {0}!", errorMsg);
         }
+        else
+        {
+            Log.Debug(
+                packet.Data is not null
+                    ? "{0}({1}): Deserialized"
+                    : "{0}({1}): Deserialized into null", (CmdId)packet.CmdId, packet.CmdId);
 
-        output.Add(netPacket);
+            output.Add(packet);
+        }
     }
 }

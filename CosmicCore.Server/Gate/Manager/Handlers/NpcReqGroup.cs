@@ -28,14 +28,13 @@ public class NpcReqGroup
             Retcode = 0
         };
 
-        foreach (var id in npcPerformanceReq.FirstTalkIdLists)
+        foreach (var id in npcPerformanceReq.FirstTalkIdList)
         {
             response.NpcMeetStatusList.Add(new NpcMeetStatusInfo
             {
                 IsMeet = true,
                 MeetId = id
             });
-
         }
 
         session.Send(CmdId.CmdGetFirstTalkByPerformanceNpcScRsp, response);

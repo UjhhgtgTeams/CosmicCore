@@ -1,7 +1,6 @@
 ﻿using Ceen;
 using CosmicCore.Protos;
 using CosmicCore.Server.Dispatch.Utils;
-using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Config;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
@@ -15,18 +14,19 @@ public class QueryGatewayHandler : IHttpModule
 
         var gateserver = new Gateserver
         {
-            Retcode = (int)Retcode.Success,
+            Retcode = 0,
             Msg0 = "OK",
-            Ip = ConfigManager.Config.GateServer.Address,
+            // Ip = ConfigManager.Config.GateServer.Address,
+            Ip = "127.0.0.1",
             RegionName = Const.Name,
             Port = (uint)ConfigManager.Config.GateServer.Port,
-            B1 = true,
-            B2 = true,
-            B3 = true,
-            B4 = true,
-            B5 = true,
-            B6 = true,
-            useTcp = true,
+            Unk1 = true,
+            Unk2 = true,
+            Unk3 = true,
+            Unk4 = true,
+            Unk5 = true,
+            Unk6 = true,
+            UseTcp = true,
             AssetBundleUrl = "https://autopatchos.starrails.com/asb/BetaLive/output_6510636_cb4da670a18a",
             ExResourceUrl = "https://autopatchos.starrails.com/design_data/BetaLive/output_6519585_2be8ac313835",
             IfixVersion = "https://autopatchos.starrails.com/ifix/BetaLive/output_6523427_28cc5c21c689",

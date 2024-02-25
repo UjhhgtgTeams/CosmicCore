@@ -1,17 +1,17 @@
 ﻿namespace CosmicCore.Server.Utilities;
 
-public static class Random
+public static class RandomUtil
 {
-    private static readonly System.Random _random = new();
+    private static readonly Random Random = new();
 
     public static int FromIntRange(int end)
     {
-        return _random.Next(0, end + 1);
+        return Random.Next(0, end + 1);
     }
 
     public static int FromIntRange(int start, int end)
     {
-        return _random.Next(start, end + 1);
+        return Random.Next(start, end + 1);
     }
 
     public static T FromList<T>(List<T> enumerable)

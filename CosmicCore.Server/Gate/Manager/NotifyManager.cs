@@ -14,7 +14,7 @@ public static class NotifyManager
     private static readonly List<Type> HandlerTypes = [];
 
     private static ImmutableDictionary<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)>
-        _notifyReqGroup;
+        _notifyReqGroup = null!;
 
     public static void Initialize()
     {
@@ -25,7 +25,7 @@ public static class NotifyManager
         foreach (var method in type.GetMethods())
         {
             var attribute = method.GetCustomAttribute<PacketHandlerAttribute>();
-            if (attribute is null)
+            if (attribute == null)
                 continue;
 
             var parameterInfo = method.GetParameters();
@@ -43,9 +43,18 @@ public static class NotifyManager
                 sessionParameter, cmdIdParameter, dataParameter);
 
             if (!handlers.TryGetKey(attribute.CmdId, out _))
+            {
+                Log.Information("Registered handler for cmd id {0}({1})", (CmdId)attribute.CmdId, attribute.CmdId);
                 handlers.Add(attribute.CmdId, (attribute, lambda.Compile()));
+            }
+            else
+            {
+                Log.Warning("Trying to re-register handler for already registered cmd id {0}({1})!",
+                    (CmdId)attribute.CmdId, attribute.CmdId);
+            }
         }
 
+        Log.Information("Registered {0} handlers in total", handlers.Count);
         _notifyReqGroup = handlers.ToImmutable();
     }
 
@@ -54,11 +63,19 @@ public static class NotifyManager
         HandlerTypes.Add(type);
     }
 
-    public static void Notify(NetSession session, int cmdId, object? data)
+    public static bool Notify(NetSession session, int cmdId, object? data)
     {
         if (_notifyReqGroup.TryGetValue(cmdId, out var handler))
+        {
+            Log.Information("{0}({1}): Received and handling", (CmdId)cmdId, cmdId);
+            if (data is null) Log.Warning("{0}({1}): Has null data!", (CmdId)cmdId, cmdId);
             AsyncContext.Run(void () => handler.Item2.Invoke(session, cmdId, data));
+            return true;
+        }
         else
-            Log.Warning("Received packet with unhandled cmd id {0}({1})!", (CmdId)cmdId, cmdId);
+        {
+            Log.Warning("{0}({1}): Has cmd id without registered handler!", (CmdId)cmdId, cmdId);
+            return false;
+        }
     }
 }

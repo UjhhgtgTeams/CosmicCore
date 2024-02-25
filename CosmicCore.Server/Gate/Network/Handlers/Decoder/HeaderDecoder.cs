@@ -19,7 +19,8 @@ public class HeaderDecoder : ByteToMessageDecoder
         _current.ReadBytes(lands);
         _current.ResetReaderIndex();
 
-        while (Process() is { } packet)
+        IByteBuffer packet;
+        while ((packet = Process()) != null)
             output.Add(packet);
     }
 

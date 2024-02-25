@@ -2,5 +2,5 @@
 
 public class ChallengeReqGroup
 {
-    // ChallengeReqGroup TODO
+    // TODO: ChallengeReqGroup
 }

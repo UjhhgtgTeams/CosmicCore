@@ -16,7 +16,7 @@ public class NetPacket
     public byte[] RawData { get; set; }
     public uint TailMagic { get; set; }
     public object? Data { get; set; }
-    public IByteBuffer Buffer { get; set; }
+    public IByteBuffer Buf { get; set; }
 
     public DeserializationResult Deserialize(IByteBuffer buf)
     {
@@ -33,7 +33,7 @@ public class NetPacket
 
         RawData = new byte[PacketLen];
 
-        buf.ReadBytes(HeadLen);
+        _ = buf.ReadBytes(HeadLen);
         buf.ReadBytes(RawData);
 
         TailMagic = buf.ReadUnsignedInt();

@@ -60,7 +60,7 @@ public static class GateService
 
         try
         {
-            _serverChannel = _bootstrap.BindAsync(IPAddress.Parse(config.Address), config.Port).RunSync();
+            _serverChannel = _bootstrap.BindAsync(IPAddress.Parse(config.Address), config.Port).Result;
         }
         catch (SocketException)
         {

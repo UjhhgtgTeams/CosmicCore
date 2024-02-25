@@ -1,5 +1,4 @@
 ﻿using Ceen;
-using CosmicCore.Server.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,7 +14,7 @@ public class ComboTokenRequestHandler : IHttpModule
 
         var response = new JObject
         {
-            { "retcode", (int)Retcode.Success },
+            { "retcode", 0 },
             { "message", "OK" },
             {
                 "data", new JObject

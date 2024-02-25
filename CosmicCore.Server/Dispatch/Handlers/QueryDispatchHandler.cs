@@ -2,7 +2,6 @@
 using CosmicCore.Protos;
 using CosmicCore.Server.Dispatch.Service.Manager;
 using CosmicCore.Server.Dispatch.Utils;
-using CosmicCore.Server.Utilities;
 using Log = Serilog.Log;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
@@ -22,9 +21,9 @@ public class QueryDispatchHandler : IHttpModule
 
         context.Response.StatusCode = HttpStatusCode.OK;
         context.Response.ContentType = "text/plain";
-        await context.Response.WriteAllAsync(Convert.ToBase64String(ProtobufUtilities.Serialize(new RegionList
+        await context.Response.WriteAllAsync(Convert.ToBase64String(ProtobufUtilities.Serialize(new RegionData
         {
-            Retcode = (uint)Retcode.Success,
+            Retcode = 0,
             TopServerRegionName = RegionManager.TopServerRegionName,
             RegionInfoList = { RegionManager.RegionEntry }
         })));

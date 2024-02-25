@@ -1,5 +1,4 @@
 ﻿using Ceen;
-using CosmicCore.Server.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -13,12 +12,14 @@ public class GetAgreementInfosHandler : IHttpModule
         context.Response.ContentType = "application/json";
         await context.Response.WriteAllJsonAsync(JsonConvert.SerializeObject(new JObject
         {
-            {"retcode", (int)Retcode.Success},
-            {"message", "OK"},
-            {"data", new JObject
+            { "retcode", 0 },
+            { "message", "OK" },
             {
-                { "marketing_agreements", new JArray() }
-            }}
+                "data", new JObject
+                {
+                    { "marketing_agreements", new JArray() }
+                }
+            }
         }));
 
         return true;

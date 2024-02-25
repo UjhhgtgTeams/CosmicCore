@@ -1,7 +1,6 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using CosmicCore.Server.Utilities;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -13,29 +12,15 @@ public class SceneReqGroup
         var scene = new SceneInfo
         {
             GameModeType = 1,
-            //Bkmbkahohif = 1,
-            //Admbbnbnibk = 1,
-            EntryId = 2032101,
-            PlaneId = 20321,
-            FloorId = 20321001
+            PlaneId = Const.StartPlaneId,
+            FloorId = Const.StartFloorId,
+            EntryId = Const.StartEntryId
         };
-
-        // scene.EntityList.Add(new SceneEntityInfo
-        // {
-        //     EntityId = 0,
-        //     GroupId = 0,
-        //     InstId = 0,
-        //     Motion = new MotionInfo
-        //     {
-        //         Pos = new Vector(),
-        //         Rot = new Vector()
-        //     }
-        // });
 
         session.Send(CmdId.CmdGetCurSceneInfoScRsp, new GetCurSceneInfoScRsp
         {
-            Scene = scene,
-            Retcode = (uint)Retcode.Success
+            Retcode = 0,
+            Scene = scene
         });
     }
 
@@ -52,7 +37,7 @@ public class SceneReqGroup
 
         var mapinfo = new SceneMapInfo
         {
-            Retcode = (uint)Retcode.Success,
+            Retcode = 0,
             LightenSectionList = back,
             ChestList =
             {
@@ -75,11 +60,36 @@ public class SceneReqGroup
         {
             Retcode = 0,
             EntryId = request.EntryIdList[0],
-            CurMapEntryId = request.EntryId,
-            SceneMapInfoes = { mapinfo },
-            LightenSectionLists = back
+            CurrentMapEntryId = request.EntryId,
+            SceneMapInfoList = { mapinfo },
+            LightenSectionList = back
         };
 
         session.Send(CmdId.CmdGetSceneMapInfoScRsp, response);
     }
+
+    // [PacketHandler(CmdId.CmdSceneEntityMoveCsReq)]
+    // public static void OnSceneEntityMoveCsReq(NetSession session, int cmdId, object data)
+    // {
+    //     var request = data as SceneEntityMoveCsReq;
+    //     var response = new SceneEntityMoveScRsp
+    //     {
+    //         Retcode = 0
+    //     };
+    //     response.EntityMotionList.AddRange(request.EntityMotionList);
+    //
+    //     session.Send(CmdId.CmdSceneEntityMoveScRsp, response);
+    // }
+
+    // [PacketHandler(CmdId.CmdSceneCastSkillCsReq)]
+    // public static void OnSceneCastSkillCsReq(NetSession session, int cmdId, object data)
+    // {
+    //     session.Send(CmdId.CmdSceneCastSkillScRsp, new PacketHandler.DummyPacket()); // FIXME: testing
+    // }
+
+    // [PacketHandler(CmdId.CmdSceneCastSkillCostMpCsReq)]
+    // public static void OnSceneCastSkillCostMpCsReq(NetSession session, int cmdId, object data)
+    // {
+    //     var request = data as Protos.
+    // }
 }

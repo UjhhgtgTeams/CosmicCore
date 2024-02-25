@@ -2,6 +2,7 @@
 using CosmicCore.Server.Gate.Network.Packet;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
+using Serilog;
 
 namespace CosmicCore.Server.Gate.Network;
 
@@ -17,8 +18,15 @@ public class NetSession(IChannel channel)
 
         var buffer = Unpooled.Buffer();
         packet.Serialize<T>(buffer);
-        packet.Buffer = buffer;
+        packet.Buf = buffer;
+
+        Log.Debug("{0}({1}): Sent", cmdId, (int)cmdId);
 
         await channel.WriteAndFlushAsync(packet);
+    }
+
+    public async void Close()
+    {
+        await channel.DisconnectAsync();
     }
 }

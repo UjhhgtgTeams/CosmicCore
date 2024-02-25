@@ -1,74 +1,209 @@
-﻿using CosmicCore.Server.Gate.Manager.Handlers.Core;
+﻿using CosmicCore.Protos;
+using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using CosmicCore.Protos;
-using Newtonsoft.Json;
 using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
 public class BattleReqGroup
 {
-    public static uint Avatar1 = 1308; // acheron
-    public static uint Avatar2 = 1307; // black swan
-    public static uint Avatar3 = 1006; // silver wolf
-    public static uint Avatar4 = 1304; // aventurine
-    public static uint Weapon1 = 23024; // acheron
-    public static uint Weapon2 = 23022; // black swan
-    public static uint Weapon3 = 23007; // silver wolf
-    public static uint Weapon4 = 23023; // aventurine
-
-    public static uint AvatarRank = 6; // constellations
-    public static uint WeaponRank = 5;
-
-    public static Dictionary<uint, List<uint>> Monsters
+    public static readonly Dictionary<uint, List<AvatarUtil.Relic>> Relics = new()
     {
-        get
         {
-            const string path = "monsters.json";
-            var relics = JsonConvert.DeserializeObject<Dictionary<uint, List<uint>>>(File.ReadAllText(path));
+            1006, [
+                new AvatarUtil.Relic(31141, 1, [
+                    new AvatarUtil.Relic.SubAffix(10, 20),
+                    new AvatarUtil.Relic.SubAffix(12, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 40),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
 
-            if (relics is null)
-                Log.Error("Cannot load monsters from {0}!", path);
+                new AvatarUtil.Relic(31113, 7, [
+                    new AvatarUtil.Relic.SubAffix(12, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(5, 20)
+                ]),
+                new AvatarUtil.Relic(31142, 1, [
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(10, 40),
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
 
-            return relics ?? new Dictionary<uint, List<uint>>
-            {
-                { 1, [3013010, 3012010, 3013010] },
-                { 2, [8034010] },
-                { 3, [3014022] }
-            };
+                new AvatarUtil.Relic(31114, 4, [
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(10, 30),
+                    new AvatarUtil.Relic.SubAffix(12, 10),
+                    new AvatarUtil.Relic.SubAffix(5, 20)
+                ]),
+
+                new AvatarUtil.Relic(63085, 9, [
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(10, 300),
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(5, 30)
+                ]),
+                new AvatarUtil.Relic(63086, 2, [
+                    new AvatarUtil.Relic.SubAffix(1, 20),
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(12, 20)
+                ])
+            ]
+        },
+        {
+            1308, [
+                new AvatarUtil.Relic(61171, 1, [
+                    new AvatarUtil.Relic.SubAffix(8, 20),
+                    new AvatarUtil.Relic.SubAffix(9, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 10),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
+                new AvatarUtil.Relic(61173, 5, [
+                    new AvatarUtil.Relic.SubAffix(8, 30),
+                    new AvatarUtil.Relic.SubAffix(12, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 10),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
+
+                new AvatarUtil.Relic(61172, 1, [
+                    new AvatarUtil.Relic.SubAffix(8, 20),
+                    new AvatarUtil.Relic.SubAffix(9, 40),
+                    new AvatarUtil.Relic.SubAffix(7, 20),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
+
+                new AvatarUtil.Relic(61174, 2, [
+                    new AvatarUtil.Relic.SubAffix(8, 20),
+                    new AvatarUtil.Relic.SubAffix(9, 20),
+                    new AvatarUtil.Relic.SubAffix(12, 10),
+                    new AvatarUtil.Relic.SubAffix(7, 20)
+                ]),
+
+                new AvatarUtil.Relic(63145, 2, [
+                    new AvatarUtil.Relic.SubAffix(8, 20),
+                    new AvatarUtil.Relic.SubAffix(9, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 20),
+                    new AvatarUtil.Relic.SubAffix(5, 30)
+                ]),
+
+                new AvatarUtil.Relic(63146, 4, [
+                    new AvatarUtil.Relic.SubAffix(8, 20),
+                    new AvatarUtil.Relic.SubAffix(9, 20),
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(12, 10)
+                ])
+            ]
+        },
+        {
+            1304, [
+                new AvatarUtil.Relic(61031, 1, [
+                    new AvatarUtil.Relic.SubAffix(6, 40),
+                    new AvatarUtil.Relic.SubAffix(7, 20),
+                    new AvatarUtil.Relic.SubAffix(3, 30),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
+
+                new AvatarUtil.Relic(61033, 3, [
+                    new AvatarUtil.Relic.SubAffix(3, 30),
+                    new AvatarUtil.Relic.SubAffix(7, 40),
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(4, 20)
+                ]),
+
+                new AvatarUtil.Relic(61032, 1, [
+                    new AvatarUtil.Relic.SubAffix(7, 20),
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(6, 50),
+                    new AvatarUtil.Relic.SubAffix(5, 10)
+                ]),
+                new AvatarUtil.Relic(61034, 3, [
+                    new AvatarUtil.Relic.SubAffix(6, 40),
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(3, 20),
+                    new AvatarUtil.Relic.SubAffix(5, 20)
+                ]),
+
+                new AvatarUtil.Relic(63105, 3, [
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(1, 30),
+                    new AvatarUtil.Relic.SubAffix(6, 40),
+                    new AvatarUtil.Relic.SubAffix(7, 30)
+                ]),
+
+                new AvatarUtil.Relic(63106, 5, [
+                    new AvatarUtil.Relic.SubAffix(7, 30),
+                    new AvatarUtil.Relic.SubAffix(11, 20),
+                    new AvatarUtil.Relic.SubAffix(6, 30),
+                    new AvatarUtil.Relic.SubAffix(3, 20)
+                ])
+            ]
+        },
+        {
+            1307, [
+                new AvatarUtil.Relic(61164, 4, [
+                    new AvatarUtil.Relic.SubAffix(4, 1),
+                    new AvatarUtil.Relic.SubAffix(5, 4),
+                    new AvatarUtil.Relic.SubAffix(10, 1),
+                    new AvatarUtil.Relic.SubAffix(12, 3)
+                ]),
+                new AvatarUtil.Relic(61163, 7, [
+                    new AvatarUtil.Relic.SubAffix(4, 1),
+                    new AvatarUtil.Relic.SubAffix(7, 4),
+                    new AvatarUtil.Relic.SubAffix(5, 1),
+                    new AvatarUtil.Relic.SubAffix(12, 3)
+                ]),
+                new AvatarUtil.Relic(61162, 1, [
+                    new AvatarUtil.Relic.SubAffix(4, 1),
+                    new AvatarUtil.Relic.SubAffix(5, 4),
+                    new AvatarUtil.Relic.SubAffix(7, 3),
+                    new AvatarUtil.Relic.SubAffix(12, 1)
+                ]),
+                new AvatarUtil.Relic(61161, 1, [
+                    new AvatarUtil.Relic.SubAffix(4, 1),
+                    new AvatarUtil.Relic.SubAffix(5, 3),
+                    new AvatarUtil.Relic.SubAffix(10, 4),
+                    new AvatarUtil.Relic.SubAffix(12, 1)
+                ]),
+                new AvatarUtil.Relic(63036, 4, [
+                    new AvatarUtil.Relic.SubAffix(4, 1),
+                    new AvatarUtil.Relic.SubAffix(7, 4),
+                    new AvatarUtil.Relic.SubAffix(10, 1),
+                    new AvatarUtil.Relic.SubAffix(12, 3)
+                ]),
+                new AvatarUtil.Relic(63036, 8, [
+                    new AvatarUtil.Relic.SubAffix(5, 4),
+                    new AvatarUtil.Relic.SubAffix(7, 3),
+                    new AvatarUtil.Relic.SubAffix(10, 1),
+                    new AvatarUtil.Relic.SubAffix(12, 1)
+                ])
+            ]
         }
-    }
+    };
 
-    public static Dictionary<uint, uint> MonsterLevels
+    public static int AvatarRank = 6;
+    public static int WeaponRank = 6;
+
+    public static AvatarUtil.Avatar Avatar1 = new(1308, 6, new AvatarUtil.Weapon(23024, 6), Relics[1308]); // acheron
+    public static AvatarUtil.Avatar Avatar2 = new(1307, 6, new AvatarUtil.Weapon(23022, 6), Relics[1307]); // black swan
+
+    public static AvatarUtil.Avatar
+        Avatar3 = new(1006, 6, new AvatarUtil.Weapon(23007, 6), Relics[1006]); // silver wolf
+
+    public static AvatarUtil.Avatar Avatar4 = new(1304, 6, new AvatarUtil.Weapon(23023, 6), Relics[1304]); // aventurine
+
+    public static Dictionary<uint, List<uint>> Monsters = new()
     {
-        get
-        {
-            const string path = "monsterlevels.json";
-            var relics = JsonConvert.DeserializeObject<Dictionary<uint, uint>>(File.ReadAllText(path));
+        { 1, [3013010, 3012010, 3013010] },
+        { 2, [8034010] },
+        { 3, [3014022] }
+    };
 
-            if (relics is null)
-                Log.Error("Cannot load monster levels from {0}!", path);
-
-            return relics ?? new Dictionary<uint, uint>
-            {
-                { 1, 70 }, { 2, 70 }, { 3, 60 }
-            };
-        }
-    }
-
-    public static List<List<BattleRelic>> Relics
+    public static Dictionary<uint, uint> MonsterLevels = new()
     {
-        get
-        {
-            const string path = "relics.json";
-            var relics = JsonConvert.DeserializeObject<List<List<BattleRelic>>?>(File.ReadAllText(path));
-
-            if (relics is null)
-                Log.Error("Cannot load relics from {0}!", path);
-
-            return relics ?? [];
-        }
-    }
+        { 1, 80 }, { 2, 80 }, { 3, 90 }
+    };
 
     [PacketHandler(CmdId.CmdSetLineupNameCsReq)]
     public static void OnSetLineupNameCsReq(NetSession session, int cmdId, object data)
@@ -86,18 +221,10 @@ public class BattleReqGroup
                 LeaderSlot = 0
             };
 
-            var characters = new List<uint> { Avatar1, Avatar2, Avatar3, Avatar4 };
-            foreach (var id in characters)
+            var avatars = new List<AvatarUtil.Avatar> { Avatar1, Avatar2, Avatar3, Avatar4 };
+            foreach (var avatar in avatars.Where(avatar => avatar.Id != 0))
             {
-                lineupInfo.AvatarList.Add(new LineupAvatar
-                {
-                    Id = id,
-                    Hp = 10000,
-                    Satiety = 100,
-                    Sp = new AmountInfo { CurAmount = 10000, MaxAmount = 10000 },
-                    AvatarType = AvatarType.AvatarFormalType,
-                    Slot = (uint)lineupInfo.AvatarList.Count
-                });
+                lineupInfo.AvatarList.Add(avatar.ToLineupAvatar(lineupInfo.AvatarList.Count));
             }
 
             var sceneInfo = new SceneInfo
@@ -108,7 +235,7 @@ public class BattleReqGroup
                 FloorId = 20101001
             };
 
-            var calaxInfoTest = new SceneEntityInfo
+            var calaxInfo = new SceneEntityInfo
             {
                 GroupId = 19,
                 InstId = 300001,
@@ -133,7 +260,7 @@ public class BattleReqGroup
                 }
             };
 
-            sceneInfo.EntityList.Add(calaxInfoTest);
+            sceneInfo.EntityList.Add(calaxInfo);
 
             session.Send(CmdId.CmdEnterSceneByServerScNotify, new EnterSceneByServerScNotify
             {
@@ -184,74 +311,28 @@ public class BattleReqGroup
         };
 
         // avatars
-        var skillIdEnds = new List<uint>
-            { 1, 2, 3, 4, 7, 101, 102, 103, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210 };
-        var characters = new List<uint> { Avatar1, Avatar2, Avatar3, Avatar4 };
-        var weapons = new List<uint> { Weapon1, Weapon2, Weapon3, Weapon4 };
-
-        for (var index = 0; index <= 3; index++)
+        var avatars = new List<AvatarUtil.Avatar> { Avatar1, Avatar2, Avatar3, Avatar4 };
+        foreach (var avatar in avatars)
         {
-            var avatarId = characters[index];
-            var weaponId = weapons[index];
-            var relics = Relics[index];
-
-            var avatarData = new BattleAvatar
-            {
-                Id = avatarId,
-                Level = 80,
-                Promotion = 6,
-                Rank = AvatarRank,
-                Hp = 10000,
-                AvatarType = AvatarType.AvatarFormalType,
-                WorldLevel = 6,
-                Sp = new AmountInfo { CurAmount = 10000, MaxAmount = 10000 },
-                EquipmentList =
-                {
-                    new BattleEquipment
-                    {
-                        Id = weaponId,
-                        Level = 80,
-                        Rank = WeaponRank,
-                        Promotion = 6
-                    }
-                }
-            };
-            avatarData.RelicList.AddRange(relics);
-
-            foreach (var end in skillIdEnds)
-            {
-                var level = end switch
-                {
-                    1 => 6u,
-                    <= 4 => 10u,
-                    > 4 => 1u
-                };
-
-                avatarData.SkilltreeLists.Add(new AvatarSkillTree
-                {
-                    PointId = avatarId * 1000 + end,
-                    Level = level
-                });
-            }
-
-            battleInfo.BattleAvatarList.Add(avatarData);
+            Log.Debug("Added {@Avatar} to cocoon avatar list!", avatar);
+            battleInfo.BattleAvatarList.Add(avatar);
         }
 
         // monsters
-        for (var monster = 1u; monster <= Monsters.Count; monster++)
+        for (var waveId = 1u; waveId <= Monsters.Count; waveId++)
         {
             var monsterInfo = new SceneMonsterWave
             {
-                Pkgenfbhofi = monster,
+                WaveId = waveId,
                 MonsterParam = new SceneMonsterParam
                 {
-                    Level = MonsterLevels[monster]
+                    Level = MonsterLevels[waveId]
                 }
             };
 
-            if (Monsters.TryGetValue(monster, out var monsterIdList))
+            if (Monsters.TryGetValue(waveId, out var monsterIds))
             {
-                foreach (var monsterId in monsterIdList)
+                foreach (var monsterId in monsterIds)
                 {
                     monsterInfo.MonsterList.Add(new SceneMonsterInfo
                     {
