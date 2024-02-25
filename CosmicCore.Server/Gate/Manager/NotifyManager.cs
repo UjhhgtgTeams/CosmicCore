@@ -74,7 +74,7 @@ public static class NotifyManager
         }
         else
         {
-            Log.Warning("{0}({1}): Has cmd id without registered handler!", (CmdId)cmdId, cmdId);
+            Log.Information("{0}({1}): Does not have registered handler", (CmdId)cmdId, cmdId);
             return false;
         }
     }

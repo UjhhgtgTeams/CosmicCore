@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace CosmicCore.Server.Utilities.Logger;
 
@@ -8,7 +9,7 @@ public static class LoggerManager
     {
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
-            .WriteTo.Console()
+            .WriteTo.Console(theme: AnsiConsoleTheme.Sixteen)
             .WriteTo.File("./" + Const.Name.ToLower() + ".log", rollingInterval: RollingInterval.Day)
             .WriteTo.Debug()
             .CreateLogger();

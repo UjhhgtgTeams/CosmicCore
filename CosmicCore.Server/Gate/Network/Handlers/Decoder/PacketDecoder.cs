@@ -1,5 +1,4 @@
-﻿using CosmicCore.Protos;
-using CosmicCore.Server.Gate.Network.Packet;
+﻿using CosmicCore.Server.Gate.Network.Packet;
 using DotNetty.Buffers;
 using DotNetty.Codecs;
 using DotNetty.Transport.Channels;
@@ -28,10 +27,10 @@ public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
         }
         else
         {
-            Log.Debug(
-                packet.Data is not null
-                    ? "{0}({1}): Deserialized"
-                    : "{0}({1}): Deserialized into null", (CmdId)packet.CmdId, packet.CmdId);
+            // Log.Debug(
+            //     packet.Data is not null
+            //         ? "{0}({1}): Deserialized"
+            //         : "{0}({1}): Deserialized into null", (CmdId)packet.CmdId, packet.CmdId);
 
             output.Add(packet);
         }

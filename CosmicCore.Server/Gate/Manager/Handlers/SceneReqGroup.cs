@@ -6,6 +6,8 @@ namespace CosmicCore.Server.Gate.Manager.Handlers;
 
 public class SceneReqGroup
 {
+    public static List<MotionInfo> PlayerPosition = [];
+
     [PacketHandler(CmdId.CmdGetCurSceneInfoCsReq)]
     public static void OnGetCurSceneInfoCsReq(NetSession session, int cmdId, object data)
     {
@@ -68,18 +70,20 @@ public class SceneReqGroup
         session.Send(CmdId.CmdGetSceneMapInfoScRsp, response);
     }
 
-    // [PacketHandler(CmdId.CmdSceneEntityMoveCsReq)]
-    // public static void OnSceneEntityMoveCsReq(NetSession session, int cmdId, object data)
-    // {
-    //     var request = data as SceneEntityMoveCsReq;
-    //     var response = new SceneEntityMoveScRsp
-    //     {
-    //         Retcode = 0
-    //     };
-    //     response.EntityMotionList.AddRange(request.EntityMotionList);
-    //
-    //     session.Send(CmdId.CmdSceneEntityMoveScRsp, response);
-    // }
+    [PacketHandler(CmdId.CmdSceneEntityMoveCsReq)]
+    public static void OnSceneEntityMoveCsReq(NetSession session, int cmdId, object data)
+    {
+        var request = data as SceneEntityMoveCsReq;
+        // var response = new SceneEntityMoveScRsp
+        // {
+        //     Retcode = 0
+        // };
+        // response.EntityMotionList.AddRange(request.EntityMotionList);
+
+        Interlocked.Exchange(ref PlayerPosition, request.EntityMotionList.Select(em => em.Motion).ToList());
+
+        // session.Send(CmdId.CmdSceneEntityMoveScRsp, response);
+    }
 
     // [PacketHandler(CmdId.CmdSceneCastSkillCsReq)]
     // public static void OnSceneCastSkillCsReq(NetSession session, int cmdId, object data)

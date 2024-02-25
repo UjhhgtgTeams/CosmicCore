@@ -1,12 +1,15 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
+using CosmicCore.Server.Gate.Network.Handlers.Manager;
 using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
 public class PlayerReqGroup
 {
+    public static NetSession? PlayerSession = null;
+
     [PacketHandler(CmdId.CmdPlayerHeartBeatCsReq)]
     public static void OnPlayerHeartBeatCsReq(NetSession session, int cmdId, object data)
     {
@@ -67,6 +70,8 @@ public class PlayerReqGroup
     {
         var request = data as PlayerLoginCsReq;
 
+        PlayerSession = session;
+
         session.Send(CmdId.CmdPlayerLoginScRsp, new PlayerLoginScRsp
         {
             Retcode = 0,
@@ -80,9 +85,9 @@ public class PlayerReqGroup
                 Level = 70,
                 Exp = 0,
                 Stamina = 100,
-                MCoin = 0,
-                HCoin = 0,
-                SCoin = 0,
+                MCoin = 1337,
+                HCoin = 1337,
+                SCoin = 1337,
                 WorldLevel = 6
             }
         });
@@ -104,7 +109,8 @@ public class PlayerReqGroup
     [PacketHandler(CmdId.CmdPlayerLogoutCsReq)]
     public static void OnPlayerLogoutCsReq(NetSession session, int cmdId, object data)
     {
+        session.Send(CmdId.CmdPlayerLoginScRsp, new PacketHandler.DummyPacket());
         session.Close();
-        Log.Warning("Closing a connection due to PlayerLogout packet");
+        Log.Information("Closing a connection due to PlayerLogout packet");
     }
 }

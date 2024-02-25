@@ -36,16 +36,19 @@ public static class Program
 
         // command line
         var timeSpan = PerformanceWatcher.Stop();
-        Log.Debug("Now I am referencing to the 4 avatars or server will hang up later...");
-        Log.Debug("Avatar ids: {0} {1} {2} {3}", BattleReqGroup.Avatar1.Id, BattleReqGroup.Avatar2.Id,
-            BattleReqGroup.Avatar3.Id, BattleReqGroup.Avatar4.Id);
+
+
+        _ = BattleReqGroup.Avatar1.Id;
+        _ = BattleReqGroup.Avatar2.Id;
+        _ = BattleReqGroup.Avatar3.Id;
+        _ = BattleReqGroup.Avatar4.Id;
         var unused = new[]
         {
             BattleReqGroup.Avatar1, BattleReqGroup.Avatar2,
             BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
         };
-        Log.Debug("Avatar 1 relic count: {0}", unused[0].Relics.Count);
-        Log.Debug("(If you don't want to see this, )");
+        _ = unused[0].Relics.Count;
+
         Log.Information("Done (took {Elapsed}s)! Type /help to get started", timeSpan.TotalSeconds);
         ConsoleManager.RunConsoleSession();
 

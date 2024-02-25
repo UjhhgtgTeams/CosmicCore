@@ -63,10 +63,10 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
         { CmdId.CmdPlayerLoginFinishCsReq, CmdId.CmdPlayerLoginFinishScRsp },
 
         // TODO: the following needs verification
-        { CmdId.CmdGetAssistHistoryCsReq, CmdId.CmdGetAssistHistoryScRsp },
-        { CmdId.CmdGetCurAssistCsReq, CmdId.CmdGetCurAssistScRsp },
-        { CmdId.CmdGetAssistListCsReq, CmdId.CmdGetAssistListScRsp },
-        { CmdId.CmdGetFriendAssistListCsReq, CmdId.CmdGetFriendAssistListScRsp }
+        // { CmdId.CmdGetAssistHistoryCsReq, CmdId.CmdGetAssistHistoryScRsp },
+        // { CmdId.CmdGetCurAssistCsReq, CmdId.CmdGetCurAssistScRsp },
+        // { CmdId.CmdGetAssistListCsReq, CmdId.CmdGetAssistListScRsp },
+        // { CmdId.CmdGetFriendAssistListCsReq, CmdId.CmdGetFriendAssistListScRsp }
         // { CmdId.CmdSetClientPausedCsReq, CmdId.CmdSetClientPausedScRsp }
     };
 
@@ -96,13 +96,15 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
             var dummySucceeded = false;
 
             if (packet.Data is null)
+            {
                 if (SendDummyResponse(packet.CmdId))
                 {
                     Log.Information("{0}({1}): Responded with dummy response", (CmdId)packet.CmdId, packet.CmdId);
                     dummySucceeded = true;
                 }
+            }
 
-            if (!dummySucceeded)
+            if (dummySucceeded == false)
                 Log.Error("{0}({1}): Does not have any handler!", (CmdId)packet.CmdId, packet.CmdId);
         }
     }
@@ -111,6 +113,7 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
     {
         if (DummyTable.TryGetValue((CmdId)id, out var rspId))
         {
+            Log.Information("{0}({1}): Sending dummy response...", (CmdId)id, id);
             session.Send(rspId, new DummyPacket());
             return true;
         }

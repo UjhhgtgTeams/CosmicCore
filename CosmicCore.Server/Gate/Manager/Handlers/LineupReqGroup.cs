@@ -1,7 +1,6 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -38,7 +37,6 @@ public class LineupReqGroup
     [PacketHandler(CmdId.CmdGetAllLineupDataCsReq)]
     public static void OnGetAllLineupDataCsReq(NetSession session, int cmdId, object data)
     {
-        Log.Debug("B-2");
         var response = new GetAllLineupDataScRsp
         {
             Retcode = 0,
@@ -54,21 +52,15 @@ public class LineupReqGroup
             LeaderSlot = 0
         });
 
-        Log.Debug("B-1");
-
         var avatars = new[]
         {
             BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
         };
-        Log.Debug("B-0.5");
         foreach (var avatar in avatars)
         {
-            Log.Debug("B0");
             response.LineupList[0].AvatarList.Add(avatar.ToLineupAvatar(response.LineupList[0].AvatarList.Count));
-            Log.Debug("B1");
         }
 
-        Log.Debug("B2");
         session.Send(CmdId.CmdGetAllLineupDataScRsp, response);
     }
 

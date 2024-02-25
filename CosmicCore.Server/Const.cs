@@ -47,7 +47,10 @@ public static class Const
     public const int StartEntryId = 2032101;
 
     public static readonly MotionInfo StartPos = new()
-        { Pos = new Vector { X = 99, Y = 62, Z = -4800 }, Rot = new Vector { Y = 180000 } };
+    {
+        Pos = new Vector { X = -570, Y = 19364, Z = 4480 },
+        Rot = new Vector { Y = 180000 }
+    };
 
     // Battle
     public const int BattleAmbushBuffId = 1000102;

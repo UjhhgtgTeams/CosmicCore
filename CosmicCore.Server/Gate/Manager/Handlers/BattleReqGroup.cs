@@ -1,7 +1,6 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
-using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -314,7 +313,6 @@ public class BattleReqGroup
         var avatars = new List<AvatarUtil.Avatar> { Avatar1, Avatar2, Avatar3, Avatar4 };
         foreach (var avatar in avatars)
         {
-            Log.Debug("Added {@Avatar} to cocoon avatar list!", avatar);
             battleInfo.BattleAvatarList.Add(avatar);
         }
 
