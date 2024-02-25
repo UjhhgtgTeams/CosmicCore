@@ -1,10 +1,9 @@
-﻿using CosmicCore.Server.Utilities;
+﻿using CosmicCore.Protos;
+using CosmicCore.Server.Gate.Manager.Handlers.Core;
+using CosmicCore.Server.Gate.Network;
+using CosmicCore.Server.Utilities;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
-
-using Core;
-using Network;
-using Protos;
 
 public class SceneReqGroup
 {
