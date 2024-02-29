@@ -1,5 +1,6 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Network.Packet;
+using CosmicCore.Server.Utilities.Logger;
 using DotNetty.Buffers;
 using DotNetty.Transport.Channels;
 using Serilog;
@@ -20,7 +21,8 @@ public class NetSession(IChannel channel)
         packet.Serialize<T>(buffer);
         packet.Buf = buffer;
 
-        Log.Debug("{0}({1}): Sent", cmdId, (int)cmdId);
+        if (LoggerManager.IsCmdIdLogged((int)cmdId))
+            Log.Debug("{0}({1}): Sent", cmdId, (int)cmdId);
 
         await channel.WriteAndFlushAsync(packet);
     }

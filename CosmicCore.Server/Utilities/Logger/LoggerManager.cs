@@ -14,4 +14,11 @@ public static class LoggerManager
             .WriteTo.Debug()
             .CreateLogger();
     }
+
+    private static readonly List<int> QuietCmdIds = [1410, 1433, 46, 73]; // SceneEntityMove, PlayerHeartBeat
+
+    public static bool IsCmdIdLogged(int cmdId)
+    {
+        return !QuietCmdIds.Contains(cmdId);
+    }
 }

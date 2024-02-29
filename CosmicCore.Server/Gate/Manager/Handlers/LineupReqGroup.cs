@@ -22,11 +22,7 @@ public class LineupReqGroup
             }
         };
 
-        var avatars = new[]
-        {
-            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
-        };
-        foreach (var avatar in avatars)
+        foreach (var avatar in BattleReqGroup.Avatars)
         {
             response.Lineup.AvatarList.Add(avatar.ToLineupAvatar(response.Lineup.AvatarList.Count));
         }
@@ -52,11 +48,7 @@ public class LineupReqGroup
             LeaderSlot = 0
         });
 
-        var avatars = new[]
-        {
-            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
-        };
-        foreach (var avatar in avatars)
+        foreach (var avatar in BattleReqGroup.Avatars)
         {
             response.LineupList[0].AvatarList.Add(avatar.ToLineupAvatar(response.LineupList[0].AvatarList.Count));
         }
@@ -79,11 +71,9 @@ public class LineupReqGroup
     public static void OnJoinLineupCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as JoinLineupCsReq;
-        if (request.Slot == 0) BattleReqGroup.Avatar1.Id = request.BaseAvatarId;
-        if (request.Slot == 1) BattleReqGroup.Avatar2.Id = request.BaseAvatarId;
-        if (request.Slot == 2) BattleReqGroup.Avatar3.Id = request.BaseAvatarId;
-        if (request.Slot == 3) BattleReqGroup.Avatar4.Id = request.BaseAvatarId;
-        RefreshLineup(session);
+
+        UpdateAvatar((int)request.Slot, (int)request.BaseAvatarId);
+        SyncLineup(session);
 
         session.Send(CmdId.CmdJoinLineupScRsp, new JoinLineupScRsp
         {
@@ -95,19 +85,13 @@ public class LineupReqGroup
     public static void OnReplaceLineupCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as ReplaceLineupCsReq;
-        BattleReqGroup.Avatar1.Id = 0;
-        BattleReqGroup.Avatar2.Id = 0;
-        BattleReqGroup.Avatar3.Id = 0;
-        BattleReqGroup.Avatar4.Id = 0;
+
         foreach (var slotData in request.LineupSlotList)
         {
-            if (slotData.Slot == 0) BattleReqGroup.Avatar1.Id = slotData.Id;
-            if (slotData.Slot == 1) BattleReqGroup.Avatar2.Id = slotData.Id;
-            if (slotData.Slot == 2) BattleReqGroup.Avatar3.Id = slotData.Id;
-            if (slotData.Slot == 3) BattleReqGroup.Avatar4.Id = slotData.Id;
+            UpdateAvatar((int)slotData.Slot, (int)slotData.Id);
         }
+        SyncLineup(session);
 
-        RefreshLineup(session);
         session.Send(CmdId.CmdReplaceLineupScRsp, new ReplaceLineupScRsp
         {
             Retcode = 0
@@ -118,12 +102,10 @@ public class LineupReqGroup
     public static void OnQuitLineupCsReq(NetSession session, int cmdId, object data)
     {
         var request = data as QuitLineupCsReq;
-        if (request.BaseAvatarId == BattleReqGroup.Avatar1.Id) BattleReqGroup.Avatar1.Id = 0;
-        if (request.BaseAvatarId == BattleReqGroup.Avatar2.Id) BattleReqGroup.Avatar2.Id = 0;
-        if (request.BaseAvatarId == BattleReqGroup.Avatar3.Id) BattleReqGroup.Avatar3.Id = 0;
-        if (request.BaseAvatarId == BattleReqGroup.Avatar4.Id) BattleReqGroup.Avatar4.Id = 0;
 
-        RefreshLineup(session);
+        BattleReqGroup.Avatars.First(avatar => avatar.Id == request.BaseAvatarId).Id = 0;
+        SyncLineup(session);
+
         session.Send(CmdId.CmdQuitLineupScRsp, new QuitLineupScRsp
         {
             Retcode = 0,
@@ -132,12 +114,8 @@ public class LineupReqGroup
         });
     }
 
-    public static void RefreshLineup(NetSession session)
+    public static void SyncLineup(NetSession session)
     {
-        var avatars = new[]
-        {
-            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2, BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
-        };
         var response = new SyncLineupNotify
         {
             Lineup = new LineupInfo
@@ -150,11 +128,20 @@ public class LineupReqGroup
             }
         };
 
-        foreach (var avatar in avatars.Where(id => id.Id != 0))
+        foreach (var avatar in BattleReqGroup.Avatars.Where(id => id.Id != 0))
         {
             response.Lineup.AvatarList.Add(avatar.ToLineupAvatar(response.Lineup.AvatarList.Count));
         }
 
         session.Send(CmdId.CmdSyncLineupNotify, response);
+    }
+
+    public static void UpdateAvatar(int index, int id)
+    {
+        BattleReqGroup.Avatars[index].Id = id;
+        BattleReqGroup.Avatars[index].Weapon =
+            BattleReqGroup.Weapons.GetValueOrDefault(index, new AvatarUtil.Weapon(23006, 5));
+        BattleReqGroup.Avatars[index].Relics =
+            BattleReqGroup.Relics.GetValueOrDefault(index, []);
     }
 }

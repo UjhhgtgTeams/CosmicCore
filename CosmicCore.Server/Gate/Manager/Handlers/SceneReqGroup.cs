@@ -1,6 +1,7 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
+using CosmicCore.Server.Utilities;
 
 namespace CosmicCore.Server.Gate.Manager.Handlers;
 
@@ -31,29 +32,27 @@ public class SceneReqGroup
     {
         var request = data as GetSceneMapInfoCsReq;
 
-        uint[] back =
-        [
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
-            30, 31, 32, 33, 34, 0
-        ];
-
-        var mapinfo = new SceneMapInfo
+        var mapInfo = new SceneMapInfo
         {
             Retcode = 0,
-            LightenSectionList = back,
+            LightenSectionList = ListUtil.FromUIntRange(0, 99).ToArray(),
+            EntryId = request.EntryIdList[0],
             ChestList =
             {
-                new ChestInfo
+                new SceneChestInfo
                 {
-                    ChestType = ChestType.MapInfoChestTypeNormal
+                    ChestType = ChestType.MapInfoChestTypeNormal,
+                    TotalAmount = 1
                 },
-                new ChestInfo
+                new SceneChestInfo
                 {
-                    ChestType = ChestType.MapInfoChestTypePuzzle
+                    ChestType = ChestType.MapInfoChestTypePuzzle,
+                    TotalAmount = 1
                 },
-                new ChestInfo
+                new SceneChestInfo
                 {
-                    ChestType = ChestType.MapInfoChestTypeChallenge
+                    ChestType = ChestType.MapInfoChestTypeChallenge,
+                    TotalAmount = 1
                 }
             }
         };
@@ -62,9 +61,9 @@ public class SceneReqGroup
         {
             Retcode = 0,
             EntryId = request.EntryIdList[0],
+            LightenSectionList = ListUtil.FromUIntRange(0, 99).ToArray(),
             CurrentMapEntryId = request.EntryId,
-            SceneMapInfoList = { mapinfo },
-            LightenSectionList = back
+            SceneMapInfoList = { mapInfo }
         };
 
         session.Send(CmdId.CmdGetSceneMapInfoScRsp, response);
@@ -80,6 +79,7 @@ public class SceneReqGroup
         // };
         // response.EntityMotionList.AddRange(request.EntityMotionList);
 
+        // use interlocked for thread safety
         Interlocked.Exchange(ref PlayerPosition, request.EntityMotionList.Select(em => em.Motion).ToList());
 
         // session.Send(CmdId.CmdSceneEntityMoveScRsp, response);

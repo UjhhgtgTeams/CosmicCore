@@ -11,7 +11,7 @@ public class SdkDataUploadHandler : IHttpModule
     public async Task<bool> HandleAsync(IHttpContext context)
     {
         var logs = context.Request.Body.ReadAllAsString();
-        Log.Debug("Received sdk log upload from client: {Logs}", logs);
+        // Log.Debug("Received sdk log upload from client: {Logs}", logs);
 
         context.Response.StatusCode = HttpStatusCode.OK;
         context.Response.ContentType = "application/json";

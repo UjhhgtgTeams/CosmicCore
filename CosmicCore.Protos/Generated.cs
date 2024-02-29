@@ -583,6 +583,13 @@ public class RelicAffix : ProtoBuf.IExtensible
         Step = step;
     }
 
+    public RelicAffix(uint affixId, uint step, uint cnt) : this()
+    {
+        AffixId = affixId;
+        Step = step;
+        Cnt = cnt;
+    }
+
     [ProtoBuf.ProtoMember(1, Name = @"affix_id")]
     public uint AffixId { get; set; }
 
@@ -638,7 +645,7 @@ public class BattleAvatar : ProtoBuf.IExtensible
     public uint Index { get; set; }
 
     [ProtoBuf.ProtoMember(6, Name = @"skilltree_list")]
-    public List<AvatarSkillTree> SkilltreeList { get; } = [];
+    public List<AvatarSkillTree> SkillTreeList { get; } = [];
 
     [ProtoBuf.ProtoMember(7, Name = @"equipment_list")]
     public List<BattleEquipment> EquipmentList { get; } = [];
@@ -3265,6 +3272,15 @@ public class SceneMonsterParam : ProtoBuf.IExtensible
 {
     private ProtoBuf.IExtension __pbn__extensionData;
 
+    public SceneMonsterParam()
+    {
+    }
+
+    public SceneMonsterParam(uint level)
+    {
+        Level = level;
+    }
+
     [ProtoBuf.ProtoMember(4, Name = @"NKLFOILJMIH")]
     public uint Nklfoiljmih { get; set; }
 
@@ -3285,6 +3301,15 @@ public class SceneMonsterParam : ProtoBuf.IExtensible
 public class SceneMonsterInfo : ProtoBuf.IExtensible
 {
     private ProtoBuf.IExtension __pbn__extensionData;
+
+    public SceneMonsterInfo()
+    {
+    }
+
+    public SceneMonsterInfo(uint monsterId)
+    {
+        MonsterId = monsterId;
+    }
 
     [ProtoBuf.ProtoMember(5, Name = @"monster_id")]
     public uint MonsterId { get; set; }
@@ -3885,18 +3910,19 @@ public class MazeGroup : ProtoBuf.IExtensible
 }
 
 [ProtoBuf.ProtoContract]
-public class ChestInfo : ProtoBuf.IExtensible
+public class SceneChestInfo : ProtoBuf.IExtensible
 {
     private ProtoBuf.IExtension __pbn__extensionData;
 
     [ProtoBuf.ProtoMember(1, Name = @"chest_type")]
     public ChestType ChestType { get; set; }
 
-    [ProtoBuf.ProtoMember(7, Name = @"CCBLHBCKOLF")]
-    public uint Ccblhbckolf { get; set; }
+    // the following 2 properties need verification
+    [ProtoBuf.ProtoMember(7, Name = @"unlocked_amount_list")]
+    public uint UnlockedAmount { get; set; }
 
-    [ProtoBuf.ProtoMember(2, Name = @"IOLPGHABNNI")]
-    public uint Iolpghabnni { get; set; }
+    [ProtoBuf.ProtoMember(2, Name = @"total_amount_list")]
+    public uint TotalAmount { get; set; }
 
     ProtoBuf.IExtension ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
@@ -3953,7 +3979,7 @@ public class SceneMapInfo : ProtoBuf.IExtensible
     public uint[] UnlockTeleportList { get; set; }
 
     [ProtoBuf.ProtoMember(13, Name = @"chest_list")]
-    public List<ChestInfo> ChestList { get; } = [];
+    public List<SceneChestInfo> ChestList { get; } = [];
 
     ProtoBuf.IExtension ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
         => ProtoBuf.Extensible.GetExtensionObject(ref __pbn__extensionData, createIfMissing);
@@ -3977,7 +4003,7 @@ public class GetSceneMapInfoScRsp : ProtoBuf.IExtensible
     public List<MazePropState> MazePropList { get; } = [];
 
     [ProtoBuf.ProtoMember(10, Name = @"chest_list")]
-    public List<ChestInfo> ChestList { get; } = [];
+    public List<SceneChestInfo> ChestList { get; } = [];
 
     [ProtoBuf.ProtoMember(14, Name = @"unlock_teleport_list", IsPacked = true)]
     public uint[] UnlockTeleportList { get; set; }

@@ -17,7 +17,7 @@ public class AvatarReqGroup
             IsAll = request.IsGetAll
         };
 
-        var characters = new List<uint>
+        var characters = new List<int>
         {
             8001, 8002, 8003, 8004,
             1001, 1002, 1003, 1004, 1005, 1006, 1008, 1009, 1013,
@@ -28,9 +28,10 @@ public class AvatarReqGroup
 
         foreach (var id in characters)
         {
-            // TODO: needs hang-up verification; old: the commented part seemed to hang this packet up
-            response.AvatarList.Add(new AvatarUtil.Avatar(id, 6, null,
-                BattleReqGroup.Relics.GetValueOrDefault(id) ?? []));
+            // TODO: verify
+            response.AvatarList.Add(new AvatarUtil.Avatar(id, 6,
+                BattleReqGroup.Weapons.GetValueOrDefault(id, new AvatarUtil.Weapon(23006, 5)),
+                BattleReqGroup.Relics.GetValueOrDefault(id, [])));
         }
 
         session.Send(CmdId.CmdGetAvatarDataScRsp, response);

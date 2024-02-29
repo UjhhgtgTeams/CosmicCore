@@ -11,7 +11,7 @@ public class HkrpgDataUploadHandler : IHttpModule
     public async Task<bool> HandleAsync(IHttpContext context)
     {
         var logs = context.Request.Body.ReadAllAsString();
-        Log.Debug("Received game log upload from client: {Logs}", logs);
+        // Log.Debug("Received game log upload from client: {Logs}", logs);
 
         context.Response.StatusCode = HttpStatusCode.OK;
         context.Response.ContentType = "application/json";

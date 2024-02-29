@@ -18,7 +18,7 @@ public class RefillCommand : ICommand
 
         if (PlayerReqGroup.PlayerSession is null)
         {
-            Log.Error("Cannot refill hp/sp/mp due to player not logged in.");
+            Log.Error("Cannot refill hp/sp/mp due to player offline.");
             return 1;
         }
 
@@ -30,7 +30,7 @@ public class RefillCommand : ICommand
                 break;
 
             case "mp":
-                LineupReqGroup.RefreshLineup(PlayerReqGroup.PlayerSession);
+                LineupReqGroup.SyncLineup(PlayerReqGroup.PlayerSession);
                 Log.Information("Refilled mp for lineup.");
                 break;
         }

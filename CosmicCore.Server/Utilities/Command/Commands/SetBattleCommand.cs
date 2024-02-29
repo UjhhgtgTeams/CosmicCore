@@ -6,7 +6,7 @@ namespace CosmicCore.Server.Utilities.Command.Commands;
     Description = "Sets in-battle properties.",
     Usage = "avatar|weapon|arank|wrank",
     RequiredPermissions = [])]
-public /*partial*/ class SetBattleCommand : ICommand
+public class SetBattleCommand : ICommand
 {
     public override Dictionary<int, string> ReturnCodeMap { get; } = [];
 
@@ -18,39 +18,41 @@ public /*partial*/ class SetBattleCommand : ICommand
 
         if (operation == "avatar")
         {
-            var avatars = arguments.Select(avt => Convert.ToUInt32(avt)).ToList();
-            BattleReqGroup.Avatar1.Id = avatars[1];
-            BattleReqGroup.Avatar2.Id = avatars[1];
-            BattleReqGroup.Avatar3.Id = avatars[2];
-            BattleReqGroup.Avatar4.Id = avatars[3];
+            for (var index = 0; index < 4; index++)
+            {
+                LineupReqGroup.UpdateAvatar(index, Convert.ToInt32(arguments[index]));
+            }
+
             return 0;
         }
 
         if (operation == "weapon")
         {
-            var weapons = arguments.Select(avt => Convert.ToUInt32(avt)).ToList();
-            BattleReqGroup.Avatar1.Weapon.Id = weapons[0];
-            BattleReqGroup.Avatar2.Weapon.Id = weapons[1];
-            BattleReqGroup.Avatar3.Weapon.Id = weapons[2];
-            BattleReqGroup.Avatar4.Weapon.Id = weapons[3];
+            for (var index = 0; index < 4; index++)
+            {
+                BattleReqGroup.Avatars[index].Weapon.Id = Convert.ToInt32(arguments[index]);
+            }
+
             return 0;
         }
 
         if (operation == "arank")
         {
-            BattleReqGroup.Avatar1.Rank = Convert.ToUInt32(arguments[0]);
-            BattleReqGroup.Avatar2.Rank = Convert.ToUInt32(arguments[0]);
-            BattleReqGroup.Avatar3.Rank = Convert.ToUInt32(arguments[0]);
-            BattleReqGroup.Avatar4.Rank = Convert.ToUInt32(arguments[0]);
+            foreach (var avatar in BattleReqGroup.Avatars)
+            {
+                avatar.Rank = Convert.ToInt32(arguments[0]);
+            }
+
             return 0;
         }
 
         if (operation == "wrank")
         {
-            BattleReqGroup.Avatar1.Weapon.Rank = Convert.ToUInt32(arguments[0]);
-            BattleReqGroup.Avatar2.Weapon.Rank = Convert.ToUInt32(arguments[0]);
-            BattleReqGroup.Avatar3.Weapon.Rank = Convert.ToUInt32(arguments[0]);
-            BattleReqGroup.Avatar4.Weapon.Rank = Convert.ToUInt32(arguments[0]);
+            foreach (var avatar in BattleReqGroup.Avatars)
+            {
+                avatar.Weapon.Id = Convert.ToInt32(arguments[0]);
+            }
+
             return 0;
         }
 

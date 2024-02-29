@@ -4,6 +4,7 @@ using System.Reflection;
 using CosmicCore.Protos;
 using CosmicCore.Server.Gate.Manager.Handlers.Core;
 using CosmicCore.Server.Gate.Network;
+using CosmicCore.Server.Utilities.Logger;
 using Nito.AsyncEx;
 using Serilog;
 
@@ -67,14 +68,15 @@ public static class NotifyManager
     {
         if (_notifyReqGroup.TryGetValue(cmdId, out var handler))
         {
-            Log.Information("{0}({1}): Received and handling", (CmdId)cmdId, cmdId);
-            if (data is null) Log.Warning("{0}({1}): Has null data!", (CmdId)cmdId, cmdId);
+            if (LoggerManager.IsCmdIdLogged(cmdId))
+                Log.Information("{0}({1}): Received and handling", (CmdId)cmdId, cmdId);
+
             AsyncContext.Run(void () => handler.Item2.Invoke(session, cmdId, data));
             return true;
         }
         else
         {
-            Log.Information("{0}({1}): Does not have registered handler", (CmdId)cmdId, cmdId);
+            Log.Information("{0}({1}): Received but does not have registered handler", (CmdId)cmdId, cmdId);
             return false;
         }
     }

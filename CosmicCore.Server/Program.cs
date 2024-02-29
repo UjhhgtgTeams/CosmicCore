@@ -37,17 +37,11 @@ public static class Program
         // command line
         var timeSpan = PerformanceWatcher.Stop();
 
-
-        _ = BattleReqGroup.Avatar1.Id;
-        _ = BattleReqGroup.Avatar2.Id;
-        _ = BattleReqGroup.Avatar3.Id;
-        _ = BattleReqGroup.Avatar4.Id;
-        var unused = new[]
-        {
-            BattleReqGroup.Avatar1, BattleReqGroup.Avatar2,
-            BattleReqGroup.Avatar3, BattleReqGroup.Avatar4
-        };
-        _ = unused[0].Relics.Count;
+        _ = BattleReqGroup.Avatars[0].Id;
+        _ = BattleReqGroup.Avatars[1].Id;
+        _ = BattleReqGroup.Avatars[2].Id;
+        _ = BattleReqGroup.Avatars[3].Id;
+        _ = BattleReqGroup.Avatars[0].Relics.Count;
 
         Log.Information("Done (took {Elapsed}s)! Type /help to get started", timeSpan.TotalSeconds);
         ConsoleManager.RunConsoleSession();
