@@ -17,7 +17,7 @@ public class Lineup(Account account, int index) : AccountManager(account)
 
         foreach (var avatarId in Avatars)
         {
-            var avatar = Owner.AvatarInventory.Avatars.TryGetValue(avatarId);
+            var avatar = Owner.AvatarInventory.Avatars.GetValueOrDefault(avatarId);
             if (avatar is null) return;
 
             if (avatar.CurrentHp <= 0 && !revive) continue;
@@ -42,7 +42,7 @@ public class Lineup(Account account, int index) : AccountManager(account)
 
     public bool AddAvatar(int avatarId, int slot)
     {
-        var avatar = Owner.AvatarInventory.Avatars.TryGetValue(avatarId);
+        var avatar = Owner.AvatarInventory.Avatars.GetValueOrDefault(avatarId);
         if (avatar is null) return false;
 
         if (IsActiveSlot(slot))
@@ -113,7 +113,7 @@ public class Lineup(Account account, int index) : AccountManager(account)
 
         foreach (var avatarId in lineupList)
         {
-            var avatar = Owner.AvatarInventory.Avatars.TryGetValue(avatarId);
+            var avatar = Owner.AvatarInventory.Avatars.GetValueOrDefault(avatarId);
             if (avatar is not null)
             {
                 Avatars.Add(avatarId);
@@ -132,7 +132,7 @@ public class Lineup(Account account, int index) : AccountManager(account)
 
     public void SyncLineup()
     {
-        Owner.Session?.Send(CmdId.CmdSyncLineupNotify, new SyncLineupNotify { Lineup = ToProto() });
+        SendPacket(CmdId.CmdSyncLineupNotify, new SyncLineupNotify { Lineup = ToProto() });
     }
 
     public void ValidateLeader()
@@ -157,7 +157,7 @@ public class Lineup(Account account, int index) : AccountManager(account)
 
         for (var slot = 0; slot < Avatars.Count; slot++)
         {
-            var avatar = Owner.AvatarInventory.Avatars.TryGetValue(Avatars[slot]);
+            var avatar = Owner.AvatarInventory.Avatars.GetValueOrDefault(Avatars[slot]);
             if (avatar is null) continue;
 
             proto.AvatarList.Add(avatar.ToLineupAvatarProto(this, slot));

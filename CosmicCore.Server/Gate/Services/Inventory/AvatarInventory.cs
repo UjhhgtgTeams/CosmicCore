@@ -39,7 +39,8 @@ public class AvatarInventory(Account account) : AccountManager(account)
         {
             packet.BasicTypeInfoList.Add(avatar.HeroPath.ToProto());
         }
-        Owner.Session.Send(CmdId.CmdPlayerSyncScNotify, packet);
+
+        SendPacket(CmdId.CmdPlayerSyncScNotify, packet);
 
         Owner.Unlocks.AddHeadIcon(avatar.HeadIconId);
 

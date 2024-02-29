@@ -5,7 +5,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["RelicConfig.json"], LoadPriority = ResourceLoadPriority.Low)]
 public class RelicExcel : IResource
 {
-    public override int Id => ID;
+    public int Id => ID;
     public int ID { get; set; }
     [JsonProperty("SetID")]
     public int SetId { get; set; }
@@ -17,7 +17,7 @@ public class RelicExcel : IResource
     public int ExpProvide { get; set; }
     public int CoinCost { get; set; }
 
-    public override void OnLoad()
+    public void OnLoad()
     {
         for (var idx = 0; idx <= ResourceManager.ItemExcels.Count - 1; idx++)
         {

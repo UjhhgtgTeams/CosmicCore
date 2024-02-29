@@ -1,5 +1,4 @@
-﻿using CosmicCore.Protos;
-using CosmicCore.Server.Gate.Network;
+﻿using CosmicCore.Server.Gate.Network;
 
 namespace CosmicCore.Server.Utilities.Command.Commands;
 
@@ -9,12 +8,12 @@ namespace CosmicCore.Server.Utilities.Command.Commands;
     RequiredPermissions = ["admin.account.kick"])]
 public class KickCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = new()
+    public Dictionary<int, string> ReturnCodeMap { get; } = new()
     {
         { 100, "Account not found!" }
     };
 
-    public override int OnExecute(string args, Account.Account executor)
+    public int OnExecute(string args, Account.Account executor)
     {
         var arguments = CommandUtilities.SplitArgs(args).ToArray();
         var target = CommandUtilities.ParseAccountSelector(arguments[0]);

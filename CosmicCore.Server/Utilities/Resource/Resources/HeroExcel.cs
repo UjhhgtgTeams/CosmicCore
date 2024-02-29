@@ -9,9 +9,9 @@ public class HeroExcel : IResource
     [JsonProperty("HeroAvatarID")]
     public int HeroAvatarId { get; set; }
     public Gender Gender { get; set; }
-    public override int Id => HeroAvatarId;
+    public int Id => HeroAvatarId;
 
-    public override void OnLoad()
+    public void OnLoad()
     {
     }
 }

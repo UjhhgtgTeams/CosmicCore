@@ -8,7 +8,7 @@ using Serilog;
 
 namespace CosmicCore.Server.Gate.Manager;
 
-public class NotifyManager
+public static class NotifyManager
 {
     private static readonly List<Type> HandlerTypes = [];
     private static ImmutableDictionary<int, (PacketHandlerAttribute, PacketHandlerAttribute.HandlerDelegate)> _notifyReqGroup;
@@ -51,7 +51,7 @@ public class NotifyManager
         if (_notifyReqGroup.TryGetValue(cmdId, out var handler))
             AsyncContext.Run(() => handler.Item2.Invoke(session, cmdId, data));
         else
-            Log.Debug("Received packet with undefined handler {0}", cmdId);
+            Log.Debug("Received packet with undefined handler {CmdId}", cmdId);
     }
 
     public static void AddReqGroupHandler(Type type)

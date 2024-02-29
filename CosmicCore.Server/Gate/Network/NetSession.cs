@@ -43,6 +43,5 @@ public enum NetSessionState
     Inactive,
     WaitingForToken,
     WaitingForLogin,
-    PickingCharacter,
     Active
 }

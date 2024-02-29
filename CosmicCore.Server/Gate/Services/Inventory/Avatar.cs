@@ -2,14 +2,33 @@
 using CosmicCore.Server.Utilities.Account;
 using CosmicCore.Server.Utilities.Resource;
 using CosmicCore.Server.Utilities.Resource.Resources;
-using Newtonsoft.Json;
 
 namespace CosmicCore.Server.Gate.Services.Inventory;
 
 public class Avatar : AccountManager
 {
     private AvatarExcel? _excel;
-    [JsonIgnore]
+
+    private AvatarHeroPath? _heroPath;
+
+    public Avatar(int id) : this(ResourceManager.AvatarExcels.First(ava => ava.Id == id))
+    {
+    }
+
+    public Avatar(AvatarExcel excel) : base(null)
+    {
+        AvatarId = excel.Id;
+        Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        Excel = excel;
+    }
+
+    public Avatar(AvatarHeroPath path) : base(null)
+    {
+        AvatarId = Const.TrailblazerAvatarId;
+        Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+        HeroPath = path;
+    }
+
     public AvatarExcel? Excel
     {
         get => _excel;
@@ -31,18 +50,13 @@ public class Avatar : AccountManager
     public int CurrentSp { get; set; } = 0;
     public int ExtraLineupHp { get; set; }
     public int ExtraLineupSp { get; set; }
-    [JsonIgnore] public int EntityId { get; set; }
-    [JsonIgnore] public Dictionary<int, Item> Equips { get; set; } = new();
-    [JsonIgnore] public Dictionary<int, long> Buffs { get; set; } = new();
+    public int EntityId { get; set; }
+    public Dictionary<int, Item> Equips { get; set; } = new();
+    public Dictionary<int, long> Buffs { get; set; } = new();
 
-    private AvatarHeroPath? _heroPath;
-    [JsonIgnore]
     public AvatarHeroPath? HeroPath
     {
-        get
-        {
-            return _heroPath;
-        }
+        get { return _heroPath; }
         set
         {
             if (_heroPath is not null)
@@ -56,25 +70,6 @@ public class Avatar : AccountManager
 
     public bool IsHero => ResourceManager.HeroExcels.Any(hero => hero.HeroAvatarId == AvatarId);
     public int HeadIconId => AvatarId + 200000;
-
-    public Avatar(int id) : this(ResourceManager.AvatarExcels.First(ava => ava.Id == id))
-    {
-
-    }
-
-    public Avatar(AvatarExcel excel) : base(null)
-    {
-        AvatarId = excel.Id;
-        Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-        Excel = excel;
-    }
-
-    public Avatar(AvatarHeroPath path) : base(null)
-    {
-        AvatarId = Const.TrailblazerAvatarId;
-        Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-        HeroPath = path;
-    }
 
     public Protos.Avatar ToProto()
     {
@@ -147,9 +142,6 @@ public class Avatar : AccountManager
 
     public class AvatarData
     {
-        public int Rank { get; set; }
-        public Dictionary<int, int> Skills { get; set; } = new();
-
         public AvatarData(AvatarExcel excel)
         {
             foreach (var skillTree in excel.DefaultSkillTrees)
@@ -157,22 +149,25 @@ public class Avatar : AccountManager
                 Skills.Add(skillTree.PointId, skillTree.Level);
             }
         }
+
+        public int Rank { get; set; }
+        public Dictionary<int, int> Skills { get; set; } = new();
     }
 
     public class AvatarHeroPath
     {
-        public int Id { get; set; }
-        public long OwnerId { get; set; }
-        public AvatarData Data { get; set; }
-        [JsonIgnore] public Avatar? Avatar { get; set; }
-        [JsonIgnore] public AvatarExcel Excel { get; set; }
-
         public AvatarHeroPath(Account account, AvatarExcel excel)
         {
             Id = excel.Id;
             OwnerId = account.Id;
             Data = new AvatarData(excel);
         }
+
+        public int Id { get; set; }
+        public long OwnerId { get; set; }
+        public AvatarData Data { get; set; }
+        public Avatar? Avatar { get; set; }
+        public AvatarExcel Excel { get; set; }
 
         public HeroBasicTypeInfo ToProto()
         {

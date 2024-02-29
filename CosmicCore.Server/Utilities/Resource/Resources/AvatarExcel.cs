@@ -7,15 +7,15 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["AvatarConfig.json"])]
 public partial class AvatarExcel : IResource
 {
-    public override int Id => AvatarId;
     public int RankUpItemId => AvatarId + 10000;
 
-    [JsonProperty("AvatarID")]
-    public int AvatarId { get; set; }
-    [JsonProperty]
-    public HashedName AvatarName { get; set; }
+    [JsonProperty("AvatarID")] public int AvatarId { get; set; }
+
+    [JsonProperty] public HashedName AvatarName { get; set; }
+
     [JsonConverter(typeof(StringEnumConverter))]
     public DamageType DamageType { get; set; }
+
     [JsonConverter(typeof(StringEnumConverter))]
     public AvatarBaseType AvatarBaseType { get; set; }
 
@@ -27,18 +27,14 @@ public partial class AvatarExcel : IResource
     public List<int> SkillList { get; set; }
     public string JsonPath { get; set; }
 
-    [JsonIgnore] public AvatarPromotionExcel[] PromotionData { get; set; }
-    [JsonIgnore] public List<AvatarSkillTreeExcel> DefaultSkillTrees { get; set; } = [];
-    [JsonIgnore] public HashSet<int> SkillTreeIds { get; set; } = [];
-    [JsonIgnore] public string NameKey { get; set; }
-    [JsonIgnore] public int HeadIconId => Id + 200000;
+    public AvatarPromotionExcel[] PromotionData { get; set; }
+    public List<AvatarSkillTreeExcel> DefaultSkillTrees { get; set; } = [];
+    public HashSet<int> SkillTreeIds { get; set; } = [];
+    public string NameKey { get; set; }
+    public int HeadIconId => Id + 200000;
+    public int Id => AvatarId;
 
-    public int GetRankId(int rank)
-    {
-        return RankIdList[Math.Min(rank, RankIdList.Count - 1)];
-    }
-
-    public override void OnLoad()
+    public void OnLoad()
     {
         PromotionData = new AvatarPromotionExcel[MaxPromotion + 1];
         for (var i = 0; i <= MaxPromotion; i++)
@@ -47,6 +43,11 @@ public partial class AvatarExcel : IResource
         }
 
         NameKey = NameRegex().Match(JsonPath).Groups[1].Value;
+    }
+
+    public int GetRankId(int rank)
+    {
+        return RankIdList[Math.Min(rank, RankIdList.Count - 1)];
     }
 
     [GeneratedRegex("(?<=Avatar_)(.*?)(?=_Config)")]

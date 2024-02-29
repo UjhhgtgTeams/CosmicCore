@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CosmicCore.Server.Utilities.Deserialize;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace CosmicCore.Server.Utilities.Config;
@@ -12,8 +13,7 @@ public static class ConfigManager
         Log.Information("Loading configuration...");
         if (File.Exists(path))
         {
-            var json = File.ReadAllText(path);
-            Config = JsonConvert.DeserializeObject<Config>(json);
+            Config = SerializeUtils.TryDeserializeFile<Config>(path).Except("Failed to load config!") ?? new Config();
             Log.Information("Configuration loaded from file {0}", path);
         }
         else

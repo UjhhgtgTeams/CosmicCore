@@ -7,8 +7,8 @@ namespace CosmicCore.Server.Utilities.Plugin;
 public static partial class PluginManager
 {
     public static Dictionary<string, IPlugin> Plugins { get; } = []; // plugin name, plugin
-    public static bool PluginsLoaded { get; private set; } = false;
-    public static bool PluginsEnabled { get; private set; } = false;
+    public static bool PluginsLoaded { get; private set; }
+    public static bool PluginsEnabled { get; private set; }
 
     public const int ApiVersion = 1;
     private static DirectoryInfo _pluginsDirectory;
@@ -48,7 +48,7 @@ public static partial class PluginManager
                     // validation
                     if (plugin is null || !IsPluginNameValid(plugin.Name)) continue; // null
                     if (IPlugin.ApiVersion > ApiVersion) // api
-                        Log.Warning("API of plugin {0} is newer than server version, plugin may not work correctly!",
+                        Log.Warning("API of plugin {Plugin} is newer than server version, plugin may not work correctly!",
                             plugin.Name);
 
                     plugin.Assembly = pluginAssembly;

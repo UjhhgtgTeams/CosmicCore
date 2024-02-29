@@ -1,4 +1,6 @@
-﻿namespace CosmicCore.Server.Utilities;
+﻿using Serilog;
+
+namespace CosmicCore.Server.Utilities;
 
 public static class ExtensionMethods
 {
@@ -13,16 +15,6 @@ public static class ExtensionMethods
         return task.Result;
     }
 
-    /// <summary>
-    /// Returns the value according to its key in a dictionary,
-    /// or null if key does not exist.
-    /// </summary>
-    public static TValue? TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key) where TKey : notnull
-    {
-        dict.TryGetValue(key, out var value);
-        return value;
-    }
-
     public static T? TryGet<T>(this T[] enumerable, int index) where T : class
     {
         T? value;
@@ -33,13 +25,14 @@ public static class ExtensionMethods
         }
         catch (IndexOutOfRangeException)
         {
-            value = null;
+            return null;
         }
 
         return value;
     }
 
-    public static void AddRange<TKey, TValue>(this Dictionary<TKey, TValue> left, Dictionary<TKey, TValue> right) where TKey : notnull
+    public static void AddRange<TKey, TValue>(this Dictionary<TKey, TValue> left, Dictionary<TKey, TValue> right)
+        where TKey : notnull
     {
         foreach (var pair in right)
         {
@@ -55,7 +48,8 @@ public static class ExtensionMethods
         }
     }
 
-    public static Dictionary<TKey, TValue> ConcatenateRange<TKey, TValue>(this Dictionary<TKey, TValue> left, Dictionary<TKey, TValue> right) where TKey : notnull
+    public static Dictionary<TKey, TValue> ConcatenateRange<TKey, TValue>(this Dictionary<TKey, TValue> left,
+        Dictionary<TKey, TValue> right) where TKey : notnull
     {
         var dict = left.ToDictionary(pair => pair.Key, pair => pair.Value);
 
@@ -84,5 +78,16 @@ public static class ExtensionMethods
     {
         using var reader = new StreamReader(stream, encoding);
         return reader.ReadToEnd();
+    }
+
+    // rust-like?
+    public static T? Except<T>(this T? obj, string message) where T : class
+    {
+        if (obj is null)
+        {
+            Log.Error(message, obj);
+        }
+
+        return obj;
     }
 }

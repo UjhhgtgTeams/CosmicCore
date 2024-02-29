@@ -5,7 +5,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["RelicSubAffixConfig.json"])]
 public class RelicSubAffixExcel : IResource
 {
-    public override int Id => (GroupId << 16) + AffixId;
+    public int Id => (GroupId << 16) + AffixId;
     [JsonProperty("GroupID")]
     public int GroupId { get; set; }
     [JsonProperty("AffixID")]
@@ -15,7 +15,7 @@ public class RelicSubAffixExcel : IResource
     public double StepValue { get; set; }
     public int StepNum { get; set; }
 
-    public override void OnLoad() { }
+    public void OnLoad() { }
 }
 
 // ReSharper disable InconsistentNaming

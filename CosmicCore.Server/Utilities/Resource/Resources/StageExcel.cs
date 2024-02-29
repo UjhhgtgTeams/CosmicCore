@@ -5,7 +5,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["StageConfig.json"])]
 public class StageExcel : IResource
 {
-    public override int Id => StageId;
+    public int Id => StageId;
     [JsonProperty("StageID")]
     public int StageId { get; set; }
     public HashedName StageName { get; set; }
@@ -15,7 +15,7 @@ public class StageExcel : IResource
 
     private List<List<int>> monsterWaves;
 
-    public override void OnLoad()
+    public void OnLoad()
     {
         if (StageType != null)
         {

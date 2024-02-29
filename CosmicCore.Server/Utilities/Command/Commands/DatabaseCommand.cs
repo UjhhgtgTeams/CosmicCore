@@ -6,9 +6,9 @@
     RequiredPermissions = ["admin.database"])]
 public class DatabaseCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = [];
+    public Dictionary<int, string> ReturnCodeMap { get; } = [];
 
-    public override int OnExecute(string args, Account.Account executor)
+    public int OnExecute(string args, Account.Account executor)
     {
         var arguments = CommandUtilities.SplitArgs(args).ToArray();
 

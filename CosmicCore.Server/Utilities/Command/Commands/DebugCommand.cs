@@ -8,9 +8,9 @@ namespace CosmicCore.Server.Utilities.Command.Commands;
     RequiredPermissions = ["admin.debug"])]
 public class TemplateCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = [];
+    public Dictionary<int, string> ReturnCodeMap { get; } = [];
 
-    public override int OnExecute(string args, Account.Account executor)
+    public int OnExecute(string args, Account.Account executor)
     {
         var arguments = CommandUtilities.SplitArgs(args).ToArray();
 
@@ -24,11 +24,13 @@ public class TemplateCommand : ICommand
                 MaxMp = 5,
                 LeaderSlot = 0
             };
-            var characters = new List<uint> {
+            var characters = new List<uint>
+            {
                 Avatar.DefaultAvatarConst.Avatar1,
                 Avatar.DefaultAvatarConst.Avatar2,
                 Avatar.DefaultAvatarConst.Avatar3,
-                Avatar.DefaultAvatarConst.Avatar4 }; // hardcode
+                Avatar.DefaultAvatarConst.Avatar4
+            }; // hardcode
             foreach (var id in characters.Where(id => id != 0))
             {
                 lineupInfo.AvatarList.Add(new LineupAvatar

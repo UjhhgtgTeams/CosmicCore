@@ -1,6 +1,7 @@
 ﻿using CosmicCore.Protos;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.Account;
+using CosmicCore.Server.Utilities.Deserialize;
 using CosmicCore.Server.Utilities.Resource;
 using CosmicCore.Server.Utilities.Resource.Resources;
 using Newtonsoft.Json;
@@ -44,7 +45,7 @@ public static class GachaService
     public static void Initialize(StringPath path)
     {
         Log.Information("Loading gacha banners...");
-        var banners = JsonConvert.DeserializeObject<List<GachaBanner>>(path) ?? [];
+        var banners = SerializeUtils.TryDeserializeFile<List<GachaBanner>>(path) ?? [];
         foreach (var banner in banners)
         {
             GachaBanners.Add(banner.Id, banner);
@@ -263,7 +264,7 @@ public static class GachaService
             {
                 gachaItem.TokenItem.ItemsList.Add(new Protos.Item
                 {
-                    ItemId = (uint)EmbersId,
+                    ItemId = EmbersId,
                     Num = (uint)addEmbers
                 });
             }
@@ -272,7 +273,7 @@ public static class GachaService
             {
                 gachaItem.TokenItem.ItemsList.Add(new Protos.Item
                 {
-                    ItemId = (uint)StarlightId,
+                    ItemId = StarlightId,
                     Num = (uint)addStarlight
                 });
             }

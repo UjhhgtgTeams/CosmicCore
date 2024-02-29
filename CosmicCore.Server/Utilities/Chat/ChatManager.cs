@@ -10,32 +10,30 @@ public class ChatManager(Account.Account account) : AccountManager(account)
     {
         if (string.IsNullOrWhiteSpace(message)) return;
 
-        SendChat(OwnerId, targetId, message);
+        SyncChat(OwnerId, targetId, message);
         if (targetId == Account.Account.Console.Id) // if sent to console...
         {
             if (message.StartsWith('/')) // ...and message is command, execute it
             {
                 CommandManager.ExecuteCommand(message[1..], Owner);
-                return;
             }
-            else // ..and message is not command, broadcast to world message
+            else // ...and message is not command, broadcast to world message
             {
-                foreach (var account in Program.AccountDatabase.Accounts.Where(acc => acc.IsLoggedIn))
+                foreach (var account in Program.AccountDatabase.OnlineAccounts)
                 {
-                    account.PrivateChat.SendChat(Account.Account.Console.Id, account.Id, $"[sc] <{Owner.NickName} ({Owner.Id})> {message}");
+                    account.PrivateChat.SyncChat(Account.Account.Console.Id, account.Id,
+                        $"[sc] <{Owner.NickName} ({Owner.Id})> {message}");
                 }
-
-                return;
             }
         }
         else // if sent to normal users...
         {
             // ...just send
-            Program.AccountDatabase[targetId].PrivateChat.SendChat(Owner.Id, targetId, message);
+            Program.AccountDatabase[targetId].PrivateChat.SyncChat(Owner.Id, targetId, message);
         }
     }
 
-    public void SendChat(long fromId, long toId, object message /* message can be string (text) or int (emote) */ )
+    public void SyncChat(long fromId, long toId, object message /* message can be string (text) or int (emote) */)
     {
         var packet = new RevcMsgScNotify
         {
@@ -56,6 +54,6 @@ public class ChatManager(Account.Account account) : AccountManager(account)
                 break;
         }
 
-        Owner.Session?.Send(CmdId.CmdRevcMsgScNotify, packet);
+        SendPacket(CmdId.CmdRevcMsgScNotify, packet);
     }
 }

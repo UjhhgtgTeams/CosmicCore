@@ -5,7 +5,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["MazePlane.json"])]
 public class MazePlaneExcel : IResource
 {
-    public override int Id => PlaneId;
+    public int Id => PlaneId;
     [JsonProperty("PlaneID")]
     public int PlaneId { get; set; }
     [JsonProperty("WorldID")]
@@ -15,7 +15,7 @@ public class MazePlaneExcel : IResource
     public HashedName PlaneName { get; set; }
     public PlaneType PlaneType { get; set; }
 
-    public override void OnLoad()
+    public void OnLoad()
     {
     }
 }

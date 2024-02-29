@@ -6,13 +6,13 @@
     RequiredPermissions = ["admin.account.create", "admin.account.delete"])]
 public class AccountCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = new()
+    public Dictionary<int, string> ReturnCodeMap { get; } = new()
     {
         { 100, "Account not found!" },
         { 101, "Account already exists!" }
     };
 
-    public override int OnExecute(string args, Account.Account executor)
+    public int OnExecute(string args, Account.Account executor)
     {
         var arguments = CommandUtilities.SplitArgs(args).ToArray();
 

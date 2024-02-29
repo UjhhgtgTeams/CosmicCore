@@ -9,10 +9,10 @@ using CosmicCore.Server.Utilities.Resource.Resources;
 namespace CosmicCore.Server.Gate.Services.Inventory;
 
 // TODO
-public class Inventory : AccountManager
+public class Inventory(Account account) : AccountManager(account)
 {
     public Dictionary<int, Item> Storage { get; } = [];
-    public Dictionary<InventoryTabType, InventoryTab> InventoryTabs = new()
+    public readonly Dictionary<InventoryTabType, InventoryTab> InventoryTabs = new()
     {
         { InventoryTabType.EQUIPMENT, new EquipInventoryTab(Const.InventoryMaxEquipment) },
         { InventoryTabType.RELIC, new EquipInventoryTab(Const.InventoryMaxRelic) },
@@ -30,25 +30,16 @@ public class Inventory : AccountManager
         }
     }
 
-    public Inventory(Account account) : base(account)
-    {
-    }
-
     public Item? this[ItemParam param]
     {
         get
         {
-            if (param.Type == ItemParamType.Pile)
+            return param.Type switch
             {
-                return InventoryTabs[InventoryTabType.MATERIAL][param.Id];
-            }
-
-            if (param.Type == ItemParamType.Unique)
-            {
-                return Storage[param.Id];
-            }
-
-            return null;
+                ItemParamType.Pile => InventoryTabs[InventoryTabType.MATERIAL][param.Id],
+                ItemParamType.Unique => Storage[param.Id],
+                _ => null
+            };
         }
     }
 
@@ -57,23 +48,23 @@ public class Inventory : AccountManager
         var itemExcel = ResourceManager.ItemExcels.First(itm => itm.Id == itemId);
         var item = new Item(itemExcel, amount);
         item.Excel ??= itemExcel;
-        return AddItemAndUpdate(item);
+        return AddItemAndSync(item);
     }
 
     public bool AddItem(Item item, int amount = 1)
     {
         var itemExcel = ResourceManager.ItemExcels.First(itm => itm.Id == item.ItemId);
         item.Excel ??= itemExcel;
-        return AddItemAndUpdate(item);
+        return AddItemAndSync(item);
     }
 
-    private bool AddItemAndUpdate(Item item)
+    private bool AddItemAndSync(Item item)
     {
         var result = AddItemInInventory(item);
 
         if (result is not null)
         {
-            Owner.Session.Send(CmdId.CmdPlayerSyncScNotify, new PlayerSyncScNotify().AddItem(item));
+            SendPacket(CmdId.CmdPlayerSyncScNotify, new PlayerSyncScNotify().AddItem(item));
             return true;
         }
 
@@ -89,7 +80,7 @@ public class Inventory : AccountManager
 
         var type = item.Excel.ItemMainType;
         var subType = item.Excel.ItemSubType;
-        var tab = InventoryTabs.TryGetValue(type.TabType());
+        var tab = InventoryTabs.GetValueOrDefault(type.TabType());
         switch (type)
         {
             case ItemMainType.Equipment:
@@ -225,7 +216,7 @@ public class Inventory : AccountManager
             Storage.Remove(item.InternalId);
         }
 
-        Owner.Session.Send(CmdId.CmdPlayerSyncScNotify, new PlayerSyncScNotify().AddItem(item));
+        SendPacket(CmdId.CmdPlayerSyncScNotify, new PlayerSyncScNotify().AddItem(item));
 
         return true;
     }

@@ -32,13 +32,13 @@ public class ItemParam
             Id = (int)itemCost.PileItem.ItemId;
             Count = (int)itemCost.PileItem.ItemNum;
         }
-        else if (itemCost.EquipmentUniqueId != null)
+        else if (itemCost.EquipmentUniqueId != 0)
         {
             Type = ItemParamType.Unique;
             Id = (int)itemCost.EquipmentUniqueId;
             Count = 1;
         }
-        else if (itemCost.RelicUniqueId != null)
+        else if (itemCost.RelicUniqueId != 0)
         {
             Type = ItemParamType.Unique;
             Id = (int)itemCost.RelicUniqueId;

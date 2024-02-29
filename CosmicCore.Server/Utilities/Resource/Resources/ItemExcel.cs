@@ -10,7 +10,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 ])]
 public class ItemExcel : IResource
 {
-    public override int Id => ID;
+    public int Id => ID;
     public int ID { get; set; }
     public HashedName ItemName { get; set; }
     public ItemMainType ItemMainType { get; set; } = ItemMainType.Unknown;
@@ -26,8 +26,8 @@ public class ItemExcel : IResource
     [JsonProperty("ReturnItemIDList")]
     public List<ItemParam> ReturnItemIdList { get; set; }
 
-    [JsonIgnore] public EquipmentExcel? EquipmentExcel { get; set; }
-    [JsonIgnore] public RelicExcel? RelicExcel { get; set; }
+     public EquipmentExcel? EquipmentExcel { get; set; }
+     public RelicExcel? RelicExcel { get; set; }
 
     public int AvatarExp { get; set; }
     public int RelicExp { get; set; }
@@ -54,7 +54,7 @@ public class ItemExcel : IResource
         }
     }
 
-    public override void OnLoad() { }
+    public void OnLoad() { }
 }
 
 // ReSharper disable InconsistentNaming

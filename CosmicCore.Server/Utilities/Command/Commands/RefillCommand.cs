@@ -6,9 +6,9 @@
     RequiredPermissions = ["player.refill"])]
 public class RefillCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = [];
+    public Dictionary<int, string> ReturnCodeMap { get; } = [];
 
-    public override int OnExecute(string args, Account.Account executor)
+    public int OnExecute(string args, Account.Account executor)
     {
         var arguments = CommandUtilities.SplitArgs(args).ToArray();
 
@@ -16,7 +16,7 @@ public class RefillCommand : ICommand
         {
             foreach (var avatarId in executor.LineupManager.CurrentLineup.Avatars)
             {
-                var avatar = executor.AvatarInventory.Avatars.TryGetValue(avatarId);
+                var avatar = executor.AvatarInventory.Avatars.GetValueOrDefault(avatarId);
                 if (avatar != null) avatar.CurrentHp = 10000;
             }
             executor.LineupManager.CurrentLineup.SyncLineup();
@@ -27,7 +27,7 @@ public class RefillCommand : ICommand
         {
             foreach (var avatarId in executor.LineupManager.CurrentLineup.Avatars)
             {
-                var avatar = executor.AvatarInventory.Avatars.TryGetValue(avatarId);
+                var avatar = executor.AvatarInventory.Avatars.GetValueOrDefault(avatarId);
                 if (avatar != null) avatar.CurrentSp = 10000;
             }
 

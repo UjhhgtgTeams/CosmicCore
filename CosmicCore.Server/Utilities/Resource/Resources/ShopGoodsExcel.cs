@@ -7,7 +7,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["ShopGoodsConfig.json"], LoadPriority = ResourceLoadPriority.Low)]
 public class ShopGoodsExcel : IResource
 {
-    public override int Id => GoodsId;
+    public int Id => GoodsId;
     [JsonProperty("GoodsID")]
     public int GoodsId { get; set; }
     [JsonProperty("ItemID")]
@@ -20,7 +20,7 @@ public class ShopGoodsExcel : IResource
 
     private List<ItemParam> costList = [];
 
-    public override void OnLoad()
+    public void OnLoad()
     {
         if (ItemId == 0)
             return;

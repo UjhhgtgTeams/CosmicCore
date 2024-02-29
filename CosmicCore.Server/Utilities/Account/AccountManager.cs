@@ -1,24 +1,20 @@
 ﻿using CosmicCore.Protos;
-using Newtonsoft.Json;
 
 namespace CosmicCore.Server.Utilities.Account;
 
 public abstract class AccountManager
 {
-    [JsonIgnore] internal long OwnerId { get; set; }
-    [JsonIgnore] public Account Owner {
-        get => Program.AccountDatabase[OwnerId];
-        set => OwnerId = value.Id;
+    public AccountManager(Account owner)
+    {
+        Owner = owner;
     }
 
-    /// <summary>
-    /// Sets the owner.
-    /// </summary>
-    /// <param name="owner">The owner of inherited object. A null value indicates that the owner would be set delayed.</param>
-    public AccountManager(Account? owner)
+    internal long OwnerId { get; set; }
+
+    public Account Owner
     {
-        if (owner is not null)
-            Owner = owner;
+        get => OwnerId == Const.ServerConsoleId ? Account.Console : Program.AccountDatabase[OwnerId];
+        set => OwnerId = value.Id;
     }
 
     public void SendPacket<T>(CmdId cmdId, T data) where T : class
@@ -26,6 +22,6 @@ public abstract class AccountManager
         Owner.Session?.Send(cmdId, data);
     }
 
-    // [JsonIgnore]
+    //
     // public NetSession Session
 }

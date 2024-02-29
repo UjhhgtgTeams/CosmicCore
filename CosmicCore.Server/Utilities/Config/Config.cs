@@ -1,11 +1,10 @@
 ﻿using CosmicCore.Protos;
-using Newtonsoft.Json;
 
 namespace CosmicCore.Server.Utilities.Config;
 
 public sealed class Config
 {
-    public DispatchServerConfig DispatchServer { get; set; }= new("0.0.0.0", 443);
+    public DispatchServerConfig DispatchServer { get; set; } = new("0.0.0.0", 443);
     public GateServerConfig GateServer { get; set; } = new("127.0.0.1", 23301);
 
     public ServerOptions ServerOptions { get; set; } = new();
@@ -26,7 +25,7 @@ public class DispatchServerConfig(string address, int port) : ServerConfig(addre
     public StringPath SslCertPath { get; set; } = "./certificate.cer";
     public string SslCertPassword { get; set; } = "12345678";
     public RegionConfig Region { get; set; } = new();
-    [JsonIgnore] public string DisplayAddress => (UseSsl ? "https" : "http") + "://" + Address + ':' + Port;
+    public string DisplayAddress => (UseSsl ? "https" : "http") + "://" + Address + ':' + Port;
 }
 
 public class RegionConfig
@@ -53,7 +52,7 @@ public class GateServerConfig(string address, int port) : ServerConfig(address, 
     public string Id { get; set; } = Const.Name.ToLower() + "_dev";
     public string Name { get; set; } = Const.Name;
     public string Description { get; set; } = "A " + Const.Name + " server";
-    [JsonIgnore] public string DisplayAddress => Address + ':' + Port;
+    public string DisplayAddress => Address + ':' + Port;
 }
 
 public class ServerProfile
@@ -88,6 +87,7 @@ public class DownloadData
     public string? AssetBundleUrl { get; set; } = null;
     public string? ExResourceUrl { get; set; } = null;
     public string? LuaUrl { get; set; } = null;
+
     // ReSharper disable once InconsistentNaming
     public string? IFixUrl { get; set; } = null;
 }

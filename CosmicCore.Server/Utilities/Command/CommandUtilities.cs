@@ -51,7 +51,9 @@ public static class CommandUtilities
 
     public static void LogReturnCode(ICommand? command, int returnCode, Account.Account executor)
     {
-        var returnCodeMap = command is not null ? CommandManager.ReturnCodeMap.ConcatenateRange(command.ReturnCodeMap) : CommandManager.ReturnCodeMap;
+        var returnCodeMap = command is not null
+            ? CommandManager.ReturnCodeMap.ConcatenateRange(command.ReturnCodeMap)
+            : CommandManager.ReturnCodeMap;
 
         if (returnCodeMap.TryGetValue(returnCode, out var message) && message is not null)
         {
@@ -59,7 +61,7 @@ public static class CommandUtilities
             {
                 if (executor != Account.Account.Console)
                 {
-                    executor.PrivateChat.SendChat(Account.Account.Console.Id, executor.Id, message);
+                    executor.PrivateChat.SyncChat(Account.Account.Console.Id, executor.Id, message);
                 }
                 else
                 {
@@ -70,7 +72,7 @@ public static class CommandUtilities
             {
                 if (executor != Account.Account.Console)
                 {
-                    executor.PrivateChat.SendChat(Account.Account.Console.Id, executor.Id, message);
+                    executor.PrivateChat.SyncChat(Account.Account.Console.Id, executor.Id, message);
                 }
                 else
                 {

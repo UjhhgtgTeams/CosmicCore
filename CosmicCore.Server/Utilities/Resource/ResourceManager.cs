@@ -9,24 +9,24 @@ namespace CosmicCore.Server.Utilities.Resource;
 
 public static class ResourceManager
 {
-    public static List<AvatarExcel> AvatarExcels { get; private set; }
-    public static List<AvatarPromotionExcel> AvatarPromotionExcels { get; private set; }
-    public static List<AvatarSkillTreeExcel> AvatarSkillTreeExcels { get; private set; }
-    public static List<ChatBubbleExcel> ChatBubbleExcels { get; private set; }
-    public static List<EquipmentExcel> EquipmentExcels { get; private set; }
-    public static List<HeroExcel> HeroExcels { get; private set; }
-    public static List<ItemExcel> ItemExcels { get; private set; }
-    public static List<MazePlaneExcel> MazePlaneExcels { get; private set; }
-    public static List<NpcMonsterExcel> NpcMonsterExcels { get; private set; }
-    public static List<PhoneThemeExcel> PhoneThemeExcels { get; private set; }
-    public static List<PropExcel> PropExcels { get; private set; }
-    public static List<RelicExcel> RelicExcels { get; private set; }
-    public static Dictionary<int, List<RelicMainAffixExcel>> RelicMainAffixExcels { get; private set; }
-    public static Dictionary<int, List<RelicSubAffixExcel>> RelicSubAffixExcels { get; private set; }
-    public static List<ShopExcel> ShopExcels { get; private set; }
-    public static List<ShopGoodsExcel> ShopGoodsExcels { get; private set; }
-    public static List<StageExcel> StageExcels { get; private set; }
-    public static Dictionary<long, string> TextMap { get; private set; }
+    public static List<AvatarExcel> AvatarExcels { get; private set; } = [];
+    public static List<AvatarPromotionExcel> AvatarPromotionExcels { get; private set; } = [];
+    public static List<AvatarSkillTreeExcel> AvatarSkillTreeExcels { get; private set; } = [];
+    public static List<ChatBubbleExcel> ChatBubbleExcels { get; private set; } = [];
+    public static List<EquipmentExcel> EquipmentExcels { get; private set; } = [];
+    public static List<HeroExcel> HeroExcels { get; private set; } = [];
+    public static List<ItemExcel> ItemExcels { get; private set; } = [];
+    public static List<MazePlaneExcel> MazePlaneExcels { get; private set; } = [];
+    public static List<NpcMonsterExcel> NpcMonsterExcels { get; private set; } = [];
+    public static List<PhoneThemeExcel> PhoneThemeExcels { get; private set; } = [];
+    public static List<PropExcel> PropExcels { get; private set; } = [];
+    public static List<RelicExcel> RelicExcels { get; private set; } = [];
+    public static Dictionary<int, List<RelicMainAffixExcel>> RelicMainAffixExcels { get; private set; } = [];
+    public static Dictionary<int, List<RelicSubAffixExcel>> RelicSubAffixExcels { get; private set; } = [];
+    public static List<ShopExcel> ShopExcels { get; private set; } = [];
+    public static List<ShopGoodsExcel> ShopGoodsExcels { get; private set; } = [];
+    public static List<StageExcel> StageExcels { get; private set; } = [];
+    public static Dictionary<long, string> TextMap { get; private set; } = [];
     // public static Dictionary<string, FloorInfo> FloorInfos { get; private set; }
 
     /// <summary>

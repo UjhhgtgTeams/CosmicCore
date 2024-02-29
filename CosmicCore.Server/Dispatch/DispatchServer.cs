@@ -12,7 +12,8 @@ public static class DispatchServer
         Log.Warning("Starting dispatch server...");
         RegionManager.Initialize(ConfigManager.Config.DispatchServer.Region);
         DispatchService.Start(ConfigManager.Config.DispatchServer);
-        Log.Information("Dispatch server started and listening on {0}", ConfigManager.Config.DispatchServer.DisplayAddress);
+        Log.Information("Dispatch server started and listening on {Address}",
+            ConfigManager.Config.DispatchServer.DisplayAddress);
     }
 
     public static void Stop()

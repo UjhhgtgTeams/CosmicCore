@@ -1,13 +1,12 @@
-﻿using System.Collections.Immutable;
-using System.Security;
-using Newtonsoft.Json;
+﻿using System.Security;
+using MessagePack;
 using Serilog;
 
 namespace CosmicCore.Server.Utilities.Account;
 
 public class AccountDatabase
 {
-    public List<Account> Accounts { get; set; } = [];
+    private List<Account> Accounts { get; set; } = [];
 
     public int NextId
     {
@@ -20,12 +19,23 @@ public class AccountDatabase
         }
     }
 
+    public IEnumerable<Account> OnlineAccounts => Accounts.Where(acc => acc.IsLoggedIn);
+
     public void InitializeDatabase(StringPath path)
     {
         Log.Information("Loading accounts...");
         if (File.Exists(path))
         {
-            Accounts = JsonConvert.DeserializeObject<List<Account>>(File.ReadAllText(path)) ?? [];
+            try
+            {
+                Accounts = MessagePackSerializer.Typeless.Deserialize(File.ReadAllBytes(path)) as List<Account> ?? [];
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
+                                           or SecurityException or MessagePackSerializationException)
+            {
+                Log.Fatal(ex, "Exception happened while loading accounts from {Path}!", path.ToString());
+            }
+
             Log.Information("{0} accounts loaded from file {1}", Accounts.Count, path);
         }
         else
@@ -37,16 +47,17 @@ public class AccountDatabase
 
     public bool SaveToFile(StringPath path)
     {
-        Log.Information("Saving account database");
+        Log.Information("Saving account database...");
         try
         {
-            File.WriteAllText(path, JsonConvert.SerializeObject(Accounts, Formatting.Indented));
+            File.WriteAllBytes(path, MessagePackSerializer.Typeless.Serialize(Accounts));
             Log.Information("Account database saved");
             return true;
         }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SecurityException)
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
+                                       or SecurityException or MessagePackSerializationException)
         {
-            Log.Error("Failed to save account database!");
+            Log.Fatal("Failed to save account database to {Path}!", path.ToString());
             return false;
         }
     }
@@ -64,9 +75,15 @@ public class AccountDatabase
         return !hasRepeatedIdOrUserName;
     }
 
-    public int DeleteAccount(long id)
+    public bool DeleteAccount(long id)
     {
-        return Accounts.RemoveAll(acc => acc.Id == id);
+        var amount = Accounts.RemoveAll(acc => acc.Id == id);
+        if (amount > 1)
+        {
+            Log.Error("Account database inconsistent: more than 1 account with id {Id} exists!", id);
+        }
+
+        return amount >= 1;
     }
 
     public bool ContainsAccount(long id)

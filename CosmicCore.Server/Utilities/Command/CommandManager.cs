@@ -35,7 +35,7 @@ public static class CommandManager
             .Where(type => typeof(ICommand).IsAssignableFrom(type) && !type.IsAbstract)
             .Select(Activator.CreateInstance)
             .Cast<ICommand>());
-        Log.Information("{0} builtin commands loaded", Commands.Count);
+        Log.Information("{Count} builtin commands loaded", Commands.Count);
 
         var commandCnt = 0;
         foreach (var commands in PluginManager.Plugins.Values.Select(plugin => plugin.Commands))
@@ -43,6 +43,7 @@ public static class CommandManager
             Commands.AddRange(commands);
             commandCnt += commands.Length;
         }
+
         Log.Information("{0} plugin commands loaded", commandCnt);
     }
 

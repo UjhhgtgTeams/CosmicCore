@@ -7,15 +7,14 @@ namespace CosmicCore.Server.Gate.Services.Lineup;
 public class LineupManager : AccountManager
 {
     public Lineup[] Lineups = new Lineup[Const.DefaultTeams];
-    public int Index { get; set; } = 0;
-    [JsonProperty(nameof(Mp))] private int _mp = 5;
+    public int Index { get; set; }
+    private int _mp = 5;
 
     public LineupManager(Account account) : base(account)
     {
         PopulateLineups();
     }
 
-    [JsonIgnore]
     public int Mp
     {
         get => _mp;
@@ -33,7 +32,7 @@ public class LineupManager : AccountManager
             }
         }
     }
-    [JsonIgnore] public Lineup? CurrentLineup => Lineups.TryGet(Index);
+     public Lineup? CurrentLineup => Lineups.TryGet(Index);
 
     public void PopulateLineups()
     {
@@ -59,7 +58,7 @@ public class LineupManager : AccountManager
 
         if (lineup.Avatars.Count == 0)
         {
-            var avatar = Owner.AvatarInventory.Avatars.TryGetValue(Const.TrailblazerAvatarId);
+            var avatar = Owner.AvatarInventory.Avatars.GetValueOrDefault(Const.TrailblazerAvatarId);
             if (avatar is not null)
             {
                 lineup.Avatars.Add(avatar.AvatarId);

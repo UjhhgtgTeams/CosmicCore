@@ -5,7 +5,7 @@ namespace CosmicCore.Server.Utilities.Resource.Resources;
 [Resource(FileNames = ["RelicMainAffixConfig.json"])]
 public class RelicMainAffixExcel : IResource
 {
-    public override int Id => (GroupId << 16) + AffixId;
+    public int Id => (GroupId << 16) + AffixId;
     [JsonProperty("GroupID")]
     public int GroupId { get; }
     [JsonProperty("AffixID")]
@@ -15,7 +15,7 @@ public class RelicMainAffixExcel : IResource
     public double LevelAdd { get; }
     public bool IsAvailable { get; }
 
-    public override void OnLoad()
+    public void OnLoad()
     {
 
     }

@@ -1,7 +1,7 @@
 ﻿namespace CosmicCore.Server.Utilities.Resource;
 
-public abstract class IResource
+public interface IResource
 {
-    public abstract int Id { get; }
-    public abstract void OnLoad();
+    public int Id { get; }
+    public void OnLoad();
 }

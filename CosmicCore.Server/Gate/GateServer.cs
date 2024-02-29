@@ -10,7 +10,7 @@ public static class GateServer
     {
         Log.Warning("Starting gate server...");
         GateService.Start(ConfigManager.Config.GateServer);
-        Log.Information("Gate server started and listening on {0}", ConfigManager.Config.GateServer.DisplayAddress);
+        Log.Information("Gate server started and listening on {Address}", ConfigManager.Config.GateServer.DisplayAddress);
     }
 
     public static void Stop()

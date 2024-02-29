@@ -15,7 +15,7 @@ public class PacketHandler(NetSession session) : ChannelHandlerAdapter
         if (packet.Data is null)
         {
             if (!SendDummyResponse(packet.CmdId))
-                Log.Debug("Received packet with undefined cmdid {0}", packet.CmdId);
+                Log.Debug("Received packet with undefined cmdid {CmdId}", packet.CmdId);
 
             return;
         }

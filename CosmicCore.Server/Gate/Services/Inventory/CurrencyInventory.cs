@@ -4,19 +4,22 @@ namespace CosmicCore.Server.Gate.Services.Inventory;
 
 public class CurrencyInventory(Account account) : AccountManager(account)
 {
-    public long Credit { get; set; } = 0;
-    public long Jade { get; set; } = 0;
-    public long Crystal { get; set; } = 0;
+    public long Credit { get; set; }
+    public long Jade { get; set; }
+    public long Crystal { get; set; }
+
     public long SCoin
     {
         get => Credit;
         set => Credit = value;
     }
+
     public long HCoin
     {
         get => Jade;
         set => Jade = value;
     }
+
     public long MCoin
     {
         get => Crystal;

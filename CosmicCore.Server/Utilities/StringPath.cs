@@ -7,16 +7,11 @@ namespace CosmicCore.Server.Utilities;
 /// (Utility used for getting full path of file.)
 /// </summary>
 /// <param name="path">Path to a file or directory.</param>
-public class StringPath
+public class StringPath(string path)
 {
-    public string Path { get; private set; }
-
-    public StringPath(string path)
-    {
-        Path = System.IO.Path.GetFullPath(path) == path
-            ? path
-            : System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", path));
-    }
+    public string Path { get; } = System.IO.Path.GetFullPath(path) == path
+        ? path
+        : System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", path));
 
     public static implicit operator StringPath(string other)
     {
