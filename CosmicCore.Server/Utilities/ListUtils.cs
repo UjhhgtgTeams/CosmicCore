@@ -1,6 +1,6 @@
 ﻿namespace CosmicCore.Server.Utilities;
 
-public static class ListUtil
+public static class ListUtils
 {
     public static IEnumerable<int> FromIntRange(int start, int end)
     {

@@ -29,7 +29,7 @@ public static class AvatarUtil
                 Promotion = 6,
                 Rank = (uint)avatar.Rank,
                 EquipmentUniqueId = 0,
-                HasTakenPromotionRewardList = ListUtil.FromUIntRange(0, 5).ToArray()
+                HasTakenPromotionRewardList = ListUtils.FromUIntRange(0, 5).ToArray()
             };
             // if (avatar.Weapon is not null)
             //     proto.EquipmentUniqueId = avatar.Weapon.UniqueId;

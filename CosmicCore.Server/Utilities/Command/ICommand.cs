@@ -1,7 +1,7 @@
 ﻿namespace CosmicCore.Server.Utilities.Command;
 
-public abstract class ICommand
+public interface ICommand
 {
-    public abstract Dictionary<int, string> ReturnCodeMap { get; }
-    public abstract int OnExecute(string args);
+    public Dictionary<int, string> ReturnCodeMap { get; }
+    public int OnExecute(string args);
 }

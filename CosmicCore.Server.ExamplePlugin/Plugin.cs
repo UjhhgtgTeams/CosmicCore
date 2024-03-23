@@ -4,25 +4,21 @@ using Serilog;
 
 namespace CosmicCore.Server.ExamplePlugin;
 
+[Plugin(Name = "ExamplePlugin", Description = "An example plugin which does nothing.")]
 public class Plugin : IPlugin
 {
-    public override string Name => "ExamplePlugin";
-    public override string Description => "An example plugin.";
-    public override string[] Dependencies => [];
-    public override ICommand[] Commands => [];
-
     public override void OnLoad()
     {
-        Log.Information("Example plugin loading");
+        Log.Information("Example plugin loading...");
     }
 
     public override void OnEnable()
     {
-        Log.Information("Example plugin enabling");
+        Log.Information("Example plugin enabling...");
     }
 
     public override void OnDisable()
     {
-        Log.Information("Example plugin disabling");
+        Log.Information("Example plugin disabling...");
     }
 }

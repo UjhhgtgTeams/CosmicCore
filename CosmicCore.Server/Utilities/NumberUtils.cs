@@ -1,13 +1,8 @@
 ﻿namespace CosmicCore.Server.Utilities;
 
-public static class Number
+public static class NumberUtils
 {
-    public static int SafeAdd(int left, int right)
-    {
-        return SafeAdd(left, right, 0, int.MaxValue);
-    }
-
-    public static int SafeAdd(int left, int right, long min, long max)
+    public static int SafeAdd(int left, int right, long min = 0, long max = int.MaxValue)
     {
         unchecked
         {
@@ -20,12 +15,7 @@ public static class Number
         }
     }
 
-    public static int SafeSubtract(int left, int right)
-    {
-        return SafeSubtract(left, right, int.MinValue, int.MaxValue);
-    }
-
-    public static int SafeSubtract(int left, int right, long min, long max)
+    public static int SafeSubtract(int left, int right, long min = int.MinValue, long max = int.MaxValue)
     {
         unchecked
         {

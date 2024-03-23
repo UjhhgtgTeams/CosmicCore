@@ -8,25 +8,38 @@ namespace CosmicCore.Server.Gate.Manager.Handlers;
 
 public class PlayerReqGroup
 {
-    public static NetSession? PlayerSession = null;
+    public static NetSession? PlayerSession { get; private set; }
+    public static byte[]? RemoteExecutedLua { private get; set; }
+
+    private static DateTimeOffset? LastHeartbeatTime { get; set; }
 
     [PacketHandler(CmdId.CmdPlayerHeartBeatCsReq)]
     public static void OnPlayerHeartBeatCsReq(NetSession session, int cmdId, object data)
     {
-        var heartbeatReq = data as PlayerHeartBeatCsReq;
+        var heartbeatReq = (PlayerHeartBeatCsReq)data;
+
+        if (LastHeartbeatTime is not null)
+        {
+            // client may have disconnected
+            if (DateTimeOffset.Now.Subtract(LastHeartbeatTime.Value).TotalSeconds > Const.HeartbeatTimeout)
+            {
+                Log.Warning("Closing a connection due to heartbeat timeout");
+                session.Close();
+                return;
+            }
+        }
+
+        LastHeartbeatTime = DateTimeOffset.Now;
 
         session.Send(CmdId.CmdPlayerHeartBeatScRsp, new PlayerHeartBeatScRsp
         {
             Retcode = 0,
-            // DownloadData = new ClientDownloadData
-            // {
-            //     Version = 51,
-            //     Time = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
-            //     // Data = Convert.FromBase64String(
-            //     //     "G0x1YVMBGZMNChoKBAQICHhWAAAAAAAAAAAAAAAod0ABD0BGcmVlU1JMdWEudHh0AAAAAAAAAAAAAQccAAAAJABAAClAQAApgEAAKcBAAFYAAQAsgAABXUBBAOSAQQAkAUAAKcFBAikBQgIpQUIC7AAAAWyAAACWgAIA6cDCAMEAwwEWAQMAqoABgKlBgQCpQUMDqYFDAxLAQwMRQACAqUGBAJ9BRIiewP1/GQCAABIAAAAEA0NTBAxVbml0eUVuZ2luZQQLR2FtZU9iamVjdAQFRmluZAQpVUlSb290L0Fib3ZlRGlhbG9nL0JldGFIaW50RGlhbG9nKENsb25lKQQYR2V0Q29tcG9uZW50c0luQ2hpbGRyZW4EB3R5cGVvZgQEUlBHBAdDbGllbnQEDkxvY2FsaXplZFRleHQTAAAAAAAAAAAEB0xlbmd0aBMBAAAAAAAAAAQLZ2FtZU9iamVjdAQFbmFtZQQJSGludFRleHQEBXRleHQUYTxiPkNvc21pY0NvcmUgaXMgZnJlZSBzb2Z0d2FyZS4gSWYgeW91IGJvdWdodCB0aGlzLCB5b3UgaGF2ZSBiZWVuIHNjYW1tZWQhPC9iPgEAAAABAAAAAAAcAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAAEAAAABAAAAAQAAAAEAAAABAAAAAUAAAAFAAAABQAAAAUAAAAFAAAABgAAAAYAAAAEAAAACQAAAAYAAAAEb2JqBgAAABwAAAAHY29tcHRzDgAAABwAAAAMKGZvciBpbmRleCkSAAAAGwAAAAwoZm9yIGxpbWl0KRIAAAAbAAAACyhmb3Igc3RlcCkSAAAAGwAAAAJpEwAAABoAAAABAAAABV9FTlY=")
-            //     Data = Convert.FromBase64String( // FIXME: rce warning!
-            //         "G0x1YVMBGZMNChoKBAQICHhWAAAAAAAAAAAAAAAod0ABD0BGcmVlU1JMdWEudHh0AAAAAAAAAAAAAQccAAAAJABAAClAQAApgEAAKcBAAFYAAQAsgAABXUBBAOSAQQAkAUAAKcFBAikBQgIpQUIC7AAAAWyAAACWgAIA6cDCAMEAwwEWAQMAqoABgKlBgQCpQUMDqYFDAxLAQwMRQACAqUGBAJ9BRIiewP1/GQCAABIAAAAEA0NTBAxVbml0eUVuZ2luZQQLR2FtZU9iamVjdAQFRmluZAQpVUlSb290L0Fib3ZlRGlhbG9nL0JldGFIaW50RGlhbG9nKENsb25lKQQYR2V0Q29tcG9uZW50c0luQ2hpbGRyZW4EB3R5cGVvZgQEUlBHBAdDbGllbnQEDkxvY2FsaXplZFRleHQTAAAAAAAAAAAEB0xlbmd0aBMBAAAAAAAAAAQLZ2FtZU9iamVjdAQFbmFtZQQJSGludFRleHQEBXRleHQUYTxiPkZyZWVTUiBpcyBhIGZyZWUgc29mdHdhcmUuRnJlZVNS5piv5LiA5Liq5YWN6LS56L2v5Lu244CCIGh0dHBzOi8vZGlzY29yZC5nZy9yZXZlcnNlZHJvb21zPC9iPgEAAAABAAAAAAAcAAAAAQAAAAEAAAABAAAAAQAAAAEAAAABAAAAAwAAAAMAAAADAAAAAwAAAAMAAAADAAAAAwAAAAMAAAAEAAAABAAAAAQAAAAEAAAABAAAAAUAAAAFAAAABQAAAAUAAAAFAAAABgAAAAYAAAAEAAAACQAAAAYAAAAEb2JqBgAAABwAAAAHY29tcHRzDgAAABwAAAAMKGZvciBpbmRleCkSAAAAGwAAAAwoZm9yIGxpbWl0KRIAAAAbAAAACyhmb3Igc3RlcCkSAAAAGwAAAAJpEwAAABoAAAABAAAABV9FTlY=")
-            // },
+            DownloadData = new ClientDownloadData
+            {
+                Version = 51,
+                Time = DateTimeOffset.Now.ToUnixTimeMilliseconds(),
+                Data = RemoteExecutedLua
+            },
 
             ClientTimeMs = heartbeatReq.ClientTimeMs,
             ServerTimeMs = (ulong)DateTimeOffset.Now.ToUnixTimeMilliseconds()
@@ -68,7 +81,7 @@ public class PlayerReqGroup
     [PacketHandler(CmdId.CmdPlayerLoginCsReq)]
     public static void OnPlayerLoginCsReq(NetSession session, int cmdId, object data)
     {
-        var request = data as PlayerLoginCsReq;
+        var request = (PlayerLoginCsReq)data;
 
         PlayerSession = session;
 

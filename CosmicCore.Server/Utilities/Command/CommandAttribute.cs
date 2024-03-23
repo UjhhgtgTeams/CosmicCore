@@ -3,8 +3,8 @@
 [AttributeUsage(AttributeTargets.Class)]
 public class CommandAttribute : Attribute
 {
-    public string[] Names { get; set; } = ["should_not_happen"];
-    public string Description { get; set; } = "Should not happen.";
-    public string? Usage { get; set; } = null;
-    public string[] RequiredPermissions { get; set; } = ["should.not.happen"];
+    public required string[] Names { get; init; }
+    public required string Description { get; init; }
+    public required string Usage { get; init; }
+    public required string[] RequiredPermissions { get; init; }
 }

@@ -19,42 +19,42 @@ internal class ProxyService
         ".mihoyo.com"
     ];
 
-    private readonly ProxyServer _webProxyServer;
+    private readonly ProxyServer _proxyServer;
     private readonly string _targetRedirectHost;
     private readonly int _targetRedirectPort;
 
     public ProxyService(string targetRedirectHost, int targetRedirectPort)
     {
-        _webProxyServer = new ProxyServer();
-        _webProxyServer.CertificateManager.EnsureRootCertificate();
+        _proxyServer = new ProxyServer();
+        _proxyServer.CertificateManager.EnsureRootCertificate();
 
-        _webProxyServer.BeforeRequest += BeforeRequest;
-        _webProxyServer.ServerCertificateValidationCallback += OnCertValidation;
+        _proxyServer.BeforeRequest += BeforeRequest;
+        _proxyServer.ServerCertificateValidationCallback += OnCertValidation;
 
         _targetRedirectHost = targetRedirectHost;
         _targetRedirectPort = targetRedirectPort;
 
-        SetEndPoint(new ExplicitProxyEndPoint(IPAddress.Any, 8080, true));
+        SetEndPoint(new ExplicitProxyEndPoint(IPAddress.Any, 8080));
     }
 
     private void SetEndPoint(ExplicitProxyEndPoint explicitEp)
     {
         explicitEp.BeforeTunnelConnectRequest += BeforeTunnelConnectRequest;
 
-        _webProxyServer.AddEndPoint(explicitEp);
-        _webProxyServer.Start();
+        _proxyServer.AddEndPoint(explicitEp);
+        _proxyServer.Start();
 
-        _webProxyServer.SetAsSystemHttpProxy(explicitEp);
-        _webProxyServer.SetAsSystemHttpsProxy(explicitEp);
+        _proxyServer.SetAsSystemHttpProxy(explicitEp);
+        _proxyServer.SetAsSystemHttpsProxy(explicitEp);
     }
 
     public void Shutdown()
     {
-        _webProxyServer.Stop();
-        _webProxyServer.Dispose();
+        _proxyServer.Stop();
+        _proxyServer.Dispose();
     }
 
-    private Task BeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs args)
+    private static Task BeforeTunnelConnectRequest(object sender, TunnelConnectSessionEventArgs args)
     {
         var hostname = args.HttpClient.Request.RequestUri.Host;
         Console.WriteLine(hostname);
@@ -63,7 +63,7 @@ internal class ProxyService
         return Task.CompletedTask;
     }
 
-    private Task OnCertValidation(object sender, CertificateValidationEventArgs args)
+    private static Task OnCertValidation(object sender, CertificateValidationEventArgs args)
     {
         if (args.SslPolicyErrors == SslPolicyErrors.None)
             args.IsValid = true;

@@ -1,5 +1,6 @@
 ﻿using CosmicCore.Server.Utilities.Command;
 using Serilog;
+using Spectre.Console;
 
 namespace CosmicCore.Server.Utilities.Console;
 
@@ -9,7 +10,7 @@ public static class ConsoleManager
     {
         while (true)
         {
-            System.Console.Write("> ");
+            AnsiConsole.Markup("[gray]>[/] ");
             var input = System.Console.ReadLine() ?? "";
             if (!string.IsNullOrWhiteSpace(input))
             {
@@ -24,7 +25,6 @@ public static class ConsoleManager
                     return;
                 }
             }
-
         }
     }
 }

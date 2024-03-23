@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
+        <LangVersion>latest</LangVersion>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>CosmicCore.Server.LuaPlugin</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Titanium.Web.Proxy" Version="3.2.2-beta"/>
+        <ProjectReference Include="..\CosmicCore.Server\CosmicCore.Server.csproj"/>
     </ItemGroup>
 
 </Project>

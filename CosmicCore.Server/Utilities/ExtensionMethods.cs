@@ -1,4 +1,6 @@
-﻿namespace CosmicCore.Server.Utilities;
+﻿using System.Diagnostics.Contracts;
+
+namespace CosmicCore.Server.Utilities;
 
 public static class ExtensionMethods
 {
@@ -13,16 +15,54 @@ public static class ExtensionMethods
         return task.Result;
     }
 
-    /// <summary>
-    /// Returns the value according to its key in a dictionary,
-    /// or null if key does not exist.
-    /// </summary>
-    public static TValue? TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key) where TKey : notnull
+    [Pure]
+    public static byte[] ToBytesFromHex(this string hexString)
     {
-        dict.TryGetValue(key, out var value);
-        return value;
+        string[] strValues;
+        if (hexString.Contains(','))
+            strValues = hexString.Split(',');
+        else if (hexString.Contains(' '))
+            strValues = hexString.Split(' ');
+        else if (hexString.Length <= 2)
+            strValues = [hexString];
+        else
+            throw new ArgumentException("Given string does not contain hex values joined with comma or space",
+                nameof(hexString));
+
+        List<byte> byteValues = [];
+        foreach (var hexValue in strValues)
+        {
+            var intValue = Convert.ToInt32(hexValue, 16);
+            var byteValue = Convert.ToByte(intValue);
+            byteValues.Add(byteValue);
+        }
+
+        return byteValues.ToArray();
     }
 
+    /// <summary>
+    /// Determines whether an IEnumerable contains any element in another IEnumerable.
+    /// </summary>
+    /// <param name="left">An IEnumerable.</param>
+    /// <param name="right">Another IEnumerable.</param>
+    /// <returns>A boolean indicating whether any item in right exists in left.</returns>
+    [Pure]
+    public static bool ContainsAnyInRange<T>(this IEnumerable<T> left, IEnumerable<T> right)
+    {
+        return left.All(item => !right.Contains(item));
+    }
+
+    /// <summary>Joins a sequence of another sequence into one single sequence.</summary>
+    /// <param name="source">An IEnumerable of values to project.</param>
+    /// <returns>An IEnumerable whose elements are joined.</returns>
+    [Pure]
+    public static IEnumerable<T> SelectMany<T>(this IEnumerable<IEnumerable<T>>? source)
+    {
+        ArgumentNullException.ThrowIfNull(source, nameof(source));
+        return source.SelectMany(item => item);
+    }
+
+    [Pure]
     public static T? TryGet<T>(this T[] enumerable, int index) where T : class
     {
         T? value;
@@ -33,18 +73,10 @@ public static class ExtensionMethods
         }
         catch (IndexOutOfRangeException)
         {
-            value = null;
+            return null;
         }
 
         return value;
-    }
-
-    public static void AddRange<TKey, TValue>(this Dictionary<TKey, TValue> left, Dictionary<TKey, TValue> right) where TKey : notnull
-    {
-        foreach (var pair in right)
-        {
-            left.Add(pair.Key, pair.Value);
-        }
     }
 
     public static void AddRange<T>(this HashSet<T> left, IEnumerable<T> right)
@@ -55,7 +87,9 @@ public static class ExtensionMethods
         }
     }
 
-    public static Dictionary<TKey, TValue> ConcatenateRange<TKey, TValue>(this Dictionary<TKey, TValue> left, Dictionary<TKey, TValue> right) where TKey : notnull
+    [Pure]
+    public static Dictionary<TKey, TValue> JoinRange<TKey, TValue>(this Dictionary<TKey, TValue> left,
+        Dictionary<TKey, TValue> right) where TKey : notnull
     {
         var dict = left.ToDictionary(pair => pair.Key, pair => pair.Value);
 
@@ -68,11 +102,6 @@ public static class ExtensionMethods
         }
 
         return dict;
-    }
-
-    public static string ToFullPath(this string other)
-    {
-        return other;
     }
 
     public static string ReadAllAsString(this Stream stream)

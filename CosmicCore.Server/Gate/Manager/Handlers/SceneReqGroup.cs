@@ -35,7 +35,7 @@ public class SceneReqGroup
         var mapInfo = new SceneMapInfo
         {
             Retcode = 0,
-            LightenSectionList = ListUtil.FromUIntRange(0, 99).ToArray(),
+            LightenSectionList = ListUtils.FromUIntRange(0, 99).ToArray(),
             EntryId = request.EntryIdList[0],
             ChestList =
             {
@@ -61,7 +61,7 @@ public class SceneReqGroup
         {
             Retcode = 0,
             EntryId = request.EntryIdList[0],
-            LightenSectionList = ListUtil.FromUIntRange(0, 99).ToArray(),
+            LightenSectionList = ListUtils.FromUIntRange(0, 99).ToArray(),
             CurrentMapEntryId = request.EntryId,
             SceneMapInfoList = { mapInfo }
         };

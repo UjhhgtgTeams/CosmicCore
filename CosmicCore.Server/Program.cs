@@ -26,7 +26,7 @@ public static class Program
         PerformanceWatcher.Start();
         ConfigManager.LoadConfig("./config.json");
         PluginManager.LoadPlugins();
-        CommandManager.LoadCommands();
+        CommandManager.LoadBuiltinCommands();
         HandbookGenerator.Generate("./" + Const.Name + " Handbook.txt");
         PluginManager.EnablePlugins();
 

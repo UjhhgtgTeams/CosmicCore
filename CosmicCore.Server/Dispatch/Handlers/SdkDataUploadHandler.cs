@@ -2,7 +2,6 @@
 using CosmicCore.Server.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Log = Serilog.Log;
 
 namespace CosmicCore.Server.Dispatch.Handlers;
 

@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using CosmicCore.Server.Utilities.Plugin;
 using Serilog;
 
 namespace CosmicCore.Server.Utilities.Command;
@@ -11,15 +10,13 @@ public static class CommandManager
         { 0, null }, // completed successfully
         { -1, "Command does not exist!" }, // not found
         { 1, "Argument invalid!" }, // argument invalid
-        { 2, "Permission not enough!" }, // no permission
-        { 3, "Command unusable" }, // unusable
-        { 999, "Unhandled exception occured while executing command!" } // exception
+        { 2, "Permission not enough!" } // no permission
     };
 
-    public static List<ICommand> Commands { get; } = [];
+    public static Dictionary<IEnumerable<string>, ICommand> Commands { get; } = [];
     public static bool CommandsLoaded { get; private set; }
 
-    public static void LoadCommands()
+    public static void LoadBuiltinCommands()
     {
         if (CommandsLoaded)
         {
@@ -30,20 +27,16 @@ public static class CommandManager
         Log.Information("Loading commands...");
         CommandsLoaded = true;
 
-        Commands.AddRange(Assembly.GetExecutingAssembly()
-            .GetTypes()
-            .Where(type => typeof(ICommand).IsAssignableFrom(type) && !type.IsAbstract)
-            .Select(Activator.CreateInstance)
-            .Cast<ICommand>());
-        Log.Information("{0} builtin commands loaded", Commands.Count);
-
-        var commandCnt = 0;
-        foreach (var commands in PluginManager.Plugins.Values.Select(plugin => plugin.Commands))
+        foreach (var command in Assembly.GetExecutingAssembly()
+                     .GetTypes()
+                     .Where(type => typeof(ICommand).IsAssignableFrom(type) && !type.IsAbstract)
+                     .Select(Activator.CreateInstance)
+                     .Cast<ICommand>())
         {
-            Commands.AddRange(commands);
-            commandCnt += commands.Length;
+            Commands.Add(command.GetCommandAttribute().Names, command);
         }
-        Log.Information("{0} plugin commands loaded", commandCnt);
+
+        Log.Information("{0} builtin commands loaded", Commands.Count);
     }
 
     public static void ExecuteCommand(string command)
@@ -52,35 +45,31 @@ public static class CommandManager
 
         foreach (var cmd in Commands)
         {
-            var attr = GetCommandAttributeOf(cmd);
-            if (attr.Names.Contains(command))
+            if (cmd.Key.Contains(command))
             {
+                var result = -1;
+
                 try
                 {
-                    var result = cmd.OnExecute(command);
+                    result = cmd.Value.OnExecute(command);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex, "Unhandled exception occured while executing command!");
                 }
 
-                return;
+                break;
             }
         }
     }
 
-    public static CommandAttribute GetCommandAttributeOf<T>() where T : ICommand
+    public static CommandAttribute GetCommandAttribute(this Type type)
     {
-        return GetCommandAttributeOf(typeof(T));
+        return type.GetCustomAttribute<CommandAttribute>()!;
     }
 
-    public static CommandAttribute GetCommandAttributeOf(Type type)
+    public static CommandAttribute GetCommandAttribute(this ICommand command)
     {
-        return type.GetCustomAttribute(typeof(CommandAttribute), true) as CommandAttribute ?? new CommandAttribute();
-    }
-
-    public static CommandAttribute GetCommandAttributeOf(ICommand command)
-    {
-        return GetCommandAttributeOf(command.GetType());
+        return command.GetType().GetCommandAttribute();
     }
 }

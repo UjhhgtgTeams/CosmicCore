@@ -11,9 +11,9 @@ namespace CosmicCore.Server.Utilities.Command.Commands;
     RequiredPermissions = [])]
 public class KickCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = [];
+    public Dictionary<int, string> ReturnCodeMap { get; } = [];
 
-    public override int OnExecute(string args)
+    public int OnExecute(string args)
     {
         if (PlayerReqGroup.PlayerSession is not null)
         {

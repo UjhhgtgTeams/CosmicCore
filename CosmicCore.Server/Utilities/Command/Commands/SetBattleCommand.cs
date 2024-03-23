@@ -3,67 +3,77 @@
 namespace CosmicCore.Server.Utilities.Command.Commands;
 
 [Command(Names = ["btl", "setbattle"],
-    Description = "Sets in-battle properties.",
+    Description = "Sets in-battle properties. (Only used in beta versions.)",
     Usage = "avatar|weapon|arank|wrank",
     RequiredPermissions = [])]
 public class SetBattleCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = [];
-
-    public override int OnExecute(string args)
+    public Dictionary<int, string> ReturnCodeMap { get; } = new()
     {
-        var arguments = args.Split(' ').ToList();
-        var operation = args.Split(' ')[0];
-        arguments.RemoveAt(0);
+        { 4, "This command can only be used in beta versions!" }
+    };
 
-        if (operation == "avatar")
+    public int OnExecute(string args)
+    {
+        if (Const.GitBranch.StartsWith("beta"))
         {
-            for (var index = 0; index < 4; index++)
+            var arguments = args.Split(' ').ToList();
+            var operation = args.Split(' ')[0];
+            arguments.RemoveAt(0);
+
+            if (operation == "avatar")
             {
-                LineupReqGroup.UpdateAvatar(index, Convert.ToInt32(arguments[index]));
+                for (var index = 0; index < 4; index++)
+                {
+                    LineupReqGroup.UpdateAvatar(index, Convert.ToInt32(arguments[index]));
+                }
+
+                return 0;
             }
 
-            return 0;
-        }
-
-        if (operation == "weapon")
-        {
-            for (var index = 0; index < 4; index++)
+            if (operation == "weapon")
             {
-                BattleReqGroup.Avatars[index].Weapon.Id = Convert.ToInt32(arguments[index]);
+                for (var index = 0; index < 4; index++)
+                {
+                    BattleReqGroup.Avatars[index].Weapon.Id = Convert.ToInt32(arguments[index]);
+                }
+
+                return 0;
             }
 
-            return 0;
-        }
-
-        if (operation == "arank")
-        {
-            foreach (var avatar in BattleReqGroup.Avatars)
+            if (operation == "arank")
             {
-                avatar.Rank = Convert.ToInt32(arguments[0]);
+                foreach (var avatar in BattleReqGroup.Avatars)
+                {
+                    avatar.Rank = Convert.ToInt32(arguments[0]);
+                }
+
+                return 0;
             }
 
-            return 0;
-        }
-
-        if (operation == "wrank")
-        {
-            foreach (var avatar in BattleReqGroup.Avatars)
+            if (operation == "wrank")
             {
-                avatar.Weapon.Id = Convert.ToInt32(arguments[0]);
+                foreach (var avatar in BattleReqGroup.Avatars)
+                {
+                    avatar.Weapon.Id = Convert.ToInt32(arguments[0]);
+                }
+
+                return 0;
             }
 
-            return 0;
+            // if (operation == "monsters")
+            // {
+            //     BattleReqGroup.Monsters = ParseMonsters(arguments[0]);
+            //     BattleReqGroup.MonsterLevels = ParseMonsterLevels(arguments[1]);
+            //     return 0;
+            // }
+
+            return 1;
         }
-
-        // if (operation == "monsters")
-        // {
-        //     BattleReqGroup.Monsters = ParseMonsters(arguments[0]);
-        //     BattleReqGroup.MonsterLevels = ParseMonsterLevels(arguments[1]);
-        //     return 0;
-        // }
-
-        return 1;
+        else
+        {
+            return 4;
+        }
     }
 
     // private static Dictionary<uint, List<uint>> ParseMonsters(string rawData)

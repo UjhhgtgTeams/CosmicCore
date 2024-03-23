@@ -9,9 +9,9 @@ namespace CosmicCore.Server.Utilities.Command.Commands;
     RequiredPermissions = [])]
 public class RefillCommand : ICommand
 {
-    public override Dictionary<int, string> ReturnCodeMap { get; } = [];
+    public Dictionary<int, string> ReturnCodeMap { get; } = [];
 
-    public override int OnExecute(string args)
+    public int OnExecute(string args)
     {
         var arguments = args.Split(' ').ToList();
         arguments.RemoveAt(0);
