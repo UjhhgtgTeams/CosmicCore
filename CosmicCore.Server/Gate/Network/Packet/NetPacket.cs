@@ -16,33 +16,33 @@ public class NetPacket
     public byte[] RawData { get; set; }
     public uint TailMagic { get; set; }
     public object? Data { get; set; }
-    public IByteBuffer Buf { get; set; }
+    public IByteBuffer Buffer { get; set; }
 
-    public DeserializationResult Deserialize(IByteBuffer buf)
+    public DeserializationResult Deserialize(IByteBuffer buffer)
     {
-        HeadMagic = buf.ReadUnsignedInt();
+        HeadMagic = buffer.ReadUnsignedInt();
         if (HeadMagic != HeadMagicConst)
-            return DeserializationResult.FailedMagicMismatch;
+            return DeserializationResult.CmdFailedMagicMismatch;
 
-        CmdId = buf.ReadShort();
-        HeadLen = buf.ReadShort();
-        PacketLen = buf.ReadInt();
+        CmdId = buffer.ReadShort();
+        HeadLen = buffer.ReadShort();
+        PacketLen = buffer.ReadInt();
 
-        if (buf.ReadableBytes < HeadLen + PacketLen + 4)
-            return DeserializationResult.FailedLengthInvalid;
+        if (buffer.ReadableBytes < HeadLen + PacketLen + 4)
+            return DeserializationResult.CmdFailedLengthInvalid;
 
         RawData = new byte[PacketLen];
 
-        _ = buf.ReadBytes(HeadLen);
-        buf.ReadBytes(RawData);
+        _ = buffer.ReadBytes(HeadLen);
+        buffer.ReadBytes(RawData);
 
-        TailMagic = buf.ReadUnsignedInt();
+        TailMagic = buffer.ReadUnsignedInt();
         if (TailMagic != TailMagicConst)
-            return DeserializationResult.FailedMagicMismatch;
+            return DeserializationResult.CmdFailedMagicMismatch;
 
         Data = ProtoFactory.Deserialize(CmdId, RawData);
 
-        return DeserializationResult.Success;
+        return DeserializationResult.CmdSuccess;
     }
 
     public void Serialize<T>(IByteBuffer buf) where T : class
@@ -65,7 +65,7 @@ public class NetPacket
 
 public enum DeserializationResult
 {
-    Success = 1,
-    FailedLengthInvalid = 2,
-    FailedMagicMismatch = 3
+    CmdSuccess = 1,
+    CmdFailedLengthInvalid = 2,
+    CmdFailedMagicMismatch = 3
 }

@@ -44,7 +44,7 @@ public static partial class PluginManager
             {
                 if (typeof(IPlugin).IsAssignableFrom(type))
                 {
-                    var plugin = (IPlugin)Activator.CreateInstance(type);
+                    var plugin = (IPlugin)Activator.CreateInstance(type)!;
                     var pluginAttr = type.GetCustomAttribute<PluginAttribute>()!;
 
                     // validation

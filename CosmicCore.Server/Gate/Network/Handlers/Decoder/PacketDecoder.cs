@@ -13,14 +13,14 @@ public class PacketDecoder : MessageToMessageDecoder<IByteBuffer>
         var packet = new NetPacket();
 
         DeserializationResult result;
-        if ((result = packet.Deserialize(message)) != DeserializationResult.Success)
+        if ((result = packet.Deserialize(message)) != DeserializationResult.CmdSuccess)
         {
             context.CloseAsync();
 
             var errorMsg = result switch
             {
-                DeserializationResult.FailedLengthInvalid => "length invalid",
-                DeserializationResult.FailedMagicMismatch => "magic mismatch",
+                DeserializationResult.CmdFailedLengthInvalid => "length invalid",
+                DeserializationResult.CmdFailedMagicMismatch => "magic mismatch",
                 _ => throw new ArgumentOutOfRangeException(nameof(message), "this exception will never be thrown")
             };
             Log.Warning("Closing a connection due to packet deserialization {0}!", errorMsg);

@@ -19,7 +19,7 @@ public class NetSession(IChannel channel)
 
         var buffer = Unpooled.Buffer();
         packet.Serialize<T>(buffer);
-        packet.Buf = buffer;
+        packet.Buffer = buffer;
 
         if (LoggerManager.IsCmdIdLogged((int)cmdId))
             Log.Debug("{0}({1}): Sent", cmdId, (int)cmdId);

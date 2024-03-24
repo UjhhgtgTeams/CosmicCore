@@ -9,6 +9,6 @@ public class PacketEncoder : MessageToByteEncoder<NetPacket>
 {
     protected override void Encode(IChannelHandlerContext context, NetPacket message, IByteBuffer output)
     {
-        output.WriteBytes(message.Buf);
+        output.WriteBytes(message.Buffer);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
+using System.Formats.Tar;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 using CosmicCore.Server.Utilities;
 using CosmicCore.Server.Utilities.External;
 using Downloader;
@@ -11,11 +13,6 @@ namespace CosmicCore.Server.LuaPlugin;
 
 public class LuaScriptCompiler : Singleton<LuaScriptCompiler>, IExternalTool
 {
-    private const string LuaCompilerArchivePath = "lua.zip";
-
-    private const string LuaCompilerArchiveDownloadUrl =
-        "https://jaist.dl.sourceforge.net/project/luabinaries/5.4.2/Tools%20Executables/lua-5.4.2_Win64_bin.zip";
-
     private static readonly string LuaCompilerDirPath = Path.Combine("ExternalTool", "LuaCompiler");
 
     private static readonly DownloadConfiguration DownloadConf = new()
@@ -26,6 +23,53 @@ public class LuaScriptCompiler : Singleton<LuaScriptCompiler>, IExternalTool
     };
 
     private static readonly DownloadService DownloadSvc = new(DownloadConf);
+
+    private static string LuaCompilerArchivePath
+    {
+        get
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return "lua.zip";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                throw new NotSupportedException("no apple for you sorry");
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return "lua.tar.gz";
+            else
+                throw new NotSupportedException("Lua binaries unavailable for current operating system");
+        }
+    }
+
+    private static string LuaCompilerArchiveDownloadUrl
+    {
+        get
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return
+                    "https://jaist.dl.sourceforge.net/project/luabinaries/5.4.2/Tools%20Executables/lua-5.4.2_Win64_bin.zip";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                throw new NotSupportedException("no apple for you sorry");
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return
+                    "https://jaist.dl.sourceforge.net/project/luabinaries/5.4.2/Tools%20Executables/lua-5.4.2_Linux54_64_bin.tar.gz";
+            else
+                throw new NotSupportedException("Lua binaries unavailable for current operating system");
+        }
+    }
+
+    private static string LuaCompilerExePath
+    {
+        get
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                return "luac54.exe";
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                throw new NotSupportedException("no apple for you sorry");
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                return "luac54";
+            else
+                throw new NotSupportedException("Lua binaries unavailable for current operating system");
+        }
+    }
 
     public bool Ready => Directory.Exists(LuaCompilerDirPath);
 
@@ -98,7 +142,10 @@ public class LuaScriptCompiler : Singleton<LuaScriptCompiler>, IExternalTool
             });
 
         Log.Information("Extracting Lua compiler...");
-        ZipFile.ExtractToDirectory(LuaCompilerArchivePath, LuaCompilerDirPath);
+        if (LuaCompilerArchivePath.EndsWith(".zip"))
+            ZipFile.ExtractToDirectory(LuaCompilerArchivePath, LuaCompilerDirPath);
+        else if (LuaCompilerArchivePath.EndsWith(".tar.gz"))
+            TarFile.ExtractToDirectory(LuaCompilerArchivePath, LuaCompilerDirPath, true);
         File.Delete(LuaCompilerArchivePath);
 
         Log.Information("Installed external tool 'LuaCompiler'");
@@ -109,7 +156,8 @@ public class LuaScriptCompiler : Singleton<LuaScriptCompiler>, IExternalTool
         const string outputPath = "output.luac";
 
         Log.Information("Compiling Lua script {Path}", path);
-        Process.Start(Path.Combine(LuaCompilerDirPath, "luac54.exe"), @$"-o {outputPath} ""{path}""").WaitForExit();
+        Process.Start(Path.Combine(LuaCompilerDirPath, LuaCompilerExePath), @$"-o {outputPath} ""{path}""")
+            .WaitForExit();
         var bytes = File.ReadAllBytes(outputPath);
         File.Delete(outputPath);
         return bytes;
